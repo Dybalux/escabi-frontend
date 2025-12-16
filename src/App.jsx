@@ -12,6 +12,7 @@ import VerifyAge from './pages/VerifyAge';
 import Cart from './components/Cart/Cart';
 import AdminRoute from './components/Admin/AdminRoute';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import ProductManagement from './pages/Admin/ProductManagement';
 
 // Componente para rutas protegidas
 function ProtectedRoute({ children }) {
@@ -76,6 +77,14 @@ function AppRoutes() {
             element={
               <AdminRoute>
                 <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/products"
+            element={
+              <AdminRoute>
+                <ProductManagement />
               </AdminRoute>
             }
           />

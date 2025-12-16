@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Users, Package, ShoppingBag, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
 import { getAdminStats } from '../../services/api';
 import StatsCard from '../../components/Admin/StatsCard';
+import AdminNav from '../../components/Admin/AdminNav';
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState(null);
@@ -45,8 +46,9 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
-            <div className="container mx-auto px-4">
+        <div className="min-h-screen bg-gray-50">
+            <AdminNav />
+            <div className="container mx-auto px-4 py-8">
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">
                         Dashboard de Administración
