@@ -2,8 +2,5 @@
     "buildCommand": "bun run build",
     "outputDirectory": "dist",
     "installCommand": "bun install",
-    "framework": "vite",
-    "env": {
-        "VITE_API_URL": "@vite_api_url"
-    }
+    "framework": "vite"
 }
