@@ -45,6 +45,31 @@ export default function ProductForm({ product, onClose }) {
         setLoading(true);
 
         try {
+            // Validar que no haya valores negativos
+            if (parseFloat(formData.price) < 0) {
+                setError('El precio no puede ser negativo');
+                setLoading(false);
+                return;
+            }
+
+            if (parseInt(formData.stock) < 0) {
+                setError('El stock no puede ser negativo');
+                setLoading(false);
+                return;
+            }
+
+            if (formData.alcohol_content && parseFloat(formData.alcohol_content) < 0) {
+                setError('El contenido alcohólico no puede ser negativo');
+                setLoading(false);
+                return;
+            }
+
+            if (formData.alcohol_content && parseFloat(formData.alcohol_content) > 100) {
+                setError('El contenido alcohólico no puede ser mayor a 100%');
+                setLoading(false);
+                return;
+            }
+
             // Convertir a números
             const productData = {
                 ...formData,
@@ -128,6 +153,7 @@ export default function ProductForm({ product, onClose }) {
                                 name="price"
                                 type="number"
                                 step="0.01"
+                                min="0"
                                 value={formData.price}
                                 onChange={handleChange}
                                 required
@@ -140,6 +166,7 @@ export default function ProductForm({ product, onClose }) {
                                 label="Stock"
                                 name="stock"
                                 type="number"
+                                min="0"
                                 value={formData.stock}
                                 onChange={handleChange}
                                 required
@@ -160,13 +187,16 @@ export default function ProductForm({ product, onClose }) {
                             >
                                 <option value="">Seleccionar categoría</option>
                                 <option value="Cerveza">Cerveza</option>
-                                <option value="Vino">Vino</option>
+                                <option value="Vino Tinto">Vino Tinto</option>
+                                <option value="Vino Blanco">Vino Blanco</option>
+                                <option value="Vino Rosado">Vino Rosado</option>
                                 <option value="Whisky">Whisky</option>
-                                <option value="Ron">Ron</option>
                                 <option value="Vodka">Vodka</option>
                                 <option value="Gin">Gin</option>
-                                <option value="Licor">Licor</option>
-                                <option value="Otros">Otros</option>
+                                <option value="Ron">Ron</option>
+                                <option value="Tequila">Tequila</option>
+                                <option value="Gaseosa">Gaseosa</option>
+                                <option value="Otro">Otro</option>
                             </select>
                         </div>
 
@@ -176,6 +206,8 @@ export default function ProductForm({ product, onClose }) {
                                 name="alcohol_content"
                                 type="number"
                                 step="0.1"
+                                min="0"
+                                max="100"
                                 value={formData.alcohol_content}
                                 onChange={handleChange}
                                 placeholder="5.0"
