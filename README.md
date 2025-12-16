@@ -1,6 +1,15 @@
 # 🍺 EscabiAPI Frontend
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/tu-usuario/escabi-frontend)
+
 Frontend moderno desarrollado con React, Vite y Bun para la API de gestión de bebidas.
+
+## 🌐 Demo en Vivo
+
+**URL de Producción:** [https://tu-proyecto.vercel.app](https://tu-proyecto.vercel.app)
+
+> [!NOTE]
+> Después del deploy en Vercel, actualiza esta URL con tu enlace real.
 
 ## 🚀 Tecnologías
 
@@ -141,23 +150,71 @@ const { user, login, logout, verifyAge } = useAuth();
 const { cart, addToCart, removeFromCart } = useCart();
 ```
 
-## 🚀 Deploy
+## 🚀 Deploy en Vercel
 
-### Vercel
+### Opción 1: Deploy Automático (Recomendado)
+
+1. **Conectar con GitHub:**
+   - Ve a [vercel.com](https://vercel.com)
+   - Haz clic en "Add New Project"
+   - Importa tu repositorio de GitHub
+   - Vercel detectará automáticamente que es un proyecto Vite
+
+2. **Configurar Variables de Entorno:**
+   ```
+   VITE_API_URL=https://web-production-62840.up.railway.app
+   ```
+
+3. **Deploy:**
+   - Haz clic en "Deploy"
+   - Vercel construirá y desplegará automáticamente
+   - Cada push a `main` desplegará automáticamente
+
+### Opción 2: Deploy con CLI
+
 ```bash
 # Instalar Vercel CLI
-bun add -g vercel
+npm i -g vercel
+
+# Login en Vercel
+vercel login
 
 # Deploy
 vercel
+
+# Deploy a producción
+vercel --prod
 ```
 
-### Netlify
+### Configuración Post-Deploy
+
+1. **Dominio Personalizado** (Opcional):
+   - Ve a Project Settings → Domains
+   - Agrega tu dominio personalizado
+
+2. **Variables de Entorno:**
+   - Ve a Project Settings → Environment Variables
+   - Agrega `VITE_API_URL` con la URL de tu API
+
+3. **Build Settings:**
+   - Framework Preset: `Vite`
+   - Build Command: `bun run build`
+   - Output Directory: `dist`
+   - Install Command: `bun install`
+
+### Netlify (Alternativa)
+
 ```bash
 # Build
 bun run build
 
 # Arrastrar carpeta dist/ a netlify.com/drop
+```
+
+O usar Netlify CLI:
+```bash
+npm install -g netlify-cli
+netlify deploy --prod
 ```
 
 ## 📝 Scripts
