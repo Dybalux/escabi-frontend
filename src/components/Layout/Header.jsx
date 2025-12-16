@@ -25,9 +25,16 @@ export default function Header() {
                             Productos
                         </Link>
                         {isAuthenticated && (
-                            <Link to="/orders" className="text-gray-700 hover:text-purple-600 transition-colors">
-                                Mis Pedidos
-                            </Link>
+                            <>
+                                <Link to="/orders" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                    Mis Pedidos
+                                </Link>
+                                {user?.role === 'admin' && (
+                                    <Link to="/admin" className="text-purple-600 hover:text-purple-700 transition-colors font-semibold">
+                                        Admin
+                                    </Link>
+                                )}
+                            </>
                         )}
                     </nav>
 

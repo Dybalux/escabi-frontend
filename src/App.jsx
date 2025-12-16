@@ -10,6 +10,8 @@ import Products from './pages/Products';
 import MyOrders from './pages/MyOrders';
 import VerifyAge from './pages/VerifyAge';
 import Cart from './components/Cart/Cart';
+import AdminRoute from './components/Admin/AdminRoute';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 
 // Componente para rutas protegidas
 function ProtectedRoute({ children }) {
@@ -68,7 +70,18 @@ function AppRoutes() {
             }
           />
 
-          <Route path="*" element={<Navigate to="/" />} />
+          {/* Admin Routes */}
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+
+          {/* Ruta por defecto */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </div>

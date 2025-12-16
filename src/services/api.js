@@ -68,4 +68,20 @@ export const createOrder = (orderData) => api.post('/orders/', orderData);
 export const getMyOrders = () => api.get('/orders/me');
 export const getOrder = (id) => api.get(`/orders/${id}`);
 
+// Admin - Statistics
+export const getAdminStats = () => api.get('/admin/stats');
+
+// Admin - Users
+export const getAdminUsers = (params = {}) => api.get('/admin/users', { params });
+
+// Admin - Orders
+export const getAdminOrders = (params = {}) => api.get('/admin/orders', { params });
+export const updateOrderStatus = (orderId, status) =>
+    api.put(`/orders/${orderId}/status`, { status });
+
+// Admin - Products
+export const createProduct = (productData) => api.post('/products/', productData);
+export const updateProduct = (id, productData) => api.put(`/products/${id}`, productData);
+export const deleteProduct = (id) => api.delete(`/products/${id}`);
+
 export default api;
