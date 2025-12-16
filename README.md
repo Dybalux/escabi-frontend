@@ -6,10 +6,10 @@ Frontend moderno desarrollado con React, Vite y Bun para la API de gestión de b
 
 ## 🌐 Demo en Vivo
 
-**URL de Producción:** [https://tu-proyecto.vercel.app](https://tu-proyecto.vercel.app)
+**URL de Producción:** [https://escabi-frontend.vercel.app](https://escabi-frontend.vercel.app)
 
 > [!NOTE]
-> Después del deploy en Vercel, actualiza esta URL con tu enlace real.
+> El proyecto está configurado en Vercel. Cada push a `main` desplegará automáticamente.
 
 ## 🚀 Tecnologías
 
