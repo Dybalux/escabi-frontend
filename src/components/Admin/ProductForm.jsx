@@ -13,6 +13,8 @@ export default function ProductForm({ product, onClose }) {
         stock: '',
         image_url: '',
         alcohol_content: '',
+        volume_ml: '',
+        origin: '',
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -27,6 +29,8 @@ export default function ProductForm({ product, onClose }) {
                 stock: product.stock || '',
                 image_url: product.image_url || '',
                 alcohol_content: product.alcohol_content || '',
+                volume_ml: product.volume_ml || '',
+                origin: product.origin || '',
             });
         }
     }, [product]);
@@ -70,17 +74,25 @@ export default function ProductForm({ product, onClose }) {
                 return;
             }
 
+            if (formData.volume_ml && parseInt(formData.volume_ml) < 0) {
+                setError('El volumen no puede ser negativo');
+                setLoading(false);
+                return;
+            }
+
             // Convertir a números
             const productData = {
                 ...formData,
                 price: parseFloat(formData.price),
                 stock: parseInt(formData.stock),
                 alcohol_content: formData.alcohol_content ? parseFloat(formData.alcohol_content) : undefined,
+                volume_ml: formData.volume_ml ? parseInt(formData.volume_ml) : undefined,
+                origin: formData.origin || undefined,
             };
 
             if (product) {
                 // Actualizar producto existente
-                await updateProduct(product._id, productData);
+                await updateProduct(product.id, productData);
                 alert('Producto actualizado exitosamente');
             } else {
                 // Crear nuevo producto
@@ -213,6 +225,34 @@ export default function ProductForm({ product, onClose }) {
                                 onChange={handleChange}
                                 placeholder="5.0"
                             />
+                        </div>
+
+                        <div>
+                            <Input
+                                label="Volumen (ml)"
+                                name="volume_ml"
+                                type="number"
+                                min="0"
+                                value={formData.volume_ml}
+                                onChange={handleChange}
+                                placeholder="1000"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Origen
+                            </label>
+                            <select
+                                name="origin"
+                                value={formData.origin}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            >
+                                <option value="">Seleccionar origen</option>
+                                <option value="Nacional">Nacional</option>
+                                <option value="Importado">Importado</option>
+                            </select>
                         </div>
 
                         <div className="md:col-span-2">

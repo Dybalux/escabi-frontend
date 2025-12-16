@@ -32,17 +32,20 @@ export default function ProductManagement() {
     };
 
     const handleDelete = async (productId, productName) => {
-        if (!window.confirm(`¿Estás seguro de eliminar "${productName}" ? `)) {
+        if (!window.confirm(`¿Estás seguro de eliminar "${productName}"?`)) {
             return;
         }
 
         try {
             await deleteProduct(productId);
-            setProducts(products.filter(p => p._id !== productId));
+            setProducts(products.filter(p => p.id !== productId));
             alert('Producto eliminado exitosamente');
         } catch (error) {
             console.error('Error deleting product:', error);
-            alert('Error al eliminar el producto');
+            const errorMessage = error.response?.data?.detail ||
+                error.response?.data?.message ||
+                'Error al eliminar el producto. Puede que tenga pedidos asociados.';
+            alert(errorMessage);
         }
     };
 
@@ -153,7 +156,7 @@ export default function ProductManagement() {
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredProducts.map((product) => (
-                                    <tr key={product._id} className="hover:bg-gray-50">
+                                    <tr key={product.id} className="hover:bg-gray-50">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 <div className="flex-shrink-0 h-10 w-10">
@@ -188,10 +191,10 @@ export default function ProductManagement() {
                                             ${product.price.toLocaleString('es-AR')}
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px - 2 inline - flex text - xs leading - 5 font - semibold rounded - full ${product.stock < 10
-                                                    ? 'bg-red-100 text-red-800'
-                                                    : 'bg-green-100 text-green-800'
-                                                } `}>
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${product.stock < 10
+                                                ? 'bg-red-100 text-red-800'
+                                                : 'bg-green-100 text-green-800'
+                                                }`}>
                                                 {product.stock} unidades
                                             </span>
                                         </td>
@@ -203,7 +206,7 @@ export default function ProductManagement() {
                                                 <Edit size={18} />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(product._id, product.name)}
+                                                onClick={() => handleDelete(product.id, product.name)}
                                                 className="text-red-600 hover:text-red-900"
                                             >
                                                 <Trash2 size={18} />
