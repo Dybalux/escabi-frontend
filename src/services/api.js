@@ -1,0 +1,71 @@
+import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+console.log('🔧 API URL configurada:', API_URL);
+
+if (!API_URL) {
+    console.error('❌ VITE_API_URL no está definida en las variables de entorno');
+}
+
+const api = axios.create({
+    baseURL: API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
+
+// Interceptor para agregar token automáticamente si está disponible
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Si no hay token, la petición continúa sin él (para endpoints públicos)
+    return config;
+});
+
+// Interceptor para manejar errores de respuesta
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.error('❌ Error en la API:', error.message);
+        if (error.response) {
+            console.error('Respuesta del servidor:', error.response.status, error.response.data);
+        } else if (error.request) {
+            console.error('No se recibió respuesta del servidor');
+        }
+        return Promise.reject(error);
+    }
+);
+
+// Auth
+export const register = (userData) => api.post('/auth/register', userData);
+export const login = (credentials) => {
+    const formData = new URLSearchParams();
+    formData.append('username', credentials.email);
+    formData.append('password', credentials.password);
+    return api.post('/auth/token', formData, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    });
+};
+export const getCurrentUser = () => api.get('/auth/me');
+export const verifyAge = () => api.post('/age-verification/verify-age');
+
+// Products
+export const getProducts = (params = {}) => api.get('/products/', { params });
+export const getProduct = (id) => api.get(`/products/${id}`);
+
+// Cart
+export const getCart = () => api.get('/cart/');
+export const addToCart = (productId, quantity) =>
+    api.post('/cart/add', { product_id: productId, quantity });
+export const removeFromCart = (productId) => api.delete(`/cart/remove/${productId}`);
+export const clearCart = () => api.delete('/cart/clear');
+
+// Orders
+export const createOrder = (orderData) => api.post('/orders/', orderData);
+export const getMyOrders = () => api.get('/orders/me');
+export const getOrder = (id) => api.get(`/orders/${id}`);
+
+export default api;

@@ -1,0 +1,140 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
+import { getProducts, createOrder } from '../../services/api';
+import CartItem from './CartItem';
+import Button from '../UI/Button';
+import Alert from '../UI/Alert';
+import { ShoppingBag } from 'lucide-react';
+
+export default function Cart() {
+    const { cart, loadCart, clearCart } = useCart();
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [alert, setAlert] = useState(null);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    const loadData = async () => {
+        try {
+            const [cartResponse, productsResponse] = await Promise.all([
+                loadCart(),
+                getProducts({ limit: 100 })
+            ]);
+            setProducts(productsResponse.data);
+        } catch (error) {
+            console.error('Error loading data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getCartItems = () => {
+        if (!cart || !cart.items) return [];
+        return cart.items.map(item => ({
+            ...item,
+            product: products.find(p => p.id === item.product_id)
+        })).filter(item => item.product);
+    };
+
+    const getTotal = () => {
+        return getCartItems().reduce((sum, item) => {
+            return sum + (item.product.price * item.quantity);
+        }, 0);
+    };
+
+    const handleClearCart = async () => {
+        if (!confirm('¿Seguro que quieres vaciar el carrito?')) return;
+
+        const result = await clearCart();
+        if (result.success) {
+            setAlert({ type: 'info', message: 'Carrito vaciado' });
+        }
+    };
+
+    const handleCreateOrder = async () => {
+        setLoading(true);
+
+        const orderData = {
+            items: cart.items,
+            shipping_address: {
+                street: "Av. San Martín 1234",
+                city: "San Miguel de Tucumán",
+                state: "Tucumán",
+                zip_code: "4000",
+                country: "Argentina"
+            }
+        };
+
+        try {
+            const response = await createOrder(orderData);
+            setAlert({ type: 'success', message: `Pedido #${response.data.id} creado exitosamente!` });
+            setTimeout(() => navigate('/orders'), 2000);
+        } catch (error) {
+            setAlert({
+                type: 'error',
+                message: error.response?.data?.detail || 'Error al crear pedido'
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-[400px]">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+            </div>
+        );
+    }
+
+    const cartItems = getCartItems();
+
+    if (cartItems.length === 0) {
+        return (
+            <div className="text-center py-16">
+                <ShoppingBag size={64} className="mx-auto text-gray-300 mb-4" />
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">Tu carrito está vacío</h2>
+                <p className="text-gray-600 mb-6">Agrega productos para comenzar tu compra</p>
+                <Button onClick={() => navigate('/products')}>Ver Productos</Button>
+            </div>
+        );
+    }
+
+    return (
+        <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold text-gray-800 mb-6">🛒 Mi Carrito</h1>
+
+            {alert && (
+                <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
+            )}
+
+            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div className="space-y-4">
+                    {cartItems.map(item => (
+                        <CartItem key={item.product_id} item={item} />
+                    ))}
+                </div>
+
+                <div className="border-t-2 mt-6 pt-6">
+                    <div className="flex justify-between items-center text-2xl font-bold mb-6">
+                        <span>Total:</span>
+                        <span className="text-purple-600">${getTotal().toFixed(2)}</span>
+                    </div>
+
+                    <div className="flex gap-4">
+                        <Button onClick={handleCreateOrder} className="flex-1" disabled={loading}>
+                            {loading ? 'Procesando...' : 'Finalizar Compra'}
+                        </Button>
+                        <Button variant="danger" onClick={handleClearCart}>
+                            Vaciar Carrito
+                        </Button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
