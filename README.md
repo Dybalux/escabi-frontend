@@ -1,16 +1,183 @@
-# React + Vite
+# 🍺 EscabiAPI Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend moderno desarrollado con React, Vite y Bun para la API de gestión de bebidas.
 
-Currently, two official plugins are available:
+## 🚀 Tecnologías
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 18** - Biblioteca de UI
+- **Vite** - Build tool ultrarrápido
+- **Bun** - Runtime y package manager
+- **React Router** - Navegación
+- **Axios** - Cliente HTTP
+- **Tailwind CSS** - Estilos
+- **Lucide React** - Iconos
 
-## React Compiler
+## 📦 Instalación
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# Instalar Bun (si no lo tienes)
+curl -fsSL https://bun.sh/install | bash
 
-## Expanding the ESLint configuration
+# Clonar el repositorio
+git clone <tu-repo>
+cd escabi-frontend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Instalar dependencias
+bun install
+```
+
+## ⚙️ Configuración
+
+Crear archivo `.env` en la raíz:
+
+```env
+VITE_API_URL=https://web-production-62840.up.railway.app
+```
+
+## 🏃‍♂️ Desarrollo
+
+```bash
+# Iniciar servidor de desarrollo
+bun run dev
+
+# Abrir en http://localhost:3000
+```
+
+## 🏗️ Build
+
+```bash
+# Construir para producción
+bun run build
+
+# Vista previa del build
+bun run preview
+```
+
+## 📁 Estructura del Proyecto
+
+```
+src/
+├── components/
+│   ├── Auth/          # Login y Register
+│   ├── Products/      # Productos y filtros
+│   ├── Cart/          # Carrito de compras
+│   ├── Layout/        # Header y Footer
+│   └── UI/            # Componentes base
+├── context/
+│   ├── AuthContext.jsx   # Estado de autenticación
+│   └── CartContext.jsx   # Estado del carrito
+├── pages/
+│   ├── Home.jsx          # Landing page
+│   ├── Products.jsx      # Catálogo
+│   ├── MyOrders.jsx      # Historial de pedidos
+│   └── VerifyAge.jsx     # Verificación de edad
+├── services/
+│   └── api.js            # Cliente API
+├── App.jsx
+├── main.jsx
+└── index.css
+```
+
+## ✨ Características
+
+### Autenticación
+- ✅ Registro de usuarios
+- ✅ Login con JWT
+- ✅ Verificación de edad
+- ✅ Logout
+
+### Productos
+- ✅ Catálogo completo
+- ✅ Filtrado por categoría
+- ✅ Búsqueda en tiempo real
+- ✅ Información detallada
+
+### Carrito
+- ✅ Agregar productos
+- ✅ Ver total
+- ✅ Eliminar items
+- ✅ Crear pedido
+
+### Pedidos
+- ✅ Historial de compras
+- ✅ Estados de pedido
+- ✅ Detalles completos
+
+## 🎨 Componentes Reutilizables
+
+### Button
+```jsx
+<Button variant="primary" size="md">
+  Click me
+</Button>
+```
+
+### Input
+```jsx
+<Input 
+  label="Email" 
+  type="email" 
+  placeholder="tu@email.com"
+/>
+```
+
+### Alert
+```jsx
+<Alert 
+  type="success" 
+  message="Operación exitosa"
+/>
+```
+
+## 🔐 Context API
+
+### AuthContext
+```jsx
+const { user, login, logout, verifyAge } = useAuth();
+```
+
+### CartContext
+```jsx
+const { cart, addToCart, removeFromCart } = useCart();
+```
+
+## 🚀 Deploy
+
+### Vercel
+```bash
+# Instalar Vercel CLI
+bun add -g vercel
+
+# Deploy
+vercel
+```
+
+### Netlify
+```bash
+# Build
+bun run build
+
+# Arrastrar carpeta dist/ a netlify.com/drop
+```
+
+## 📝 Scripts
+
+- `bun run dev` - Servidor de desarrollo
+- `bun run build` - Build de producción
+- `bun run preview` - Preview del build
+
+## 🤝 Contribuir
+
+1. Fork el proyecto
+2. Crear rama feature (`git checkout -b feature/amazing`)
+3. Commit cambios (`git commit -m 'Add feature'`)
+4. Push a la rama (`git push origin feature/amazing`)
+5. Abrir Pull Request
+
+## 📄 Licencia
+
+MIT
+
+---
+
+Hecho con ❤️ y ☕ en Argentina 🇦🇷
