@@ -195,6 +195,7 @@ export default function ProductForm({ product, onClose }) {
                                 <option value="Gin">Gin</option>
                                 <option value="Ron">Ron</option>
                                 <option value="Tequila">Tequila</option>
+                                <option value="Fernet">Fernet</option>
                                 <option value="Gaseosa">Gaseosa</option>
                                 <option value="Otro">Otro</option>
                             </select>
