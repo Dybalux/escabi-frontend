@@ -119,59 +119,60 @@ export default function UserManagement() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredUsers.map((user) => (
-                                    <tr key={user.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center">
-                                                <div className="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                                    <UsersIcon className="text-purple-600" size={20} />
-                                                </div>
-                                                <div className="ml-4">
-                                                    <div className="text-sm font-medium text-gray-900">
-                                                        {user.username}
+                                {filteredUsers.map((user, index) => {
+                                    const key = user.id || user._id || index;
+                                    if (!user.id && !user._id) console.warn('User missing id:', user);
+                                    return (
+                                        <tr key={key} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center">
+                                                    <div className="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                                        <UsersIcon className="text-purple-600" size={20} />
+                                                    </div>
+                                                    <div className="ml-4">
+                                                        <div className="text-sm font-medium text-gray-900">
+                                                            {user.username}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex items-center text-sm text-gray-900">
-                                                <Mail size={16} className="mr-2 text-gray-400" />
-                                                {user.email}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${user.role === 'admin'
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center text-sm text-gray-900">
+                                                    <Mail size={16} className="mr-2 text-gray-400" />
+                                                    {user.email}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <span className={`px-3 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-full ${user.role === 'admin'
                                                     ? 'bg-purple-100 text-purple-800'
                                                     : 'bg-blue-100 text-blue-800'
-                                                }`}>
-                                                {user.role === 'admin' ? (
-                                                    <><Shield size={14} className="mr-1" /> Admin</>
+                                                    }`}>
+                                                    {user.role === 'admin' && <Shield size={14} className="mr-1" />}
+                                                    {user.role === 'admin' ? 'Admin' : 'Cliente'}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                {user.age_verified ? (
+                                                    <span className="flex items-center text-green-600">
+                                                        <CheckCircle size={18} className="mr-1" />
+                                                        Verificado
+                                                    </span>
                                                 ) : (
-                                                    'Cliente'
+                                                    <span className="flex items-center text-red-600">
+                                                        <XCircle size={18} className="mr-1" />
+                                                        No verificado
+                                                    </span>
                                                 )}
-                                            </span>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {user.age_verified ? (
-                                                <span className="flex items-center text-green-600">
-                                                    <CheckCircle size={18} className="mr-1" />
-                                                    Verificado
-                                                </span>
-                                            ) : (
-                                                <span className="flex items-center text-red-600">
-                                                    <XCircle size={18} className="mr-1" />
-                                                    No verificado
-                                                </span>
-                                            )}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <div className="flex items-center">
-                                                <Calendar size={16} className="mr-2 text-gray-400" />
-                                                {new Date(user.created_at).toLocaleDateString('es-AR')}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <div className="flex items-center">
+                                                    <Calendar size={16} className="mr-2 text-gray-400" />
+                                                    {new Date(user.created_at).toLocaleDateString('es-AR')}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
