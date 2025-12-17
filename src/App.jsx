@@ -14,6 +14,7 @@ import AdminRoute from './components/Admin/AdminRoute';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import ProductManagement from './pages/Admin/ProductManagement';
 import OrderManagement from './pages/Admin/OrderManagement';
+import UserManagement from './pages/Admin/UserManagement';
 import { Toaster } from 'react-hot-toast';
 
 // Componente para rutas protegidas
@@ -95,6 +96,14 @@ function AppRoutes() {
             element={
               <AdminRoute>
                 <OrderManagement />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminRoute>
+                <UserManagement />
               </AdminRoute>
             }
           />
