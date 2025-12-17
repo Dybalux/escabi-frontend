@@ -17,6 +17,17 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const accessToken = localStorage.getItem('token');
+        const refreshToken = localStorage.getItem('refresh_token');
+
+        // Si hay access token pero no refresh token, estado inválido - limpiar
+        if (accessToken && !refreshToken) {
+            localStorage.removeItem('token');
+            setToken(null);
+            setLoading(false);
+            return;
+        }
+
         if (token) {
             loadUser();
         } else {
@@ -39,8 +50,12 @@ export const AuthProvider = ({ children }) => {
     const login = async (credentials) => {
         try {
             const response = await apiLogin(credentials);
-            const { access_token } = response.data;
+            const { access_token, refresh_token } = response.data;
+
+            // Guardar ambos tokens
             localStorage.setItem('token', access_token);
+            localStorage.setItem('refresh_token', refresh_token);
+
             setToken(access_token);
             await loadUser();
             return { success: true };
@@ -65,7 +80,9 @@ export const AuthProvider = ({ children }) => {
     };
 
     const logout = () => {
+        // Limpiar ambos tokens
         localStorage.removeItem('token');
+        localStorage.removeItem('refresh_token');
         setToken(null);
         setUser(null);
     };

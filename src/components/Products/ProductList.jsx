@@ -21,10 +21,14 @@ export default function ProductList() {
         try {
             setLoading(true);
             const response = await getProducts({ limit: 50 });
-            setProducts(response.data);
-            setFilteredProducts(response.data);
+            // El backend ahora devuelve { items: [...], total: X, page: Y, ... }
+            const productsData = response.data.items || response.data;
+            setProducts(productsData);
+            setFilteredProducts(productsData);
         } catch (error) {
             console.error('Error loading products:', error);
+            setProducts([]);
+            setFilteredProducts([]);
         } finally {
             setLoading(false);
         }

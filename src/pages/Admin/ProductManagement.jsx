@@ -23,10 +23,13 @@ export default function ProductManagement() {
         try {
             setLoading(true);
             const response = await getProducts();
-            setProducts(response.data);
+            // El backend ahora devuelve { items: [...], total: X, page: Y, ... }
+            const productsData = response.data.items || response.data;
+            setProducts(productsData);
         } catch (error) {
             console.error('Error loading products:', error);
             setError('Error al cargar los productos');
+            setProducts([]);
         } finally {
             setLoading(false);
         }
@@ -61,14 +64,14 @@ export default function ProductManagement() {
         loadProducts();
     };
 
-    const filteredProducts = products.filter(product => {
+    const filteredProducts = Array.isArray(products) ? products.filter(product => {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.description?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = !selectedCategory || product.category === selectedCategory;
         return matchesSearch && matchesCategory;
-    });
+    }) : [];
 
-    const categories = [...new Set(products.map(p => p.category))];
+    const categories = Array.isArray(products) ? [...new Set(products.map(p => p.category))] : [];
 
     if (loading) {
         return (
@@ -89,7 +92,7 @@ export default function ProductManagement() {
                             Gestión de Productos
                         </h1>
                         <p className="text-gray-600">
-                            {products.length} productos en total
+                            {Array.isArray(products) ? products.length : 0} productos en total
                         </p>
                     </div>
                     <Button onClick={() => setShowForm(true)}>
