@@ -72,8 +72,25 @@ export const AuthProvider = ({ children }) => {
 
     const verifyAge = async () => {
         try {
-            const response = await apiVerifyAge();
-            setUser(response.data);
+            await apiVerifyAge();
+
+            // El token JWT actual no tiene age_verified actualizado
+            // Necesitamos hacer re-login para obtener un nuevo token
+            // Guardamos las credenciales temporalmente
+            const currentToken = token;
+
+            // Obtenemos los datos actualizados del usuario
+            const userResponse = await getCurrentUser();
+            const updatedUser = userResponse.data;
+
+            // Actualizamos el estado del usuario
+            setUser(updatedUser);
+
+            // Nota: El token JWT no se actualiza automáticamente
+            // El usuario necesitará cerrar sesión y volver a iniciar sesión
+            // para que el carrito funcione correctamente, O el backend
+            // debería devolver un nuevo token después de verificar la edad
+
             return { success: true };
         } catch (error) {
             return {
