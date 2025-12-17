@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { createProduct, updateProduct } from '../../services/api';
 import Button from '../UI/Button';
 import Input from '../UI/Input';
+import toast from 'react-hot-toast';
 
 export default function ProductForm({ product, onClose }) {
     const [formData, setFormData] = useState({
@@ -93,11 +94,11 @@ export default function ProductForm({ product, onClose }) {
             if (product) {
                 // Actualizar producto existente
                 await updateProduct(product.id, productData);
-                alert('Producto actualizado exitosamente');
+                toast.success('Producto actualizado exitosamente');
             } else {
                 // Crear nuevo producto
                 await createProduct(productData);
-                alert('Producto creado exitosamente');
+                toast.success('Producto creado exitosamente');
             }
 
             onClose();

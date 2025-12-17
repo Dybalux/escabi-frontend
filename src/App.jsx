@@ -13,6 +13,7 @@ import Cart from './components/Cart/Cart';
 import AdminRoute from './components/Admin/AdminRoute';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import ProductManagement from './pages/Admin/ProductManagement';
+import { Toaster } from 'react-hot-toast';
 
 // Componente para rutas protegidas
 function ProtectedRoute({ children }) {
@@ -93,6 +94,30 @@ function AppRoutes() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+          success: {
+            duration: 3000,
+            iconTheme: {
+              primary: '#10b981',
+              secondary: '#fff',
+            },
+          },
+          error: {
+            duration: 4000,
+            iconTheme: {
+              primary: '#ef4444',
+              secondary: '#fff',
+            },
+          },
+        }}
+      />
     </div>
   );
 }

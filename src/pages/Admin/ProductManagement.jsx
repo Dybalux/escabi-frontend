@@ -4,6 +4,7 @@ import { getProducts, deleteProduct } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
 import AdminNav from '../../components/Admin/AdminNav';
+import toast from 'react-hot-toast';
 
 export default function ProductManagement() {
     const [products, setProducts] = useState([]);
@@ -39,13 +40,13 @@ export default function ProductManagement() {
         try {
             await deleteProduct(productId);
             setProducts(products.filter(p => p.id !== productId));
-            alert('Producto eliminado exitosamente');
+            toast.success('Producto eliminado exitosamente');
         } catch (error) {
             console.error('Error deleting product:', error);
             const errorMessage = error.response?.data?.detail ||
                 error.response?.data?.message ||
                 'Error al eliminar el producto. Puede que tenga pedidos asociados.';
-            alert(errorMessage);
+            toast.error(errorMessage);
         }
     };
 
