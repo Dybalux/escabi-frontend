@@ -13,6 +13,7 @@ import Cart from './components/Cart/Cart';
 import AdminRoute from './components/Admin/AdminRoute';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import ProductManagement from './pages/Admin/ProductManagement';
+import OrderManagement from './pages/Admin/OrderManagement';
 import { Toaster } from 'react-hot-toast';
 
 // Componente para rutas protegidas
@@ -86,6 +87,14 @@ function AppRoutes() {
             element={
               <AdminRoute>
                 <ProductManagement />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <AdminRoute>
+                <OrderManagement />
               </AdminRoute>
             }
           />
