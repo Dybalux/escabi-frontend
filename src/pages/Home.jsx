@@ -23,7 +23,7 @@ export default function Home() {
                                 <Button size="lg">Crear Cuenta</Button>
                             </Link>
                             <Link to="/login">
-                                <Button size="lg" variant="outline">
+                                <Button size="lg">
                                     Iniciar Sesión
                                 </Button>
                             </Link>
