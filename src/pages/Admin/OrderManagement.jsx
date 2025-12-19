@@ -114,8 +114,8 @@ export default function OrderManagement() {
                     </div>
                 </div>
 
-                {/* Orders Table */}
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                {/* Orders Table - Desktop */}
+                <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
@@ -191,6 +191,88 @@ export default function OrderManagement() {
 
                     {filteredOrders.length === 0 && (
                         <div className="text-center py-12">
+                            <Package className="mx-auto text-gray-400 mb-4" size={48} />
+                            <p className="text-gray-500">No se encontraron pedidos</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Orders Cards - Mobile & Tablet */}
+                <div className="block lg:hidden space-y-4">
+                    {filteredOrders.map((order) => (
+                        <div key={order.id} className="bg-white rounded-lg shadow-md p-4">
+                            <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
+                                <div>
+                                    <span className="text-xs text-gray-500">ID Pedido</span>
+                                    <p className="text-sm font-mono font-semibold text-gray-900">
+                                        {order.id?.substring(0, 12)}...
+                                    </p>
+                                </div>
+                                <Calendar className="text-gray-400" size={20} />
+                            </div>
+
+                            <div className="space-y-3 mb-3">
+                                <div>
+                                    <span className="text-xs text-gray-500 block mb-1">Cliente</span>
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {order.user_info?.username || 'Usuario desconocido'}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        {order.user_info?.email || 'Sin email'}
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <span className="text-xs text-gray-500 block mb-1">Productos</span>
+                                        <p className="text-sm font-medium text-gray-900">
+                                            {order.items?.length || 0} producto(s)
+                                        </p>
+                                        <p className="text-xs text-gray-500 line-clamp-1">
+                                            {order.items?.slice(0, 2).map(item => item.name).join(', ')}
+                                            {order.items?.length > 2 && '...'}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <span className="text-xs text-gray-500 block mb-1">Total</span>
+                                        <p className="text-lg font-bold text-purple-600">
+                                            ${order.total_amount?.toLocaleString('es-AR')}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <span className="text-xs text-gray-500 block mb-1">Fecha</span>
+                                    <p className="text-sm text-gray-900">
+                                        {new Date(order.created_at).toLocaleDateString('es-AR', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        })}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="pt-3 border-t border-gray-200">
+                                <label className="text-xs text-gray-500 block mb-2">Estado del Pedido</label>
+                                <select
+                                    value={order.status}
+                                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                    className={`w-full px-3 py-2 text-sm font-semibold rounded-lg ${getStatusColor(order.status)} border-0 cursor-pointer`}
+                                >
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="En Proceso">En Proceso</option>
+                                    <option value="Enviado">Enviado</option>
+                                    <option value="Entregado">Entregado</option>
+                                    <option value="Cancelado">Cancelado</option>
+                                    <option value="Reembolsado">Reembolsado</option>
+                                </select>
+                            </div>
+                        </div>
+                    ))}
+
+                    {filteredOrders.length === 0 && (
+                        <div className="text-center py-12 bg-white rounded-lg">
                             <Package className="mx-auto text-gray-400 mb-4" size={48} />
                             <p className="text-gray-500">No se encontraron pedidos</p>
                         </div>

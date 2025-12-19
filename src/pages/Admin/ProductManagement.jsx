@@ -96,7 +96,6 @@ export default function ProductManagement() {
                         </p>
                     </div>
                     <Button onClick={() => setShowForm(true)}>
-                        <Plus size={20} className="mr-2" />
                         Nuevo Producto
                     </Button>
                 </div>
@@ -135,8 +134,8 @@ export default function ProductManagement() {
                     </div>
                 )}
 
-                {/* Products Table */}
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                {/* Products Table - Desktop */}
+                <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
@@ -224,6 +223,83 @@ export default function ProductManagement() {
 
                     {filteredProducts.length === 0 && (
                         <div className="text-center py-12">
+                            <p className="text-gray-500">No se encontraron productos</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Products Cards - Mobile & Tablet */}
+                <div className="block lg:hidden space-y-4">
+                    {filteredProducts.map((product) => (
+                        <div key={product.id} className="bg-white rounded-lg shadow-md p-4">
+                            <div className="flex items-start gap-3 mb-3">
+                                <div className="flex-shrink-0">
+                                    {product.image_url ? (
+                                        <img
+                                            className="h-16 w-16 rounded object-cover"
+                                            src={product.image_url}
+                                            alt={product.name}
+                                        />
+                                    ) : (
+                                        <div className="h-16 w-16 rounded bg-purple-100 flex items-center justify-center text-2xl">
+                                            🍺
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                                        {product.name}
+                                    </h3>
+                                    <p className="text-xs text-gray-500 line-clamp-2">
+                                        {product.description}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 text-sm mb-3">
+                                <div>
+                                    <span className="text-gray-500 block text-xs">Categoría</span>
+                                    <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
+                                        {product.category}
+                                    </span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-500 block text-xs">Precio</span>
+                                    <span className="font-semibold text-gray-900">
+                                        ${product.price.toLocaleString('es-AR')}
+                                    </span>
+                                </div>
+                                <div className="col-span-2">
+                                    <span className="text-gray-500 block text-xs">Stock</span>
+                                    <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${product.stock < 10
+                                        ? 'bg-red-100 text-red-800'
+                                        : 'bg-green-100 text-green-800'
+                                        }`}>
+                                        {product.stock} unidades
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2 pt-3 border-t border-gray-200">
+                                <button
+                                    onClick={() => handleEdit(product)}
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                                >
+                                    <Edit size={16} />
+                                    <span className="text-sm font-medium">Editar</span>
+                                </button>
+                                <button
+                                    onClick={() => handleDelete(product.id, product.name)}
+                                    className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                >
+                                    <Trash2 size={16} />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+
+                    {filteredProducts.length === 0 && (
+                        <div className="text-center py-12 bg-white rounded-lg">
                             <p className="text-gray-500">No se encontraron productos</p>
                         </div>
                     )}

@@ -95,8 +95,8 @@ export default function UserManagement() {
                     </div>
                 </div>
 
-                {/* Users Table */}
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                {/* Users Table - Desktop */}
+                <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full">
                             <thead className="bg-gray-50 border-b border-gray-200">
@@ -179,6 +179,79 @@ export default function UserManagement() {
 
                     {filteredUsers.length === 0 && (
                         <div className="text-center py-12">
+                            <UsersIcon className="mx-auto text-gray-400 mb-4" size={48} />
+                            <p className="text-gray-500">No se encontraron usuarios</p>
+                        </div>
+                    )}
+                </div>
+
+                {/* Users Cards - Mobile & Tablet */}
+                <div className="block lg:hidden space-y-4">
+                    {filteredUsers.map((user, index) => {
+                        const key = user.id || user._id || index;
+                        return (
+                            <div key={key} className="bg-white rounded-lg shadow-md p-4">
+                                <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
+                                    <div className="flex-shrink-0 h-14 w-14 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <UsersIcon className="text-purple-600" size={24} />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-base font-semibold text-gray-900 mb-1">
+                                            {user.username}
+                                        </h3>
+                                        <div className="flex items-center text-sm text-gray-500">
+                                            <Mail size={14} className="mr-1" />
+                                            <span className="truncate">{user.email}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <span className="text-xs text-gray-500 block mb-2">Rol</span>
+                                        <span className={`px-3 py-1 inline-flex items-center text-xs font-semibold rounded-full ${user.role === 'admin'
+                                            ? 'bg-purple-100 text-purple-800'
+                                            : 'bg-blue-100 text-blue-800'
+                                            }`}>
+                                            {user.role === 'admin' && <Shield size={14} className="mr-1" />}
+                                            {user.role === 'admin' ? 'Admin' : 'Cliente'}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span className="text-xs text-gray-500 block mb-2">Verificación</span>
+                                        {user.age_verified ? (
+                                            <span className="flex items-center text-sm text-green-600">
+                                                <CheckCircle size={16} className="mr-1" />
+                                                Verificado
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center text-sm text-red-600">
+                                                <XCircle size={16} className="mr-1" />
+                                                No verificado
+                                            </span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="pt-3 border-t border-gray-200">
+                                    <div className="flex items-center text-sm text-gray-500">
+                                        <Calendar size={16} className="mr-2" />
+                                        <span className="text-xs">Registrado el </span>
+                                        <span className="ml-1 font-medium text-gray-900">
+                                            {new Date(user.created_at).toLocaleDateString('es-AR', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+
+                    {filteredUsers.length === 0 && (
+                        <div className="text-center py-12 bg-white rounded-lg">
                             <UsersIcon className="mx-auto text-gray-400 mb-4" size={48} />
                             <p className="text-gray-500">No se encontraron usuarios</p>
                         </div>
