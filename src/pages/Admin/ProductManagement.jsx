@@ -22,7 +22,7 @@ export default function ProductManagement() {
     const loadProducts = async () => {
         try {
             setLoading(true);
-            const response = await getProducts();
+            const response = await getProducts({ include_out_of_stock: true });
             // El backend ahora devuelve { items: [...], total: X, page: Y, ... }
             const productsData = response.data.items || response.data;
             setProducts(productsData);
