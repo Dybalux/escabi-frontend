@@ -24,9 +24,12 @@ export default function Cart() {
                 loadCart(),
                 getProducts({ limit: 100 })
             ]);
-            setProducts(productsResponse.data);
+            // El API devuelve { items: [...], total: ..., page: ... }
+            const productsList = productsResponse.data?.items || productsResponse.data || [];
+            setProducts(productsList);
         } catch (error) {
             console.error('Error loading data:', error);
+            setProducts([]); // Asegurar que products sea un array vacío en caso de error
         } finally {
             setLoading(false);
         }

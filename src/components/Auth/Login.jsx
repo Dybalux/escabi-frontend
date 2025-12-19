@@ -57,9 +57,20 @@ export default function Login() {
                         required
                     />
 
-                    <Button type="submit" className="w-full" disabled={loading}>
-                        {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-                    </Button>
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6"
+                    >
+                        {loading ? (
+                            <div className="flex items-center justify-center gap-2">
+                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                <span>Iniciando sesión...</span>
+                            </div>
+                        ) : (
+                            'Iniciar Sesión'
+                        )}
+                    </button>
                 </form>
 
                 <p className="text-center mt-6 text-gray-600">
