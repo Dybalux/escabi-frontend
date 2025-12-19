@@ -11,6 +11,7 @@ export default function ProductFilters({ filters, setFilters }) {
         'Gin',
         'Ron',
         'Tequila',
+        'Fernet',
         'Gaseosa',
     ];
 

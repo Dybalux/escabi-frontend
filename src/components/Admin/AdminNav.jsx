@@ -13,7 +13,7 @@ export default function AdminNav() {
 
     return (
         <nav className="bg-white shadow-md mb-6">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-2 sm:px-4">
                 <div className="flex gap-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
@@ -23,13 +23,13 @@ export default function AdminNav() {
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`flex items-center gap-2 px-6 py-4 border-b-2 transition-colors ${isActive
+                                className={`flex-1 flex items-center justify-center gap-2 px-3 sm:px-6 py-3 sm:py-4 border-b-2 transition-colors whitespace-nowrap ${isActive
                                     ? 'border-purple-600 text-purple-600 font-semibold'
                                     : 'border-transparent text-gray-600 hover:text-purple-600 hover:border-gray-300'
                                     }`}
                             >
                                 <Icon size={20} />
-                                <span>{item.label}</span>
+                                <span className="hidden sm:inline">{item.label}</span>
                             </Link>
                         );
                     })}
