@@ -15,6 +15,7 @@ import AdminDashboard from './pages/Admin/AdminDashboard';
 import ProductManagement from './pages/Admin/ProductManagement';
 import OrderManagement from './pages/Admin/OrderManagement';
 import UserManagement from './pages/Admin/UserManagement';
+import NotFound from './pages/NotFound';
 import { Toaster } from 'react-hot-toast';
 
 // Componente para rutas protegidas
@@ -108,8 +109,8 @@ function AppRoutes() {
             }
           />
 
-          {/* Ruta por defecto */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* 404 - Página no encontrada */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
       <Toaster
