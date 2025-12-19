@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-    Menu, 
-    X, 
-    Home, 
-    Package, 
-    ShoppingBag, 
-    ShoppingCart, 
-    User, 
+import {
+    Menu,
+    X,
+    Home,
+    Package,
+    ShoppingBag,
+    ShoppingCart,
+    User,
     LogOut,
     LayoutDashboard,
     Users
@@ -53,9 +53,8 @@ export default function MobileMenu() {
 
             {/* Slide-out Menu */}
             <div
-                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${
-                    isOpen ? 'translate-x-0' : 'translate-x-full'
-                }`}
+                className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out md:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'
+                    }`}
             >
                 <div className="flex flex-col h-full">
                     {/* Header */}
@@ -192,7 +191,7 @@ export default function MobileMenu() {
                         {isAuthenticated ? (
                             <Button
                                 variant="outline"
-                                className="w-full justify-center"
+                                className="w-full justify-center flex items-center"
                                 onClick={handleLogout}
                             >
                                 <LogOut size={18} className="mr-2" />
