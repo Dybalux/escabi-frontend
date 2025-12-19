@@ -23,7 +23,7 @@ export default function Home() {
                                 <Button size="lg">Crear Cuenta</Button>
                             </Link>
                             <Link to="/login">
-                                <Button size="lg" variant="outline" className="bg-white text-purple-600">
+                                <Button size="lg" variant="outline">
                                     Iniciar Sesión
                                 </Button>
                             </Link>
@@ -102,7 +102,7 @@ export default function Home() {
             </section>
 
             {/* CTA Section */}
-            <section className="bg-purple-600 text-white py-16">
+            <section className="bg-gradient-to-br from-purple-600 to-purple-900 text-white py-16">
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl font-bold mb-4">
                         ¿Listo para tu primera compra?
@@ -111,7 +111,7 @@ export default function Home() {
                         Explora nuestro catálogo y encuentra tus bebidas favoritas
                     </p>
                     <Link to="/products">
-                        <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100">
+                        <Button size="lg">
                             Explorar Productos
                         </Button>
                     </Link>

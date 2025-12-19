@@ -1,4 +1,4 @@
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, Plus, Minus } from 'lucide-react';
 import Button from '../UI/Button';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
@@ -10,6 +10,7 @@ export default function ProductCard({ product }) {
     const { user } = useAuth();
     const [alert, setAlert] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [quantity, setQuantity] = useState(1);
 
     const handleAddToCart = async () => {
         if (!user?.age_verified) {
@@ -18,16 +19,29 @@ export default function ProductCard({ product }) {
         }
 
         setLoading(true);
-        const result = await addToCart(product.id, 1);
+        const result = await addToCart(product.id, quantity);
 
         if (result.success) {
-            setAlert({ type: 'success', message: 'Producto agregado al carrito' });
+            setAlert({ type: 'success', message: `${quantity} producto(s) agregado(s) al carrito` });
+            setQuantity(1); // Reset quantity after adding
         } else {
             setAlert({ type: 'error', message: result.error });
         }
 
         setLoading(false);
         setTimeout(() => setAlert(null), 3000);
+    };
+
+    const incrementQuantity = () => {
+        if (quantity < product.stock) {
+            setQuantity(quantity + 1);
+        }
+    };
+
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
     };
 
     return (
@@ -67,7 +81,7 @@ export default function ProductCard({ product }) {
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Stock:</span>
-                        <span className={`font-semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <span className={`font - semibold ${product.stock > 0 ? 'text-green-600' : 'text-red-600'} `}>
                             {product.stock} unidades
                         </span>
                     </div>
@@ -89,15 +103,41 @@ export default function ProductCard({ product }) {
                     <span className="text-3xl font-bold text-purple-600">
                         ${product.price.toFixed(2)}
                     </span>
-                    <Button
-                        onClick={handleAddToCart}
-                        disabled={product.stock === 0 || loading}
-                        size="sm"
-                    >
-                        <ShoppingCart size={16} className="mr-1" />
-                        {loading ? 'Agregando...' : product.stock === 0 ? 'Sin Stock' : 'Agregar'}
-                    </Button>
+
+                    {/* Quantity Selector */}
+                    {product.stock > 0 && (
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={decrementQuantity}
+                                disabled={quantity <= 1}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-purple-600 text-purple-600 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <Minus size={16} />
+                            </button>
+                            <span className="w-12 text-center font-semibold text-gray-900">
+                                {quantity}
+                            </span>
+                            <button
+                                onClick={incrementQuantity}
+                                disabled={quantity >= product.stock}
+                                className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-purple-600 text-purple-600 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                            >
+                                <Plus size={16} />
+                            </button>
+                        </div>
+                    )}
                 </div>
+
+                {/* Add to Cart Button */}
+                <Button
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0 || loading}
+                    size="md"
+                    variant="primary"
+                    className="w-full mt-4"
+                >
+                    {loading ? 'Agregando...' : product.stock === 0 ? 'Sin Stock' : 'Agregar al Carrito'}
+                </Button>
             </div>
         </div>
     );
