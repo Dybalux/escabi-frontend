@@ -76,12 +76,28 @@ export default function Cart() {
         try {
             // 1. Crear la orden
             const orderResponse = await createOrder(orderData);
+            console.log('📦 Order Response completo:', orderResponse);
+            console.log('📦 Order Response.data:', orderResponse.data);
+
+            // El backend puede devolver la orden directamente o dentro de un wrapper
             const order = orderResponse.data;
+            console.log('✅ Orden extraída:', order);
+            console.log('📝 Order ID:', order?.id);
+            console.log('📝 Order _id:', order?._id);
+
+            if (!order?.id && !order?._id) {
+                throw new Error('La orden no tiene un ID válido');
+            }
+
+            const orderId = order.id || order._id;
+            console.log('🎯 Order ID final a usar:', orderId);
 
             toast.success('Orden creada exitosamente');
 
             // 2. Crear preferencia de pago
-            const paymentResponse = await createPaymentPreference(order.id);
+            console.log('🔄 Creando preferencia de pago para orden:', orderId);
+            const paymentResponse = await createPaymentPreference(orderId);
+            console.log('✅ Preferencia creada:', paymentResponse.data);
             const { init_point } = paymentResponse.data;
 
             // 3. Redirigir a Mercado Pago
