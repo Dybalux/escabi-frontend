@@ -155,6 +155,10 @@ export const createOrder = (orderData) => api.post('/orders/', orderData);
 export const getMyOrders = () => api.get('/orders/me');
 export const getOrder = (id) => api.get(`/orders/${id}`);
 
+// Payments
+export const createPaymentPreference = (orderId) =>
+    api.post(`/payments/create-preference/${orderId}`);
+
 // Admin - Statistics
 export const getAdminStats = () => api.get('/admin/stats');
 

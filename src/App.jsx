@@ -10,6 +10,9 @@ import Products from './pages/Products';
 import MyOrders from './pages/MyOrders';
 import VerifyAge from './pages/VerifyAge';
 import Cart from './components/Cart/Cart';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentFailure from './pages/PaymentFailure';
+import PaymentPending from './pages/PaymentPending';
 import AdminRoute from './components/Admin/AdminRoute';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import ProductManagement from './pages/Admin/ProductManagement';
@@ -74,6 +77,11 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+
+          {/* Payment Routes */}
+          <Route path="/payment/success" element={<PaymentSuccess />} />
+          <Route path="/payment/failure" element={<PaymentFailure />} />
+          <Route path="/payment/pending" element={<PaymentPending />} />
 
           {/* Admin Routes */}
           <Route

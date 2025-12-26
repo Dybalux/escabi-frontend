@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { getProducts, createOrder } from '../../services/api';
+import { getProducts, createOrder, createPaymentPreference } from '../../services/api';
 import CartItem from './CartItem';
 import Button from '../UI/Button';
 import Alert from '../UI/Alert';
 import { ShoppingBag } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function Cart() {
     const { cart, loadCart, clearCart } = useCart();
@@ -73,14 +74,24 @@ export default function Cart() {
         };
 
         try {
-            const response = await createOrder(orderData);
-            setAlert({ type: 'success', message: 'Pedido creado exitosamente!' });
-            setTimeout(() => navigate('/orders'), 2000);
+            // 1. Crear la orden
+            const orderResponse = await createOrder(orderData);
+            const order = orderResponse.data;
+
+            toast.success('Orden creada exitosamente');
+
+            // 2. Crear preferencia de pago
+            const paymentResponse = await createPaymentPreference(order.id);
+            const { init_point } = paymentResponse.data;
+
+            // 3. Redirigir a Mercado Pago
+            window.location.href = init_point;
+
         } catch (error) {
-            setAlert({
-                type: 'error',
-                message: error.response?.data?.detail || 'Error al crear pedido'
-            });
+            console.error('Error al procesar el pago:', error);
+            toast.error(
+                error.response?.data?.detail || 'Hubo un error al procesar tu pago. Intenta nuevamente.'
+            );
         } finally {
             setLoading(false);
         }
