@@ -157,7 +157,7 @@ export const getOrder = (id) => api.get(`/orders/${id}`);
 
 // Payments
 export const createPaymentPreference = (orderId) =>
-    api.post(`/payments/create-preference/${orderId}`);
+    api.post(`/payments/create-preference/${orderId}`, {});
 
 // Admin - Statistics
 export const getAdminStats = () => api.get('/admin/stats');
