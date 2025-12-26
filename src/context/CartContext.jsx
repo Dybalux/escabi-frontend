@@ -63,6 +63,7 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+
     const updateQuantity = async (productId, newQuantity) => {
         try {
             // Si la cantidad es 0 o negativa, eliminar del carrito
@@ -70,10 +71,32 @@ export const CartProvider = ({ children }) => {
                 return await removeFromCart(productId);
             }
 
-            // Usar addToCart con la nueva cantidad (el backend reemplaza la cantidad)
-            const response = await apiAddToCart(productId, newQuantity);
-            setCart(response.data);
-            return { success: true };
+            // Obtener la cantidad actual del carrito
+            const currentItem = cart?.items?.find(item => item.product_id === productId);
+            const currentQuantity = currentItem?.quantity || 0;
+
+            // Calcular la diferencia
+            const difference = newQuantity - currentQuantity;
+
+            if (difference === 0) {
+                // No hay cambio
+                return { success: true };
+            }
+
+            if (difference > 0) {
+                // Incrementar: agregar la diferencia
+                const response = await apiAddToCart(productId, difference);
+                setCart(response.data);
+                return { success: true };
+            } else {
+                // Decrementar: necesitamos eliminar y volver a agregar
+                // Primero eliminamos el producto
+                await apiRemoveFromCart(productId);
+                // Luego lo agregamos con la nueva cantidad
+                const response = await apiAddToCart(productId, newQuantity);
+                setCart(response.data);
+                return { success: true };
+            }
         } catch (error) {
             return {
                 success: false,
