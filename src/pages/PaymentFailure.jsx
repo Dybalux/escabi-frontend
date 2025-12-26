@@ -1,9 +1,73 @@
-import { useSearchParams, Link } from 'react-router-dom';
-import { XCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { XCircle, AlertCircle } from 'lucide-react';
+import { validateOrder } from '../services/api';
 
 export default function PaymentFailure() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const orderId = searchParams.get('order_id');
+
+    useEffect(() => {
+        validatePayment();
+    }, [orderId]);
+
+    const validatePayment = async () => {
+        // Validar que existe order_id
+        if (!orderId) {
+            setError('No se proporcionó un ID de orden');
+            setLoading(false);
+            setTimeout(() => navigate('/cart'), 3000);
+            return;
+        }
+
+        try {
+            // Validar que la orden pertenece al usuario
+            const validation = await validateOrder(orderId);
+
+            if (!validation.valid) {
+                setError(validation.error);
+                setLoading(false);
+                setTimeout(() => navigate('/orders'), 3000);
+                return;
+            }
+
+            // No limpiar el carrito ni la información de pago pendiente
+            // para permitir que el usuario reintente
+            setLoading(false);
+        } catch (err) {
+            console.error('Error validating payment:', err);
+            setError('Error al validar el pago');
+            setLoading(false);
+            setTimeout(() => navigate('/orders'), 3000);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center px-4">
+                <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Validando información...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center px-4">
+                <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
+                    <AlertCircle className="mx-auto text-red-500 mb-4" size={80} />
+                    <h1 className="text-2xl font-bold text-gray-800 mb-4">Error</h1>
+                    <p className="text-gray-600 mb-4">{error}</p>
+                    <p className="text-gray-500 text-sm">Redirigiendo...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-[60vh] flex items-center justify-center px-4">

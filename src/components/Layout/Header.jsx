@@ -45,7 +45,7 @@ export default function Header() {
                             {isAuthenticated ? (
                                 <>
                                     <Link to="/cart" className="relative">
-                                        <ShoppingCart className="text-gray-700 hover:text-purple-600" size={24} />
+                                        <ShoppingCart className="text-purple-600 hover:text-purple-700" size={24} />
                                         {getCartTotal() > 0 && (
                                             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                                 {getCartTotal()}

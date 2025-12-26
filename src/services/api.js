@@ -157,7 +157,25 @@ export const getOrder = (id) => api.get(`/orders/${id}`);
 
 // Payments
 export const createPaymentPreference = (orderId) =>
-    api.post(`/payments/create-preference/${orderId}`, {});
+    api.post(`/payments/create-preference/${orderId}`, {}, {
+        timeout: 30000 // 30 segundos para crear preferencia
+    });
+
+// Validate Order Ownership
+export const validateOrder = async (orderId) => {
+    try {
+        const response = await getOrder(orderId);
+        return { valid: true, order: response.data };
+    } catch (error) {
+        if (error.response?.status === 404) {
+            return { valid: false, error: 'Orden no encontrada' };
+        }
+        if (error.response?.status === 403) {
+            return { valid: false, error: 'No tienes permiso para ver esta orden' };
+        }
+        return { valid: false, error: 'Error al validar la orden' };
+    }
+};
 
 // Admin - Statistics
 export const getAdminStats = () => api.get('/admin/stats');

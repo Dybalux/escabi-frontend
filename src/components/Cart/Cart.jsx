@@ -75,6 +75,7 @@ export default function Cart() {
 
         try {
             // 1. Crear la orden
+            toast.loading('Creando orden...', { id: 'payment-process' });
             const orderResponse = await createOrder(orderData);
             console.log('📦 Order Response completo:', orderResponse);
             console.log('📦 Order Response.data:', orderResponse.data);
@@ -92,22 +93,63 @@ export default function Cart() {
             const orderId = order.id || order._id;
             console.log('🎯 Order ID final a usar:', orderId);
 
-            toast.success('Orden creada exitosamente');
+            // Guardar información de pago en localStorage para recuperación
+            localStorage.setItem('pending_payment', JSON.stringify({
+                orderId,
+                timestamp: Date.now(),
+                items: cart.items
+            }));
 
-            // 2. Crear preferencia de pago
+            toast.loading('Creando preferencia de pago...', { id: 'payment-process' });
+
+            // 2. Crear preferencia de pago con timeout
             console.log('🔄 Creando preferencia de pago para orden:', orderId);
-            const paymentResponse = await createPaymentPreference(orderId);
+
+            const paymentResponse = await Promise.race([
+                createPaymentPreference(orderId),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Timeout al crear preferencia de pago')), 30000)
+                )
+            ]);
+
             console.log('✅ Preferencia creada:', paymentResponse.data);
             const { init_point } = paymentResponse.data;
 
+            if (!init_point) {
+                throw new Error('No se recibió el link de pago');
+            }
+
+            toast.success('Redirigiendo a Mercado Pago...', { id: 'payment-process' });
+
             // 3. Redirigir a Mercado Pago
-            window.location.href = init_point;
+            // Pequeño delay para que el usuario vea el mensaje
+            setTimeout(() => {
+                window.location.href = init_point;
+            }, 500);
 
         } catch (error) {
             console.error('Error al procesar el pago:', error);
-            toast.error(
-                error.response?.data?.detail || 'Hubo un error al procesar tu pago. Intenta nuevamente.'
-            );
+
+            // Limpiar información de pago pendiente si hay error
+            localStorage.removeItem('pending_payment');
+
+            let errorMessage = 'Hubo un error al procesar tu pago. Intenta nuevamente.';
+
+            if (error.message === 'Timeout al crear preferencia de pago') {
+                errorMessage = 'El servidor tardó demasiado en responder. Por favor, intenta nuevamente.';
+            } else if (error.response?.status === 400) {
+                errorMessage = 'Datos de orden inválidos. Verifica tu carrito.';
+            } else if (error.response?.status === 404) {
+                errorMessage = 'No se pudo encontrar la orden. Intenta nuevamente.';
+            } else if (error.response?.status === 500) {
+                errorMessage = 'Error del servidor. Por favor, intenta más tarde.';
+            } else if (error.response?.data?.detail) {
+                errorMessage = error.response.data.detail;
+            } else if (!navigator.onLine) {
+                errorMessage = 'Sin conexión a internet. Verifica tu conexión.';
+            }
+
+            toast.error(errorMessage, { id: 'payment-process', duration: 5000 });
         } finally {
             setLoading(false);
         }

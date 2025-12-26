@@ -63,6 +63,25 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    const updateQuantity = async (productId, newQuantity) => {
+        try {
+            // Si la cantidad es 0 o negativa, eliminar del carrito
+            if (newQuantity <= 0) {
+                return await removeFromCart(productId);
+            }
+
+            // Usar addToCart con la nueva cantidad (el backend reemplaza la cantidad)
+            const response = await apiAddToCart(productId, newQuantity);
+            setCart(response.data);
+            return { success: true };
+        } catch (error) {
+            return {
+                success: false,
+                error: error.response?.data?.detail || 'Error al actualizar cantidad'
+            };
+        }
+    };
+
     const clearCart = async () => {
         try {
             const response = await apiClearCart();
@@ -86,6 +105,7 @@ export const CartProvider = ({ children }) => {
         loading,
         addToCart,
         removeFromCart,
+        updateQuantity,
         clearCart,
         loadCart,
         getCartTotal,
