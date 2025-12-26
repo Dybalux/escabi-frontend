@@ -1,7 +1,7 @@
 import { Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import Button from '../UI/Button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -12,6 +12,13 @@ export default function CartItem({ item }) {
     const [updating, setUpdating] = useState(false);
     const [inputValue, setInputValue] = useState(quantity.toString());
     const [isEditing, setIsEditing] = useState(false);
+
+    // Sincronizar inputValue cuando quantity cambia desde el servidor
+    useEffect(() => {
+        if (!isEditing) {
+            setInputValue(quantity.toString());
+        }
+    }, [quantity, isEditing]);
 
     const handleRemove = async () => {
         await removeFromCart(product.id);
@@ -30,9 +37,7 @@ export default function CartItem({ item }) {
         const result = await updateQuantity(product.id, quantity + 1);
         setUpdating(false);
 
-        if (result.success) {
-            setInputValue((quantity + 1).toString());
-        } else {
+        if (!result.success) {
             toast.error(result.error);
         }
     };
@@ -44,9 +49,7 @@ export default function CartItem({ item }) {
         const result = await updateQuantity(product.id, quantity - 1);
         setUpdating(false);
 
-        if (result.success) {
-            setInputValue((quantity - 1).toString());
-        } else {
+        if (!result.success) {
             toast.error(result.error);
         }
     };
