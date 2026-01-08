@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Users as UsersIcon, Search, Mail, Calendar, Shield, CheckCircle, XCircle } from 'lucide-react';
-import { getAdminUsers } from '../../services/api';
+import { Users as UsersIcon, Search, Mail, Calendar, Shield, CheckCircle, XCircle, UserPlus, UserMinus } from 'lucide-react';
+import { getAdminUsers, updateUserRole } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 
@@ -38,6 +39,33 @@ export default function UserManagement() {
             user.email?.toLowerCase().includes(searchTerm.toLowerCase());
         return matchesSearch;
     });
+
+    const { user: currentUser } = useAuth();
+
+    const handleRoleChange = async (userId, currentRole, username) => {
+        const newRole = currentRole === 'admin' ? 'customer' : 'admin';
+        const action = newRole === 'admin' ? 'promover a administrador' : 'degradar a cliente';
+
+        // Prevenir auto-degradación
+        if (currentUser?.id === userId && newRole === 'customer') {
+            toast.error('No podés quitarte tus propios permisos de administrador');
+            return;
+        }
+
+        if (!confirm(`¿Estás seguro de ${action} a ${username}?`)) {
+            return;
+        }
+
+        try {
+            await updateUserRole(userId, newRole);
+            toast.success(`Usuario ${username} ${newRole === 'admin' ? 'promovido a administrador' : 'degradado a cliente'} exitosamente`);
+            loadUsers(); // Recargar lista
+        } catch (error) {
+            console.error('Error changing user role:', error);
+            const errorMessage = error.response?.data?.detail || 'Error al cambiar el rol del usuario';
+            toast.error(errorMessage);
+        }
+    };
 
     if (loading) {
         return (
@@ -116,6 +144,9 @@ export default function UserManagement() {
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Fecha de Registro
                                     </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Acciones
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -169,6 +200,28 @@ export default function UserManagement() {
                                                     <Calendar size={16} className="mr-2 text-gray-400" />
                                                     {new Date(user.created_at).toLocaleDateString('es-AR')}
                                                 </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                {user.role === 'customer' ? (
+                                                    <button
+                                                        onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors duration-200"
+                                                        title="Promover a administrador"
+                                                    >
+                                                        <UserPlus size={16} />
+                                                        Hacer Admin
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors duration-200"
+                                                        title="Degradar a cliente"
+                                                        disabled={currentUser?.id === (user.id || user._id)}
+                                                    >
+                                                        <UserMinus size={16} />
+                                                        Quitar Admin
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     );
@@ -234,7 +287,7 @@ export default function UserManagement() {
                                 </div>
 
                                 <div className="pt-3 border-t border-gray-200">
-                                    <div className="flex items-center text-sm text-gray-500">
+                                    <div className="flex items-center text-sm text-gray-500 mb-3">
                                         <Calendar size={16} className="mr-2" />
                                         <span className="text-xs">Registrado el </span>
                                         <span className="ml-1 font-medium text-gray-900">
@@ -245,6 +298,26 @@ export default function UserManagement() {
                                             })}
                                         </span>
                                     </div>
+
+                                    {/* Action Button */}
+                                    {user.role === 'customer' ? (
+                                        <button
+                                            onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
+                                            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors duration-200"
+                                        >
+                                            <UserPlus size={18} />
+                                            Promover a Administrador
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
+                                            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                            disabled={currentUser?.id === (user.id || user._id)}
+                                        >
+                                            <UserMinus size={18} />
+                                            Degradar a Cliente
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         );
