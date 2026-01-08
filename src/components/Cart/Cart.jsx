@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { getProducts, createOrder, createPaymentPreference } from '../../services/api';
+import { getProducts, createOrder, createPaymentPreference, getPaymentSettings } from '../../services/api';
 import CartItem from './CartItem';
 import Button from '../UI/Button';
 import Alert from '../UI/Alert';
+import PaymentMethodSelector from '../Payment/PaymentMethodSelector';
+import BankTransferConfirmation from '../Payment/BankTransferConfirmation';
 import { ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -13,6 +15,10 @@ export default function Cart() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [alert, setAlert] = useState(null);
+    const [paymentMethod, setPaymentMethod] = useState('Mercado Pago');
+    const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart', 'payment-selection', 'transfer-confirmation'
+    const [createdOrder, setCreatedOrder] = useState(null);
+    const [paymentSettings, setPaymentSettings] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -59,6 +65,10 @@ export default function Cart() {
         }
     };
 
+    const handleProceedToPayment = () => {
+        setCheckoutStep('payment-selection');
+    };
+
     const handleCreateOrder = async () => {
         setLoading(true);
 
@@ -74,63 +84,65 @@ export default function Cart() {
         };
 
         try {
-            // 1. Crear la orden
+            // 1. Crear la orden con el método de pago seleccionado
             toast.loading('Creando orden...', { id: 'payment-process' });
-            const orderResponse = await createOrder(orderData);
-            console.log('📦 Order Response completo:', orderResponse);
-            console.log('📦 Order Response.data:', orderResponse.data);
+            const orderResponse = await createOrder(orderData, paymentMethod);
 
-            // El backend puede devolver la orden directamente o dentro de un wrapper
             const order = orderResponse.data;
-            console.log('✅ Orden extraída:', order);
-            console.log('📝 Order ID:', order?.id);
-            console.log('📝 Order _id:', order?._id);
 
             if (!order?.id && !order?._id) {
                 throw new Error('La orden no tiene un ID válido');
             }
 
             const orderId = order.id || order._id;
-            console.log('🎯 Order ID final a usar:', orderId);
+            setCreatedOrder(order);
 
-            // Guardar información de pago en localStorage para recuperación
-            localStorage.setItem('pending_payment', JSON.stringify({
-                orderId,
-                timestamp: Date.now(),
-                items: cart.items
-            }));
+            // 2. Flujo según método de pago
+            if (paymentMethod === 'Mercado Pago') {
+                // Flujo existente de Mercado Pago
+                localStorage.setItem('pending_payment', JSON.stringify({
+                    orderId,
+                    timestamp: Date.now(),
+                    items: cart.items
+                }));
 
-            toast.loading('Creando preferencia de pago...', { id: 'payment-process' });
+                toast.loading('Creando preferencia de pago...', { id: 'payment-process' });
 
-            // 2. Crear preferencia de pago con timeout
-            console.log('🔄 Creando preferencia de pago para orden:', orderId);
+                const paymentResponse = await Promise.race([
+                    createPaymentPreference(orderId),
+                    new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error('Timeout al crear preferencia de pago')), 30000)
+                    )
+                ]);
 
-            const paymentResponse = await Promise.race([
-                createPaymentPreference(orderId),
-                new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Timeout al crear preferencia de pago')), 30000)
-                )
-            ]);
+                const { init_point } = paymentResponse.data;
 
-            console.log('✅ Preferencia creada:', paymentResponse.data);
-            const { init_point } = paymentResponse.data;
+                if (!init_point) {
+                    throw new Error('No se recibió el link de pago');
+                }
 
-            if (!init_point) {
-                throw new Error('No se recibió el link de pago');
+                toast.success('Redirigiendo a Mercado Pago...', { id: 'payment-process' });
+
+                setTimeout(() => {
+                    window.location.href = init_point;
+                }, 500);
+
+            } else if (paymentMethod === 'Transferencia Bancaria') {
+                // Nuevo flujo de Transferencia Bancaria
+                toast.loading('Obteniendo datos de transferencia...', { id: 'payment-process' });
+
+                const settingsResponse = await getPaymentSettings();
+                setPaymentSettings(settingsResponse.data);
+
+                toast.success('Orden creada exitosamente', { id: 'payment-process' });
+
+                // Mostrar pantalla de confirmación de transferencia
+                setCheckoutStep('transfer-confirmation');
             }
-
-            toast.success('Redirigiendo a Mercado Pago...', { id: 'payment-process' });
-
-            // 3. Redirigir a Mercado Pago
-            // Pequeño delay para que el usuario vea el mensaje
-            setTimeout(() => {
-                window.location.href = init_point;
-            }, 500);
 
         } catch (error) {
             console.error('Error al procesar el pago:', error);
 
-            // Limpiar información de pago pendiente si hay error
             localStorage.removeItem('pending_payment');
 
             let errorMessage = 'Hubo un error al procesar tu pago. Intenta nuevamente.';
@@ -165,6 +177,11 @@ export default function Cart() {
 
     const cartItems = getCartItems();
 
+    // Mostrar confirmación de transferencia bancaria
+    if (checkoutStep === 'transfer-confirmation' && createdOrder && paymentSettings) {
+        return <BankTransferConfirmation order={createdOrder} paymentSettings={paymentSettings} />;
+    }
+
     if (cartItems.length === 0) {
         return (
             <div className="text-center py-16">
@@ -197,27 +214,57 @@ export default function Cart() {
                         <span className="text-purple-600">${getTotal().toFixed(2)}</span>
                     </div>
 
+                    {/* Mostrar selector de método de pago si estamos en ese paso */}
+                    {checkoutStep === 'payment-selection' && (
+                        <PaymentMethodSelector
+                            selectedMethod={paymentMethod}
+                            onMethodChange={setPaymentMethod}
+                        />
+                    )}
+
                     <div className="flex flex-col sm:flex-row gap-4">
-                        <button
-                            onClick={handleCreateOrder}
-                            disabled={loading}
-                            className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 text-lg"
-                        >
-                            {loading ? (
-                                <>
-                                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                    <span>Procesando...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <ShoppingBag size={24} />
-                                    <span>Finalizar Compra</span>
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </>
-                            )}
-                        </button>
+                        {checkoutStep === 'cart' ? (
+                            <button
+                                onClick={handleProceedToPayment}
+                                disabled={loading}
+                                className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 text-lg"
+                            >
+                                <ShoppingBag size={24} />
+                                <span>Continuar al Pago</span>
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    onClick={() => setCheckoutStep('cart')}
+                                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-8 rounded-lg transition-all duration-200"
+                                >
+                                    ← Volver
+                                </button>
+                                <button
+                                    onClick={handleCreateOrder}
+                                    disabled={loading}
+                                    className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-3 text-lg"
+                                >
+                                    {loading ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                                            <span>Procesando...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <ShoppingBag size={24} />
+                                            <span>Finalizar Compra</span>
+                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </>
+                                    )}
+                                </button>
+                            </>
+                        )}
                         <Button variant="danger" onClick={handleClearCart} className="sm:w-auto">
                             Vaciar Carrito
                         </Button>

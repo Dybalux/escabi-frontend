@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingBag, Users } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, Settings } from 'lucide-react';
 
 export default function AdminNav() {
     const location = useLocation();
@@ -9,6 +9,7 @@ export default function AdminNav() {
         { path: '/admin/products', icon: Package, label: 'Productos' },
         { path: '/admin/orders', icon: ShoppingBag, label: 'Pedidos' },
         { path: '/admin/users', icon: Users, label: 'Usuarios' },
+        { path: '/admin/payment-settings', icon: Settings, label: 'Configuración' },
     ];
 
     return (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getMyOrders } from '../services/api';
-import { Package } from 'lucide-react';
+import { Package, CreditCard, Building2 } from 'lucide-react';
 
 export default function MyOrders() {
     const [orders, setOrders] = useState([]);
@@ -32,6 +32,27 @@ export default function MyOrders() {
         return colors[status] || 'bg-gray-100 text-gray-800';
     };
 
+    const getPaymentMethodInfo = (method) => {
+        if (method === 'Mercado Pago') {
+            return {
+                icon: CreditCard,
+                color: 'bg-blue-100 text-blue-800',
+                label: 'Mercado Pago'
+            };
+        } else if (method === 'Transferencia Bancaria') {
+            return {
+                icon: Building2,
+                color: 'bg-purple-100 text-purple-800',
+                label: 'Transferencia'
+            };
+        }
+        return {
+            icon: CreditCard,
+            color: 'bg-gray-100 text-gray-800',
+            label: method || 'No especificado'
+        };
+    };
+
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
@@ -55,42 +76,55 @@ export default function MyOrders() {
             <h1 className="text-3xl font-bold text-gray-800 mb-6">📦 Mis Pedidos</h1>
 
             <div className="space-y-4">
-                {orders.map(order => (
-                    <div key={order.id} className="bg-white rounded-lg shadow-md p-6">
-                        <div className="flex justify-between items-start mb-4">
-                            <div>
-                                <p className="text-sm text-gray-600">Pedido #{order.id}</p>
-                                <p className="text-sm text-gray-500">
-                                    {new Date(order.created_at).toLocaleDateString('es-AR')}
-                                </p>
-                            </div>
-                            <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}>
-                                {order.status}
-                            </span>
-                        </div>
+                {orders.map((order, index) => {
+                    const paymentInfo = getPaymentMethodInfo(order.payment_method);
+                    const PaymentIcon = paymentInfo.icon;
 
-                        <div className="border-t pt-4">
-                            <h3 className="font-semibold mb-2">Productos:</h3>
-                            <ul className="space-y-2">
-                                {order.items.map((item, idx) => (
-                                    <li key={idx} className="flex justify-between text-sm">
-                                        <span>{item.name} x{item.quantity}</span>
-                                        <span className="font-semibold">
-                                            ${(item.price_at_purchase * item.quantity).toFixed(2)}
+                    return (
+                        <div key={order.id || order._id || index} className="bg-white rounded-lg shadow-md p-6">
+                            <div className="flex justify-between items-start mb-4">
+                                <div>
+                                    <p className="text-sm text-gray-600">Pedido #{order.id}</p>
+                                    <p className="text-sm text-gray-500">
+                                        {new Date(order.created_at).toLocaleDateString('es-AR')}
+                                    </p>
+                                </div>
+                                <div className="flex flex-col items-end gap-2">
+                                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}>
+                                        {order.status}
+                                    </span>
+                                    {order.payment_method && (
+                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${paymentInfo.color}`}>
+                                            <PaymentIcon size={14} />
+                                            {paymentInfo.label}
                                         </span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                                    )}
+                                </div>
+                            </div>
 
-                        <div className="border-t mt-4 pt-4 flex justify-between items-center">
-                            <span className="font-semibold">Total:</span>
-                            <span className="text-2xl font-bold text-purple-600">
-                                ${order.total_amount.toFixed(2)}
-                            </span>
+                            <div className="border-t pt-4">
+                                <h3 className="font-semibold mb-2">Productos:</h3>
+                                <ul className="space-y-2">
+                                    {order.items.map((item, idx) => (
+                                        <li key={idx} className="flex justify-between text-sm">
+                                            <span>{item.name} x{item.quantity}</span>
+                                            <span className="font-semibold">
+                                                ${(item.price_at_purchase * item.quantity).toFixed(2)}
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            <div className="border-t mt-4 pt-4 flex justify-between items-center">
+                                <span className="font-semibold">Total:</span>
+                                <span className="text-2xl font-bold text-purple-600">
+                                    ${order.total_amount.toFixed(2)}
+                                </span>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </div>
     );

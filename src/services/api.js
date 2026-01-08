@@ -151,7 +151,10 @@ export const removeFromCart = (productId) => api.delete(`/cart/remove/${productI
 export const clearCart = () => api.delete('/cart/clear');
 
 // Orders
-export const createOrder = (orderData) => api.post('/orders/', orderData);
+export const createOrder = (orderData, paymentMethod = 'Mercado Pago') =>
+    api.post('/orders/', orderData, {
+        params: { payment_method: paymentMethod }
+    });
 export const getMyOrders = () => api.get('/orders/me');
 export const getOrder = (id) => api.get(`/orders/${id}`);
 
@@ -159,6 +162,15 @@ export const getOrder = (id) => api.get(`/orders/${id}`);
 export const createPaymentPreference = (orderId) =>
     api.post(`/payments/create-preference/${orderId}`, {}, {
         timeout: 30000 // 30 segundos para crear preferencia
+    });
+
+// Payment Settings
+export const getPaymentSettings = () => api.get('/payment-settings');
+
+// Orders - Select Payment Method
+export const selectPaymentMethod = (orderId, paymentMethod) =>
+    api.post(`/orders/${orderId}/select-payment-method`, null, {
+        params: { payment_method: paymentMethod }
     });
 
 // Validate Order Ownership
@@ -192,5 +204,9 @@ export const updateOrderStatus = (orderId, newStatus) =>
 export const createProduct = (productData) => api.post('/products/', productData);
 export const updateProduct = (id, productData) => api.put(`/products/${id}`, productData);
 export const deleteProduct = (id) => api.delete(`/products/${id}`);
+
+// Admin - Payment Settings
+export const getAdminPaymentSettings = () => api.get('/admin/payment-settings');
+export const updatePaymentSettings = (settings) => api.put('/admin/payment-settings', settings);
 
 export default api;

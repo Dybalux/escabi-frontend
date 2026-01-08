@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Package, Search, Filter, Calendar } from 'lucide-react';
+import { Package, Search, Filter, Calendar, CreditCard, Building2 } from 'lucide-react';
 import { getAdminOrders, updateOrderStatus } from '../../services/api';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
@@ -61,6 +61,15 @@ export default function OrderManagement() {
             'Reembolsado': 'bg-purple-100 text-purple-800',
         };
         return colors[status] || 'bg-gray-100 text-gray-800';
+    };
+
+    const getPaymentMethodInfo = (method) => {
+        if (method === 'Mercado Pago') {
+            return { icon: CreditCard, label: 'MP' };
+        } else if (method === 'Transferencia Bancaria') {
+            return { icon: Building2, label: 'Transf.' };
+        }
+        return { icon: CreditCard, label: 'N/A' };
     };
 
     if (loading) {
@@ -133,6 +142,9 @@ export default function OrderManagement() {
                                         Total
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Método de Pago
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Estado
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -141,50 +153,61 @@ export default function OrderManagement() {
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
-                                {filteredOrders.map((order) => (
-                                    <tr key={order.id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
-                                            {order.id?.substring(0, 8)}...
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="text-sm font-medium text-gray-900">
-                                                {order.user_info?.username || 'Usuario desconocido'}
-                                            </div>
-                                            <div className="text-sm text-gray-500">
-                                                {order.user_info?.email || 'Sin email'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="text-sm text-gray-900">
-                                                {order.items?.length || 0} producto(s)
-                                            </div>
-                                            <div className="text-xs text-gray-500">
-                                                {order.items?.slice(0, 2).map(item => item.name).join(', ')}
-                                                {order.items?.length > 2 && '...'}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                            ${order.total_amount?.toLocaleString('es-AR')}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <select
-                                                value={order.status}
-                                                onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                                className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)} border-0 cursor-pointer`}
-                                            >
-                                                <option value="Pendiente">Pendiente</option>
-                                                <option value="En Proceso">En Proceso</option>
-                                                <option value="Enviado">Enviado</option>
-                                                <option value="Entregado">Entregado</option>
-                                                <option value="Cancelado">Cancelado</option>
-                                                <option value="Reembolsado">Reembolsado</option>
-                                            </select>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {new Date(order.created_at).toLocaleDateString('es-AR')}
-                                        </td>
-                                    </tr>
-                                ))}
+                                {filteredOrders.map((order) => {
+                                    const paymentInfo = getPaymentMethodInfo(order.payment_method);
+                                    const PaymentIcon = paymentInfo.icon;
+
+                                    return (
+                                        <tr key={order.id} className="hover:bg-gray-50">
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+                                                {order.id?.substring(0, 8)}...
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="text-sm font-medium text-gray-900">
+                                                    {order.user_info?.username || 'Usuario desconocido'}
+                                                </div>
+                                                <div className="text-sm text-gray-500">
+                                                    {order.user_info?.email || 'Sin email'}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="text-sm text-gray-900">
+                                                    {order.items?.length || 0} producto(s)
+                                                </div>
+                                                <div className="text-xs text-gray-500">
+                                                    {order.items?.slice(0, 2).map(item => item.name).join(', ')}
+                                                    {order.items?.length > 2 && '...'}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                                ${order.total_amount?.toLocaleString('es-AR')}
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center gap-2 text-sm text-gray-700" title={order.payment_method || 'No especificado'}>
+                                                    <PaymentIcon size={16} className="text-gray-500" />
+                                                    <span>{paymentInfo.label}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <select
+                                                    value={order.status}
+                                                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                                    className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)} border-0 cursor-pointer`}
+                                                >
+                                                    <option value="Pendiente">Pendiente</option>
+                                                    <option value="En Proceso">En Proceso</option>
+                                                    <option value="Enviado">Enviado</option>
+                                                    <option value="Entregado">Entregado</option>
+                                                    <option value="Cancelado">Cancelado</option>
+                                                    <option value="Reembolsado">Reembolsado</option>
+                                                </select>
+                                            </td>
+                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                {new Date(order.created_at).toLocaleDateString('es-AR')}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     </div>
@@ -199,77 +222,91 @@ export default function OrderManagement() {
 
                 {/* Orders Cards - Mobile & Tablet */}
                 <div className="block lg:hidden space-y-4">
-                    {filteredOrders.map((order) => (
-                        <div key={order.id} className="bg-white rounded-lg shadow-md p-4">
-                            <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
-                                <div>
-                                    <span className="text-xs text-gray-500">ID Pedido</span>
-                                    <p className="text-sm font-mono font-semibold text-gray-900">
-                                        {order.id?.substring(0, 12)}...
-                                    </p>
-                                </div>
-                                <Calendar className="text-gray-400" size={20} />
-                            </div>
+                    {filteredOrders.map((order) => {
+                        const paymentInfo = getPaymentMethodInfo(order.payment_method);
+                        const PaymentIcon = paymentInfo.icon;
 
-                            <div className="space-y-3 mb-3">
-                                <div>
-                                    <span className="text-xs text-gray-500 block mb-1">Cliente</span>
-                                    <p className="text-sm font-medium text-gray-900">
-                                        {order.user_info?.username || 'Usuario desconocido'}
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        {order.user_info?.email || 'Sin email'}
-                                    </p>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
+                        return (
+                            <div key={order.id} className="bg-white rounded-lg shadow-md p-4">
+                                <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200">
                                     <div>
-                                        <span className="text-xs text-gray-500 block mb-1">Productos</span>
+                                        <span className="text-xs text-gray-500">ID Pedido</span>
+                                        <p className="text-sm font-mono font-semibold text-gray-900">
+                                            {order.id?.substring(0, 12)}...
+                                        </p>
+                                    </div>
+                                    <Calendar className="text-gray-400" size={20} />
+                                </div>
+
+                                <div className="space-y-3 mb-3">
+                                    <div>
+                                        <span className="text-xs text-gray-500 block mb-1">Cliente</span>
                                         <p className="text-sm font-medium text-gray-900">
-                                            {order.items?.length || 0} producto(s)
+                                            {order.user_info?.username || 'Usuario desconocido'}
                                         </p>
-                                        <p className="text-xs text-gray-500 line-clamp-1">
-                                            {order.items?.slice(0, 2).map(item => item.name).join(', ')}
-                                            {order.items?.length > 2 && '...'}
+                                        <p className="text-xs text-gray-500">
+                                            {order.user_info?.email || 'Sin email'}
                                         </p>
                                     </div>
-                                    <div>
-                                        <span className="text-xs text-gray-500 block mb-1">Total</span>
-                                        <p className="text-lg font-bold text-purple-600">
-                                            ${order.total_amount?.toLocaleString('es-AR')}
-                                        </p>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">Productos</span>
+                                            <p className="text-sm font-medium text-gray-900">
+                                                {order.items?.length || 0} producto(s)
+                                            </p>
+                                            <p className="text-xs text-gray-500 line-clamp-1">
+                                                {order.items?.slice(0, 2).map(item => item.name).join(', ')}
+                                                {order.items?.length > 2 && '...'}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">Total</span>
+                                            <p className="text-lg font-bold text-purple-600">
+                                                ${order.total_amount?.toLocaleString('es-AR')}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">Fecha</span>
+                                            <p className="text-sm text-gray-900">
+                                                {new Date(order.created_at).toLocaleDateString('es-AR', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <span className="text-xs text-gray-500 block mb-1">Método de Pago</span>
+                                            <div className="flex items-center gap-1 text-sm text-gray-700">
+                                                <PaymentIcon size={14} className="text-gray-500" />
+                                                <span className="text-xs">{paymentInfo.label}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <span className="text-xs text-gray-500 block mb-1">Fecha</span>
-                                    <p className="text-sm text-gray-900">
-                                        {new Date(order.created_at).toLocaleDateString('es-AR', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </p>
+                                <div className="pt-3 border-t border-gray-200">
+                                    <label className="text-xs text-gray-500 block mb-2">Estado del Pedido</label>
+                                    <select
+                                        value={order.status}
+                                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                        className={`w-full px-3 py-2 text-sm font-semibold rounded-lg ${getStatusColor(order.status)} border-0 cursor-pointer`}
+                                    >
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="En Proceso">En Proceso</option>
+                                        <option value="Enviado">Enviado</option>
+                                        <option value="Entregado">Entregado</option>
+                                        <option value="Cancelado">Cancelado</option>
+                                        <option value="Reembolsado">Reembolsado</option>
+                                    </select>
                                 </div>
                             </div>
-
-                            <div className="pt-3 border-t border-gray-200">
-                                <label className="text-xs text-gray-500 block mb-2">Estado del Pedido</label>
-                                <select
-                                    value={order.status}
-                                    onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                    className={`w-full px-3 py-2 text-sm font-semibold rounded-lg ${getStatusColor(order.status)} border-0 cursor-pointer`}
-                                >
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="En Proceso">En Proceso</option>
-                                    <option value="Enviado">Enviado</option>
-                                    <option value="Entregado">Entregado</option>
-                                    <option value="Cancelado">Cancelado</option>
-                                    <option value="Reembolsado">Reembolsado</option>
-                                </select>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
 
                     {filteredOrders.length === 0 && (
                         <div className="text-center py-12 bg-white rounded-lg">
