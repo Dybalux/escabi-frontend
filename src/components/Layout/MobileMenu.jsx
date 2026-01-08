@@ -92,48 +92,52 @@ export default function MobileMenu() {
                     <nav className="flex-1 overflow-y-auto p-4">
                         <div className="space-y-2">
                             {/* Regular User Links */}
-                            <Link
-                                to="/"
-                                onClick={handleLinkClick}
-                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
-                            >
-                                <Home size={20} />
-                                <span className="font-medium">Inicio</span>
-                            </Link>
-
-                            <Link
-                                to="/products"
-                                onClick={handleLinkClick}
-                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
-                            >
-                                <Package size={20} />
-                                <span className="font-medium">Productos</span>
-                            </Link>
-
-                            {isAuthenticated && (
+                            {!isAdmin && (
                                 <>
                                     <Link
-                                        to="/orders"
+                                        to="/"
                                         onClick={handleLinkClick}
                                         className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
                                     >
-                                        <ShoppingBag size={20} />
-                                        <span className="font-medium">Mis Pedidos</span>
+                                        <Home size={20} />
+                                        <span className="font-medium">Inicio</span>
                                     </Link>
 
                                     <Link
-                                        to="/cart"
+                                        to="/products"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors relative"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
                                     >
-                                        <ShoppingCart size={20} />
-                                        <span className="font-medium">Carrito</span>
-                                        {getCartTotal() > 0 && (
-                                            <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
-                                                {getCartTotal()}
-                                            </span>
-                                        )}
+                                        <Package size={20} />
+                                        <span className="font-medium">Productos</span>
                                     </Link>
+
+                                    {isAuthenticated && (
+                                        <>
+                                            <Link
+                                                to="/orders"
+                                                onClick={handleLinkClick}
+                                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                                            >
+                                                <ShoppingBag size={20} />
+                                                <span className="font-medium">Mis Pedidos</span>
+                                            </Link>
+
+                                            <Link
+                                                to="/cart"
+                                                onClick={handleLinkClick}
+                                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors relative"
+                                            >
+                                                <ShoppingCart size={20} />
+                                                <span className="font-medium">Carrito</span>
+                                                {getCartTotal() > 0 && (
+                                                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                                                        {getCartTotal()}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        </>
+                                    )}
                                 </>
                             )}
 

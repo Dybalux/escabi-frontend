@@ -19,20 +19,27 @@ export default function Header() {
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-6">
-                        <Link to="/" className="text-gray-700 hover:text-purple-600 transition-colors">
-                            Inicio
-                        </Link>
-                        <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors">
-                            Productos
-                        </Link>
+                        {user?.role !== 'admin' && (
+                            <>
+                                <Link to="/" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                    Inicio
+                                </Link>
+                                <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                    Productos
+                                </Link>
+                            </>
+                        )}
                         {isAuthenticated && (
                             <>
-                                <Link to="/orders" className="text-gray-700 hover:text-purple-600 transition-colors">
-                                    Mis Pedidos
-                                </Link>
+                                {user?.role !== 'admin' && (
+                                    <Link to="/orders" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                        Mis Pedidos
+                                    </Link>
+                                )}
                                 {user?.role === 'admin' && (
-                                    <Link to="/admin" className="text-purple-600 hover:text-purple-700 transition-colors font-semibold">
-                                        Admin
+                                    <Link to="/admin" className="text-purple-600 hover:text-purple-700 transition-colors font-semibold flex items-center gap-2">
+                                        <Beer size={20} />
+                                        Panel de Administración
                                     </Link>
                                 )}
                             </>
@@ -44,14 +51,16 @@ export default function Header() {
                         <div className="hidden md:flex items-center gap-4">
                             {isAuthenticated ? (
                                 <>
-                                    <Link to="/cart" className="relative">
-                                        <ShoppingCart className="text-purple-600 hover:text-purple-700" size={24} />
-                                        {getCartTotal() > 0 && (
-                                            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                                {getCartTotal()}
-                                            </span>
-                                        )}
-                                    </Link>
+                                    {user?.role !== 'admin' && (
+                                        <Link to="/cart" className="relative">
+                                            <ShoppingCart className="text-purple-600 hover:text-purple-700" size={24} />
+                                            {getCartTotal() > 0 && (
+                                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                                    {getCartTotal()}
+                                                </span>
+                                            )}
+                                        </Link>
+                                    )}
 
                                     <div className="flex items-center gap-2">
                                         <User size={20} className="text-gray-700" />
