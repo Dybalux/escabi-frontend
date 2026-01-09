@@ -7,6 +7,7 @@ import Button from '../UI/Button';
 import Alert from '../UI/Alert';
 import PaymentMethodSelector from '../Payment/PaymentMethodSelector';
 import BankTransferConfirmation from '../Payment/BankTransferConfirmation';
+import ShippingAddressModal from './ShippingAddressModal';
 import { ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -19,6 +20,8 @@ export default function Cart() {
     const [checkoutStep, setCheckoutStep] = useState('cart'); // 'cart', 'payment-selection', 'transfer-confirmation'
     const [createdOrder, setCreatedOrder] = useState(null);
     const [paymentSettings, setPaymentSettings] = useState(null);
+    const [shippingAddress, setShippingAddress] = useState(null);
+    const [showAddressModal, setShowAddressModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -66,6 +69,13 @@ export default function Cart() {
     };
 
     const handleProceedToPayment = () => {
+        // Mostrar modal de dirección primero
+        setShowAddressModal(true);
+    };
+
+    const handleAddressSubmit = (addressData) => {
+        setShippingAddress(addressData);
+        setShowAddressModal(false);
         setCheckoutStep('payment-selection');
     };
 
@@ -74,13 +84,7 @@ export default function Cart() {
 
         const orderData = {
             items: cart.items,
-            shipping_address: {
-                street: "Av. San Martín 1234",
-                city: "San Miguel de Tucumán",
-                state: "Tucumán",
-                zip_code: "4000",
-                country: "Argentina"
-            }
+            shipping_address: shippingAddress
         };
 
         try {
@@ -200,6 +204,13 @@ export default function Cart() {
             {alert && (
                 <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
             )}
+
+            {/* Modal de dirección de envío */}
+            <ShippingAddressModal
+                isOpen={showAddressModal}
+                onClose={() => setShowAddressModal(false)}
+                onSubmit={handleAddressSubmit}
+            />
 
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div className="space-y-4">

@@ -36,21 +36,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Age Verification Banner */}
-            {isAuthenticated && !user?.age_verified && (
-                <section className="bg-yellow-100 border-2 border-yellow-400 py-4">
-                    <div className="container mx-auto px-4 text-center">
-                        <p className="text-yellow-800 font-semibold mb-2">
-                            ⚠️ Debes verificar tu mayoría de edad para poder comprar
-                        </p>
-                        <Link to="/verify-age">
-                            <Button size="sm" variant="secondary">
-                                Verificar Edad
-                            </Button>
-                        </Link>
-                    </div>
-                </section>
-            )}
 
             {/* Features */}
             <section className="py-16 bg-gray-50">

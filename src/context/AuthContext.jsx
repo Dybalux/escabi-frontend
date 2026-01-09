@@ -67,10 +67,49 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    // Función auxiliar para calcular edad
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
+
     const register = async (userData) => {
         try {
+            // 1. Registrar usuario
             await apiRegister(userData);
-            return { success: true };
+
+            // 2. Iniciar sesión automáticamente
+            const loginResult = await login({
+                email: userData.email,
+                password: userData.password
+            });
+
+            if (!loginResult.success) {
+                return { success: true, message: 'Registro exitoso. Por favor inicia sesión.' };
+            }
+
+            // 3. Verificar edad automáticamente si es mayor de 18
+            const age = calculateAge(userData.birth_date);
+            if (age >= 18) {
+                try {
+                    await apiVerifyAge();
+                    // Recargar usuario para obtener age_verified actualizado
+                    await loadUser();
+                } catch (verifyError) {
+                    console.error('Error al verificar edad automáticamente:', verifyError);
+                    // Continuar aunque falle la verificación automática
+                }
+            }
+
+            return { success: true, autoLogin: true };
         } catch (error) {
             return {
                 success: false,

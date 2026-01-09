@@ -82,12 +82,27 @@ export default function MyOrders() {
 
                     return (
                         <div key={order.id || order._id || index} className="bg-white rounded-lg shadow-md p-6">
+                            {/* Número de Orden destacado */}
+                            <div className="mb-4 pb-3 border-b-2 border-purple-100">
+                                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-lg border-2 border-purple-200">
+                                    <Package size={20} className="text-purple-600" />
+                                    <span className="text-sm font-medium text-gray-600">Pedido</span>
+                                    <span className="text-lg font-bold text-purple-700">
+                                        #{order._id || order.id}
+                                    </span>
+                                </div>
+                                <p className="text-sm text-gray-500 mt-2">
+                                    📅 {new Date(order.created_at).toLocaleDateString('es-AR', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    })}
+                                </p>
+                            </div>
+
                             <div className="flex justify-between items-start mb-4">
-                                <div>
-                                    <p className="text-sm text-gray-600">Pedido #{order.id}</p>
-                                    <p className="text-sm text-gray-500">
-                                        {new Date(order.created_at).toLocaleDateString('es-AR')}
-                                    </p>
+                                <div className="flex-1">
+                                    {/* Espacio para información adicional si se necesita */}
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                     <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}>

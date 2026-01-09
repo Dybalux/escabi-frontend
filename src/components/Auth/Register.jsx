@@ -17,10 +17,33 @@ export default function Register() {
     const { register } = useAuth();
     const navigate = useNavigate();
 
+    // Función para calcular la edad
+    const calculateAge = (birthDate) => {
+        const today = new Date();
+        const birth = new Date(birthDate);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+
+        // Ajustar si aún no ha cumplido años este año
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+
+        return age;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
+
+        // Validar edad antes de enviar
+        const age = calculateAge(formData.birth_date);
+        if (age < 18) {
+            setError('Debes tener al menos 18 años para registrarte en esta plataforma. Esta página vende bebidas alcohólicas y está restringida a mayores de edad.');
+            setLoading(false);
+            return;
+        }
 
         const userData = {
             ...formData,
@@ -30,7 +53,13 @@ export default function Register() {
         const result = await register(userData);
 
         if (result.success) {
-            navigate('/login');
+            if (result.autoLogin) {
+                // Usuario registrado y logueado automáticamente
+                navigate('/products');
+            } else {
+                // Registro exitoso pero sin auto-login
+                navigate('/login');
+            }
         } else {
             setError(result.error);
         }
