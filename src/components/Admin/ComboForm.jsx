@@ -4,6 +4,7 @@ import { createCombo, updateCombo, getProducts } from '../../services/api';
 import Button from '../UI/Button';
 import Input from '../UI/Input';
 import toast from 'react-hot-toast';
+import { openCloudinaryWidget } from '../../utils/cloudinary';
 
 export default function ComboForm({ combo, onClose }) {
     const [formData, setFormData] = useState({
@@ -206,14 +207,25 @@ export default function ComboForm({ combo, onClose }) {
                         />
 
                         {/* URL de Imagen */}
-                        <Input
-                            label="URL de Imagen"
-                            name="image_url"
-                            type="url"
-                            value={formData.image_url}
-                            onChange={handleChange}
-                            placeholder="https://ejemplo.com/imagen.jpg"
-                        />
+                        <div className="space-y-2">
+                            <Input
+                                label="URL de Imagen"
+                                name="image_url"
+                                type="url"
+                                value={formData.image_url}
+                                onChange={handleChange}
+                                placeholder="https://ejemplo.com/imagen.jpg"
+                            />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => openCloudinaryWidget((url) => setFormData(prev => ({ ...prev, image_url: url })))}
+                                className="w-full flex items-center justify-center gap-2 border-purple-600 text-purple-600 hover:bg-purple-50"
+                            >
+                                <Plus size={18} />
+                                Subir Imagen a Cloudinary
+                            </Button>
+                        </div>
 
                         {/* Preview de imagen */}
                         {formData.image_url && (

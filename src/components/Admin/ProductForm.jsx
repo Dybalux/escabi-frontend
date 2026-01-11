@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Plus } from 'lucide-react';
 import { createProduct, updateProduct } from '../../services/api';
+
 import Button from '../UI/Button';
 import Input from '../UI/Input';
 import toast from 'react-hot-toast';
+import { openCloudinaryWidget } from '../../utils/cloudinary';
 
 export default function ProductForm({ product, onClose }) {
     const [formData, setFormData] = useState({
@@ -256,7 +258,7 @@ export default function ProductForm({ product, onClose }) {
                             </select>
                         </div>
 
-                        <div className="md:col-span-2">
+                        <div className="md:col-span-2 space-y-2">
                             <Input
                                 label="URL de Imagen"
                                 name="image_url"
@@ -265,6 +267,15 @@ export default function ProductForm({ product, onClose }) {
                                 onChange={handleChange}
                                 placeholder="https://ejemplo.com/imagen.jpg"
                             />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => openCloudinaryWidget((url) => setFormData(prev => ({ ...prev, image_url: url })))}
+                                className="w-full flex items-center justify-center gap-2 border-purple-600 text-purple-600 hover:bg-purple-50"
+                            >
+                                <Plus size={18} />
+                                Subir Imagen a Cloudinary
+                            </Button>
                         </div>
 
                         {formData.image_url && (
