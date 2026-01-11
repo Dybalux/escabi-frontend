@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getShippingPrices } from '../../services/api';
+import toast from 'react-hot-toast';
 
 export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
     const [formData, setFormData] = useState({
@@ -9,6 +11,31 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
     });
 
     const [errors, setErrors] = useState({});
+    const [selectedZone, setSelectedZone] = useState('central');
+    const [shippingPrices, setShippingPrices] = useState({
+        central_zone_price: 500,
+        remote_zone_price: 1000
+    });
+    const [loadingPrices, setLoadingPrices] = useState(true);
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchShippingPrices();
+        }
+    }, [isOpen]);
+
+    const fetchShippingPrices = async () => {
+        try {
+            const response = await getShippingPrices();
+            setShippingPrices(response.data);
+        } catch (error) {
+            console.error('Error al cargar precios de envío:', error);
+            toast.error('Error al cargar precios de envío');
+            // Mantener precios por defecto en caso de error
+        } finally {
+            setLoadingPrices(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -37,6 +64,11 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
         e.preventDefault();
 
         if (validate()) {
+            // Calcular costo de envío según zona seleccionada
+            const shippingCost = selectedZone === 'central'
+                ? shippingPrices.central_zone_price
+                : shippingPrices.remote_zone_price;
+
             // Formatear dirección con valores fijos para Santa María, Catamarca
             const addressData = {
                 street: formData.street.trim(),
@@ -47,7 +79,13 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                 phone: formData.phone.trim(),
                 notes: formData.notes.trim() || undefined
             };
-            onSubmit(addressData);
+
+            // Enviar datos incluyendo zona y costo
+            onSubmit({
+                address: addressData,
+                zone: selectedZone,
+                cost: shippingCost
+            });
         }
     };
 
@@ -69,7 +107,7 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6"
+                        className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 max-h-[90vh] overflow-y-auto"
                     >
                         <h2 className="text-2xl font-bold mb-2 text-gray-800">
                             📦 Información de Envío
@@ -117,6 +155,54 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                 )}
                             </div>
 
+                            {/* Zona de Envío */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Zona de Envío *
+                                </label>
+                                {loadingPrices ? (
+                                    <div className="flex justify-center py-4">
+                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all">
+                                            <input
+                                                type="radio"
+                                                name="zone"
+                                                value="central"
+                                                checked={selectedZone === 'central'}
+                                                onChange={(e) => setSelectedZone(e.target.value)}
+                                                className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                            />
+                                            <div className="flex-1">
+                                                <div className="font-medium text-gray-800">🏙️ Zona Céntrica</div>
+                                                <div className="text-sm text-gray-500">
+                                                    Costo: ${shippingPrices.central_zone_price.toFixed(2)}
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all">
+                                            <input
+                                                type="radio"
+                                                name="zone"
+                                                value="remote"
+                                                checked={selectedZone === 'remote'}
+                                                onChange={(e) => setSelectedZone(e.target.value)}
+                                                className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                            />
+                                            <div className="flex-1">
+                                                <div className="font-medium text-gray-800">🌄 Zonas Lejanas</div>
+                                                <div className="text-sm text-gray-500">
+                                                    Costo: ${shippingPrices.remote_zone_price.toFixed(2)}
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Notas */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -143,7 +229,8 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all font-medium shadow-lg hover:shadow-xl"
+                                    disabled={loadingPrices}
+                                    className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Continuar
                                 </button>

@@ -17,6 +17,7 @@ import ProductManagement from './pages/Admin/ProductManagement';
 import OrderManagement from './pages/Admin/OrderManagement';
 import UserManagement from './pages/Admin/UserManagement';
 import PaymentSettings from './pages/Admin/PaymentSettings';
+import ShippingSettings from './pages/Admin/ShippingSettings';
 import NotFound from './pages/NotFound';
 import { Toaster } from 'react-hot-toast';
 
@@ -112,6 +113,14 @@ function AppRoutes() {
             element={
               <AdminRoute>
                 <PaymentSettings />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/shipping-settings"
+            element={
+              <AdminRoute>
+                <ShippingSettings />
               </AdminRoute>
             }
           />

@@ -21,6 +21,8 @@ export default function Cart() {
     const [createdOrder, setCreatedOrder] = useState(null);
     const [paymentSettings, setPaymentSettings] = useState(null);
     const [shippingAddress, setShippingAddress] = useState(null);
+    const [shippingZone, setShippingZone] = useState(null);
+    const [shippingCost, setShippingCost] = useState(0);
     const [showAddressModal, setShowAddressModal] = useState(false);
     const navigate = useNavigate();
 
@@ -73,8 +75,10 @@ export default function Cart() {
         setShowAddressModal(true);
     };
 
-    const handleAddressSubmit = (addressData) => {
-        setShippingAddress(addressData);
+    const handleAddressSubmit = (data) => {
+        setShippingAddress(data.address);
+        setShippingZone(data.zone);
+        setShippingCost(data.cost);
         setShowAddressModal(false);
         setCheckoutStep('payment-selection');
     };
@@ -84,7 +88,8 @@ export default function Cart() {
 
         const orderData = {
             items: cart.items,
-            shipping_address: shippingAddress
+            shipping_address: shippingAddress,
+            shipping_zone: shippingZone
         };
 
         try {
@@ -220,9 +225,22 @@ export default function Cart() {
                 </div>
 
                 <div className="border-t-2 mt-6 pt-6">
-                    <div className="flex justify-between items-center text-2xl font-bold mb-6">
+                    {/* Subtotal y Envío */}
+                    <div className="space-y-2 mb-4">
+                        <div className="flex justify-between items-center text-lg">
+                            <span className="text-gray-600">Subtotal:</span>
+                            <span className="text-gray-800 font-semibold">${getTotal().toFixed(2)}</span>
+                        </div>
+                        {shippingCost > 0 && (
+                            <div className="flex justify-between items-center text-lg">
+                                <span className="text-gray-600">Envío ({shippingZone === 'central' ? '🏙️ Zona Céntrica' : '🌄 Zonas Lejanas'}):</span>
+                                <span className="text-gray-800 font-semibold">${shippingCost.toFixed(2)}</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex justify-between items-center text-2xl font-bold mb-6 pt-4 border-t">
                         <span>Total:</span>
-                        <span className="text-purple-600">${getTotal().toFixed(2)}</span>
+                        <span className="text-purple-600">${(getTotal() + shippingCost).toFixed(2)}</span>
                     </div>
 
                     {/* Mostrar selector de método de pago si estamos en ese paso */}

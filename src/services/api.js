@@ -211,4 +211,17 @@ export const deleteProduct = (id) => api.delete(`/products/${id}`);
 export const getAdminPaymentSettings = () => api.get('/admin/payment-settings');
 export const updatePaymentSettings = (settings) => api.put('/admin/payment-settings', settings);
 
+// Admin - Shipping Settings
+export const getShippingSettings = () => api.get('/admin/shipping-settings');
+export const updateShippingSettings = (centralPrice, remotePrice) =>
+    api.put('/admin/shipping-settings', null, {
+        params: {
+            central_zone_price: centralPrice,
+            remote_zone_price: remotePrice
+        }
+    });
+
+// Public - Shipping Prices
+export const getShippingPrices = () => api.get('/orders/shipping-prices');
+
 export default api;
