@@ -1,10 +1,45 @@
 import { Link } from 'react-router-dom';
-import { Beer, ShoppingCart, Shield, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Beer, ShoppingCart, Shield, Zap, Package, Plus } from 'lucide-react';
 import Button from '../components/UI/Button';
 import { useAuth } from '../context/AuthContext';
+import { getCombos, addToCart } from '../services/api';
+import toast from 'react-hot-toast';
 
 export default function Home() {
     const { isAuthenticated, user } = useAuth();
+    const [combos, setCombos] = useState([]);
+    const [loadingCombos, setLoadingCombos] = useState(true);
+
+    useEffect(() => {
+        loadCombos();
+    }, []);
+
+    const loadCombos = async () => {
+        try {
+            const response = await getCombos();
+            setCombos(response.data.slice(0, 3)); // Mostrar solo los primeros 3
+        } catch (error) {
+            console.error('Error loading combos:', error);
+        } finally {
+            setLoadingCombos(false);
+        }
+    };
+
+    const handleAddToCart = async (comboId, comboName) => {
+        if (!isAuthenticated) {
+            toast.error('Debes iniciar sesión para agregar al carrito');
+            return;
+        }
+
+        try {
+            await addToCart(comboId, 1);
+            toast.success(`${comboName} agregado al carrito`);
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            toast.error('Error al agregar al carrito');
+        }
+    };
 
     return (
         <div>
@@ -12,7 +47,7 @@ export default function Home() {
             <section className="bg-gradient-to-br from-purple-600 to-purple-900 text-white py-20">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                        🍺 Bienvenido a Alto Trago
+                        Bienvenido a Alto Trago
                     </h1>
                     <p className="text-xl md:text-2xl mb-8 text-purple-100">
                         Tu tienda online de bebidas con las mejores marcas
@@ -36,6 +71,69 @@ export default function Home() {
                 </div>
             </section>
 
+            {/* Combos Section */}
+            {combos.length > 0 && (
+                <section className="py-16 bg-white">
+                    <div className="container mx-auto px-4">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold mb-4">🎁 Combos Especiales</h2>
+                            <p className="text-gray-600">Aprovechá nuestros packs con precios increíbles</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {combos.map((combo) => (
+                                <div key={combo.id} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-purple-100">
+                                    {/* Image */}
+                                    <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
+                                        {combo.image_url ? (
+                                            <img
+                                                src={combo.image_url}
+                                                alt={combo.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-6xl">
+                                                📦
+                                            </div>
+                                        )}
+                                        <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">
+                                            COMBO
+                                        </div>
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="p-6">
+                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{combo.name}</h3>
+                                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{combo.description}</p>
+
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <Package size={16} className="text-gray-400" />
+                                            <span className="text-sm text-gray-600">
+                                                {combo.items?.length || 0} productos incluidos
+                                            </span>
+                                        </div>
+
+                                        <div className="flex items-center justify-between">
+                                            <div className="text-3xl font-bold text-purple-600">
+                                                ${combo.price?.toLocaleString('es-AR')}
+                                            </div>
+                                            {isAuthenticated && (
+                                                <button
+                                                    onClick={() => handleAddToCart(combo.id, combo.name)}
+                                                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                                                >
+                                                    <Plus size={18} />
+                                                    Agregar
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Features */}
             <section className="py-16 bg-gray-50">

@@ -18,6 +18,7 @@ import OrderManagement from './pages/Admin/OrderManagement';
 import UserManagement from './pages/Admin/UserManagement';
 import PaymentSettings from './pages/Admin/PaymentSettings';
 import ShippingSettings from './pages/Admin/ShippingSettings';
+import ComboManagement from './pages/Admin/ComboManagement';
 import NotFound from './pages/NotFound';
 import { Toaster } from 'react-hot-toast';
 
@@ -89,6 +90,14 @@ function AppRoutes() {
             element={
               <AdminRoute>
                 <ProductManagement />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/combos"
+            element={
+              <AdminRoute>
+                <ComboManagement />
               </AdminRoute>
             }
           />
