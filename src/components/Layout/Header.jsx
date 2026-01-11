@@ -15,7 +15,7 @@ export default function Header() {
                 <div className="flex items-center justify-between">
                     <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-purple-600">
                         <Beer size={32} />
-                        EscabiAPI
+                        Alto Trago
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-6">

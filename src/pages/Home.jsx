@@ -12,7 +12,7 @@ export default function Home() {
             <section className="bg-gradient-to-br from-purple-600 to-purple-900 text-white py-20">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                        🍺 Bienvenido a EscabiAPI
+                        🍺 Bienvenido a Alto Trago
                     </h1>
                     <p className="text-xl md:text-2xl mb-8 text-purple-100">
                         Tu tienda online de bebidas con las mejores marcas
