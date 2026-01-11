@@ -166,7 +166,7 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                     </div>
                                 ) : (
                                     <div className="space-y-2">
-                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all">
+                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all group">
                                             <input
                                                 type="radio"
                                                 name="zone"
@@ -180,10 +180,13 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                                 <div className="text-sm text-gray-500">
                                                     Costo: ${shippingPrices.central_zone_price.toFixed(2)}
                                                 </div>
+                                                <div className="text-xs text-gray-400 mt-1">
+                                                    Centro de la ciudad y alrededores cercanos
+                                                </div>
                                             </div>
                                         </label>
 
-                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all">
+                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all group">
                                             <input
                                                 type="radio"
                                                 name="zone"
@@ -196,6 +199,9 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                                 <div className="font-medium text-gray-800">🌄 Zonas Lejanas</div>
                                                 <div className="text-sm text-gray-500">
                                                     Costo: ${shippingPrices.remote_zone_price.toFixed(2)}
+                                                </div>
+                                                <div className="text-xs text-gray-400 mt-1">
+                                                    Barrios alejados y zonas de difícil acceso
                                                 </div>
                                             </div>
                                         </label>
