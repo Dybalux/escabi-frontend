@@ -14,7 +14,7 @@ export default function Register() {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { register } = useAuth();
+    const { register, user } = useAuth();
     const navigate = useNavigate();
 
     // Función para calcular la edad
@@ -55,7 +55,12 @@ export default function Register() {
         if (result.success) {
             if (result.autoLogin) {
                 // Usuario registrado y logueado automáticamente
-                navigate('/products');
+                // Redirigir según el rol (aunque los nuevos usuarios son normalmente 'customer')
+                if (user?.role === 'admin') {
+                    navigate('/admin');
+                } else {
+                    navigate('/');
+                }
             } else {
                 // Registro exitoso pero sin auto-login
                 navigate('/login');

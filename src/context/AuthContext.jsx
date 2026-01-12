@@ -39,9 +39,11 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await getCurrentUser();
             setUser(response.data);
+            return response.data; // Retornar los datos del usuario
         } catch (error) {
             console.error('Error loading user:', error);
             logout();
+            return null;
         } finally {
             setLoading(false);
         }
@@ -57,8 +59,8 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('refresh_token', refresh_token);
 
             setToken(access_token);
-            await loadUser();
-            return { success: true };
+            const userData = await loadUser();
+            return { success: true, user: userData };
         } catch (error) {
             return {
                 success: false,

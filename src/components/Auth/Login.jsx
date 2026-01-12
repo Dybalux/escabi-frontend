@@ -20,7 +20,12 @@ export default function Login() {
         const result = await login(formData);
 
         if (result.success) {
-            navigate('/products');
+            // Redirigir según el rol del usuario
+            if (result.user?.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         } else {
             setError(result.error);
         }
