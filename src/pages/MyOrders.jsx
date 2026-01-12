@@ -100,11 +100,8 @@ export default function MyOrders() {
                                 </p>
                             </div>
 
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex-1">
-                                    {/* Espacio para información adicional si se necesita */}
-                                </div>
-                                <div className="flex flex-col items-end gap-2">
+                            <div className="mb-4">
+                                <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm font-medium text-gray-600">Estado:</span>
                                         <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}>
