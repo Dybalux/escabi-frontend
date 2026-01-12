@@ -7,6 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartItem({ item }) {
     const { removeFromCart, updateQuantity } = useCart();
+
+    // Validación de seguridad: si el item no tiene los datos necesarios, no renderizar
+    if (!item || !item.name || item.price === undefined) {
+        return null;
+    }
+
     const { quantity, name, price, image_url, stock, item_type, combo_items, product_id } = item;
     const [imageError, setImageError] = useState(false);
     const [updating, setUpdating] = useState(false);
@@ -22,6 +28,10 @@ export default function CartItem({ item }) {
 
     const handleRemove = async () => {
         await removeFromCart(product_id);
+    };
+
+    const getImageUrl = () => {
+        return image_url;
     };
 
     const handleIncrement = async () => {
@@ -107,10 +117,6 @@ export default function CartItem({ item }) {
             // Revertir al valor anterior
             setInputValue(quantity.toString());
         }
-    };
-
-    const getImageUrl = () => {
-        return image_url;
     };
 
     return (
