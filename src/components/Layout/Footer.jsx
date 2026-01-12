@@ -10,13 +10,11 @@ export default function Footer() {
                     <div className="flex justify-center items-center gap-8 flex-wrap">
                         {/* Mercado Pago Logo */}
                         <div className="bg-white px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                            <svg width="120" height="30" viewBox="0 0 120 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                {/* Mercado Pago Logo SVG */}
-                                <path d="M20 5C20 7.76142 17.7614 10 15 10C12.2386 10 10 7.76142 10 5C10 2.23858 12.2386 0 15 0C17.7614 0 20 2.23858 20 5Z" fill="#009EE3" />
-                                <path d="M30 15C30 17.7614 27.7614 20 25 20C22.2386 20 20 17.7614 20 15C20 12.2386 22.2386 10 25 10C27.7614 10 30 12.2386 30 15Z" fill="#FFD900" />
-                                <text x="35" y="18" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" fill="#009EE3">Mercado</text>
-                                <text x="78" y="18" fontFamily="Arial, sans-serif" fontSize="12" fontWeight="bold" fill="#FFD900">Pago</text>
-                            </svg>
+                            <img
+                                src="https://upload.wikimedia.org/wikipedia/commons/9/98/Mercado_Pago.svg"
+                                alt="Mercado Pago"
+                                className="h-8"
+                            />
                         </div>
 
                         {/* Transferencia Bancaria */}
