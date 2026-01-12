@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import Header from './components/Layout/Header';
+import Footer from './components/Layout/Footer';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
 import Home from './pages/Home';
@@ -138,6 +139,7 @@ function AppRoutes() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
+      <Footer />
       <Toaster
         position="top-right"
         toastOptions={{
