@@ -46,8 +46,13 @@ export default function Cart() {
     };
 
     const getTotal = () => {
-        return getCartItems().reduce((sum, item) => {
-            return sum + (item.price * item.quantity);
+        const items = getCartItems();
+        if (!items || items.length === 0) return 0;
+
+        return items.reduce((sum, item) => {
+            const itemPrice = item.price || 0;
+            const itemQuantity = item.quantity || 0;
+            return sum + (itemPrice * itemQuantity);
         }, 0);
     };
 
