@@ -8,6 +8,8 @@ export default function PaymentSettings() {
     const [settings, setSettings] = useState(null);
     const [alias, setAlias] = useState('');
     const [whatsapp, setWhatsapp] = useState('');
+    const [instagram, setInstagram] = useState('');
+    const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState({});
@@ -21,8 +23,10 @@ export default function PaymentSettings() {
             setLoading(true);
             const response = await getAdminPaymentSettings();
             setSettings(response.data);
-            setAlias(response.data.transfer_alias);
-            setWhatsapp(response.data.transfer_whatsapp);
+            setAlias(response.data.transfer_alias || '');
+            setWhatsapp(response.data.transfer_whatsapp || '');
+            setInstagram(response.data.instagram_url || '');
+            setEmail(response.data.email || '');
         } catch (error) {
             console.error('Error loading payment settings:', error);
             toast.error('Error al cargar la configuración');
@@ -43,6 +47,14 @@ export default function PaymentSettings() {
             newErrors.whatsapp = 'El WhatsApp debe tener entre 10 y 15 dígitos (puede empezar con +)';
         }
 
+        if (instagram && !/^https?:\/\/(www\.)?instagram\.com/.test(instagram)) {
+            newErrors.instagram = 'La URL de Instagram debe ser válida (ej: https://instagram.com/usuario)';
+        }
+
+        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            newErrors.email = 'El email debe ser válido';
+        }
+
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -57,7 +69,9 @@ export default function PaymentSettings() {
         try {
             await updatePaymentSettings({
                 transfer_alias: alias.trim(),
-                transfer_whatsapp: whatsapp.trim()
+                transfer_whatsapp: whatsapp.trim(),
+                instagram_url: instagram.trim(),
+                email: email.trim()
             });
 
             toast.success('Configuración actualizada exitosamente');
@@ -142,6 +156,52 @@ export default function PaymentSettings() {
                         )}
                         <p className="mt-1 text-xs text-gray-500">
                             Los clientes enviarán el comprobante a este número
+                        </p>
+                    </div>
+
+                    <h2 className="text-xl font-bold text-gray-800 mb-6 border-t pt-6">
+                        Redes Sociales y Contacto
+                    </h2>
+
+                    {/* Instagram */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Instagram URL
+                        </label>
+                        <input
+                            type="url"
+                            value={instagram}
+                            onChange={(e) => setInstagram(e.target.value)}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.instagram ? 'border-red-500' : 'border-gray-300'
+                                }`}
+                            placeholder="https://instagram.com/tu_tienda"
+                        />
+                        {errors.instagram && (
+                            <p className="mt-1 text-sm text-red-500">{errors.instagram}</p>
+                        )}
+                        <p className="mt-1 text-xs text-gray-500">
+                            Enlace a tu perfil de Instagram (aparecerá en el footer)
+                        </p>
+                    </div>
+
+                    {/* Email */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Email de Contacto
+                        </label>
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                }`}
+                            placeholder="contacto@tutienda.com"
+                        />
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                        )}
+                        <p className="mt-1 text-xs text-gray-500">
+                            Email visible en el footer para consultas de clientes
                         </p>
                     </div>
 
