@@ -9,7 +9,7 @@ export default function CartItem({ item }) {
     const { removeFromCart, updateQuantity } = useCart();
 
     // Validación de seguridad: si el item no tiene los datos necesarios, no renderizar
-    if (!item || !item.name || item.price === undefined) {
+    if (!item || !item.name || typeof item.price !== 'number' || !item.product_id) {
         return null;
     }
 

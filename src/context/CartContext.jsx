@@ -39,8 +39,9 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = async (productId, quantity = 1) => {
         try {
-            const response = await apiAddToCart(productId, quantity);
-            setCart(response.data);
+            await apiAddToCart(productId, quantity);
+            // Recargar el carrito para obtener datos enriquecidos
+            await loadCart();
             return { success: true };
         } catch (error) {
             return {
@@ -52,8 +53,9 @@ export const CartProvider = ({ children }) => {
 
     const removeFromCart = async (productId) => {
         try {
-            const response = await apiRemoveFromCart(productId);
-            setCart(response.data);
+            await apiRemoveFromCart(productId);
+            // Recargar el carrito para obtener datos enriquecidos
+            await loadCart();
             return { success: true };
         } catch (error) {
             return {
@@ -85,18 +87,18 @@ export const CartProvider = ({ children }) => {
 
             if (difference > 0) {
                 // Incrementar: agregar la diferencia
-                const response = await apiAddToCart(productId, difference);
-                setCart(response.data);
-                return { success: true };
+                await apiAddToCart(productId, difference);
             } else {
                 // Decrementar: necesitamos eliminar y volver a agregar
                 // Primero eliminamos el producto
                 await apiRemoveFromCart(productId);
                 // Luego lo agregamos con la nueva cantidad
-                const response = await apiAddToCart(productId, newQuantity);
-                setCart(response.data);
-                return { success: true };
+                await apiAddToCart(productId, newQuantity);
             }
+
+            // Recargar el carrito para obtener datos enriquecidos
+            await loadCart();
+            return { success: true };
         } catch (error) {
             return {
                 success: false,
@@ -107,8 +109,9 @@ export const CartProvider = ({ children }) => {
 
     const clearCart = async () => {
         try {
-            const response = await apiClearCart();
-            setCart(response.data);
+            await apiClearCart();
+            // Recargar el carrito para obtener datos enriquecidos
+            await loadCart();
             return { success: true };
         } catch (error) {
             return {
