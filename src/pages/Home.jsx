@@ -15,6 +15,10 @@ export default function Home() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const carouselRef = useRef(null);
 
+    // Combos Carousel State
+    const [currentComboSlide, setCurrentComboSlide] = useState(0);
+    const comboCarouselRef = useRef(null);
+
     useEffect(() => {
         loadCombos();
         loadProducts();
@@ -23,7 +27,7 @@ export default function Home() {
     const loadCombos = async () => {
         try {
             const response = await getCombos();
-            setCombos(response.data.slice(0, 3)); // Mostrar solo los primeros 3
+            setCombos(response.data); // Mostrar todos los combos
         } catch (error) {
             console.error('Error loading combos:', error);
         } finally {
@@ -75,7 +79,7 @@ export default function Home() {
         }
     };
 
-    // Auto-scroll del carrusel
+    // Auto-scroll del carrusel de Productos
     useEffect(() => {
         if (products.length === 0) return;
 
@@ -92,6 +96,25 @@ export default function Home() {
 
     const prevSlide = () => {
         setCurrentSlide((prev) => (prev - 1 + Math.max(1, products.length - 2)) % Math.max(1, products.length - 2));
+    };
+
+    // Auto-scroll del carrusel de Combos
+    useEffect(() => {
+        if (combos.length === 0) return;
+
+        const interval = setInterval(() => {
+            setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 2));
+        }, 5000); // Cambiar cada 5 segundos
+
+        return () => clearInterval(interval);
+    }, [combos.length]);
+
+    const nextComboSlide = () => {
+        setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 2));
+    };
+
+    const prevComboSlide = () => {
+        setCurrentComboSlide((prev) => (prev - 1 + Math.max(1, combos.length - 2)) % Math.max(1, combos.length - 2));
     };
 
     return (
@@ -133,67 +156,106 @@ export default function Home() {
                             <p className="text-gray-600">Aprovechá nuestros packs con precios increíbles</p>
                         </div>
 
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {combos.map((combo) => {
-                                const comboId = combo.id || combo._id;
-                                return (
-                                    <div key={comboId} className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-purple-100">
-                                        {/* Image */}
-                                        <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
-                                            {combo.image_url ? (
-                                                <img
-                                                    src={combo.image_url}
-                                                    alt={combo.name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-6xl">
-                                                    📦
+                        <div className="relative">
+                            {/* Navigation Buttons - Combos */}
+                            <button
+                                onClick={prevComboSlide}
+                                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                aria-label="Anterior Combo"
+                            >
+                                <ChevronLeft size={24} className="text-purple-600" />
+                            </button>
+                            <button
+                                onClick={nextComboSlide}
+                                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                aria-label="Siguiente Combo"
+                            >
+                                <ChevronRight size={24} className="text-purple-600" />
+                            </button>
+
+                            {/* Carousel Container - Combos */}
+                            <div className="overflow-hidden" ref={comboCarouselRef}>
+                                <div
+                                    className="flex transition-transform duration-500 ease-in-out"
+                                    style={{ transform: `translateX(-${currentComboSlide * (100 / 3)}%)` }}
+                                >
+                                    {combos.map((combo) => {
+                                        const comboId = combo.id || combo._id;
+                                        return (
+                                            <div key={comboId} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-4">
+                                                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-purple-100 h-full">
+                                                    {/* Image */}
+                                                    <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
+                                                        {combo.image_url ? (
+                                                            <img
+                                                                src={combo.image_url}
+                                                                alt={combo.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-6xl">
+                                                                📦
+                                                            </div>
+                                                        )}
+                                                        <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">
+                                                            COMBO
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Content */}
+                                                    <div className="p-6">
+                                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{combo.name}</h3>
+                                                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
+
+                                                        {/* Productos del combo */}
+                                                        {combo.items && combo.items.length > 0 && (
+                                                            <div className="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-100">
+                                                                <p className="text-xs font-semibold text-purple-700 mb-2">Incluye:</p>
+                                                                <ul className="space-y-1">
+                                                                    {combo.items.map((item, idx) => (
+                                                                        <li key={idx} className="text-xs text-gray-700 flex items-center gap-1">
+                                                                            <span className="text-purple-600 font-bold">{item.quantity}x</span>
+                                                                            <span>{item.name || 'Producto'}</span>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            </div>
+                                                        )}
+
+                                                        <div className="flex items-center justify-between mt-auto">
+                                                            <div className="text-3xl font-bold text-purple-600">
+                                                                ${combo.price?.toLocaleString('es-AR')}
+                                                            </div>
+                                                            {isAuthenticated && (
+                                                                <button
+                                                                    onClick={() => handleAddToCart(comboId, combo.name)}
+                                                                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                                                                >
+                                                                    <Plus size={18} />
+                                                                    Agregar
+                                                                </button>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            )}
-                                            <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">
-                                                COMBO
                                             </div>
-                                        </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
 
-                                        {/* Content */}
-                                        <div className="p-6">
-                                            <h3 className="text-xl font-bold text-gray-800 mb-2">{combo.name}</h3>
-                                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
-
-                                            {/* Productos del combo */}
-                                            {combo.items && combo.items.length > 0 && (
-                                                <div className="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-100">
-                                                    <p className="text-xs font-semibold text-purple-700 mb-2">Incluye:</p>
-                                                    <ul className="space-y-1">
-                                                        {combo.items.map((item, idx) => (
-                                                            <li key={idx} className="text-xs text-gray-700 flex items-center gap-1">
-                                                                <span className="text-purple-600 font-bold">{item.quantity}x</span>
-                                                                <span>{item.name || 'Producto'}</span>
-                                                            </li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-
-                                            <div className="flex items-center justify-between">
-                                                <div className="text-3xl font-bold text-purple-600">
-                                                    ${combo.price?.toLocaleString('es-AR')}
-                                                </div>
-                                                {isAuthenticated && (
-                                                    <button
-                                                        onClick={() => handleAddToCart(comboId, combo.name)}
-                                                        className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
-                                                    >
-                                                        <Plus size={18} />
-                                                        Agregar
-                                                    </button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                            {/* Dots Indicator - Combos */}
+                            <div className="flex justify-center gap-2 mt-6">
+                                {Array.from({ length: Math.max(1, combos.length - 2) }).map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentComboSlide(index)}
+                                        className={`w-3 h-3 rounded-full transition-colors ${currentComboSlide === index ? 'bg-purple-600' : 'bg-gray-300'
+                                            }`}
+                                        aria-label={`Ir a slide combo ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </section>
