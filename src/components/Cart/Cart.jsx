@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { getProducts, createOrder, createPaymentPreference, getPaymentSettings } from '../../services/api';
+import { createOrder, createPaymentPreference, getPaymentSettings } from '../../services/api';
 import CartItem from './CartItem';
 import Button from '../UI/Button';
 import Alert from '../UI/Alert';
@@ -13,7 +13,6 @@ import toast from 'react-hot-toast';
 
 export default function Cart() {
     const { cart, loadCart, clearCart } = useCart();
-    const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [alert, setAlert] = useState(null);
     const [paymentMethod, setPaymentMethod] = useState('Mercado Pago');
@@ -32,16 +31,9 @@ export default function Cart() {
 
     const loadData = async () => {
         try {
-            const [cartResponse, productsResponse] = await Promise.all([
-                loadCart(),
-                getProducts({ limit: 100 })
-            ]);
-            // El API devuelve { items: [...], total: ..., page: ... }
-            const productsList = productsResponse.data?.items || productsResponse.data || [];
-            setProducts(productsList);
+            await loadCart(); // El carrito ya viene con toda la información enriquecida
         } catch (error) {
             console.error('Error loading data:', error);
-            setProducts([]); // Asegurar que products sea un array vacío en caso de error
         } finally {
             setLoading(false);
         }
@@ -49,15 +41,13 @@ export default function Cart() {
 
     const getCartItems = () => {
         if (!cart || !cart.items) return [];
-        return cart.items.map(item => ({
-            ...item,
-            product: products.find(p => p.id === item.product_id)
-        })).filter(item => item.product);
+        // El backend ya devuelve items enriquecidos con name, price, image_url, item_type, etc.
+        return cart.items;
     };
 
     const getTotal = () => {
         return getCartItems().reduce((sum, item) => {
-            return sum + (item.product.price * item.quantity);
+            return sum + (item.price * item.quantity);
         }, 0);
     };
 

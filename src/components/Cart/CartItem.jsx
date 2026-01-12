@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CartItem({ item }) {
     const { removeFromCart, updateQuantity } = useCart();
-    const { product, quantity } = item;
+    const { quantity, name, price, image_url, stock, item_type, combo_items, product_id } = item;
     const [imageError, setImageError] = useState(false);
     const [updating, setUpdating] = useState(false);
     const [inputValue, setInputValue] = useState(quantity.toString());
@@ -21,20 +21,20 @@ export default function CartItem({ item }) {
     }, [quantity, isEditing]);
 
     const handleRemove = async () => {
-        await removeFromCart(product.id);
+        await removeFromCart(product_id);
     };
 
     const handleIncrement = async () => {
         if (updating) return;
 
-        // Verificar stock disponible
-        if (quantity >= product.stock) {
-            toast.error(`Stock máximo disponible: ${product.stock}`);
+        // Verificar stock disponible (solo para productos, no combos)
+        if (item_type === 'product' && stock && quantity >= stock) {
+            toast.error(`Stock máximo disponible: ${stock}`);
             return;
         }
 
         setUpdating(true);
-        const result = await updateQuantity(product.id, quantity + 1);
+        const result = await updateQuantity(product_id, quantity + 1);
         setUpdating(false);
 
         if (!result.success) {
@@ -46,7 +46,7 @@ export default function CartItem({ item }) {
         if (updating) return;
 
         setUpdating(true);
-        const result = await updateQuantity(product.id, quantity - 1);
+        const result = await updateQuantity(product_id, quantity - 1);
         setUpdating(false);
 
         if (!result.success) {
@@ -87,8 +87,8 @@ export default function CartItem({ item }) {
             return;
         }
 
-        if (newQuantity > product.stock) {
-            toast.error(`Stock máximo disponible: ${product.stock}`);
+        if (item_type === 'product' && stock && newQuantity > stock) {
+            toast.error(`Stock máximo disponible: ${stock}`);
             setInputValue(quantity.toString());
             return;
         }
@@ -99,7 +99,7 @@ export default function CartItem({ item }) {
         }
 
         setUpdating(true);
-        const result = await updateQuantity(product.id, newQuantity);
+        const result = await updateQuantity(product_id, newQuantity);
         setUpdating(false);
 
         if (!result.success) {
@@ -110,7 +110,7 @@ export default function CartItem({ item }) {
     };
 
     const getImageUrl = () => {
-        return product.image_url || product.imageUrl || product.image;
+        return image_url;
     };
 
     return (
@@ -126,20 +126,34 @@ export default function CartItem({ item }) {
                 {!imageError && getImageUrl() ? (
                     <img
                         src={getImageUrl()}
-                        alt={product.name}
+                        alt={name}
                         className="w-full h-full object-cover"
                         onError={() => setImageError(true)}
                     />
                 ) : (
-                    <span className="text-3xl">🍺</span>
+                    <span className="text-3xl">{item_type === 'combo' ? '📦' : '🍺'}</span>
                 )}
             </div>
 
             <div className="flex-1">
-                <h3 className="font-bold text-gray-800">{product.name}</h3>
-                <p className="text-sm text-gray-600">{product.category}</p>
-                <p className="text-sm text-gray-500">
-                    ${product.price.toFixed(2)} c/u
+                <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-gray-800">{name}</h3>
+                    {item_type === 'combo' && (
+                        <span className="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">COMBO</span>
+                    )}
+                </div>
+                {item_type === 'combo' && combo_items && combo_items.length > 0 && (
+                    <div className="mt-1">
+                        <p className="text-xs text-gray-500">Incluye:</p>
+                        <ul className="text-xs text-gray-600 ml-2">
+                            {combo_items.map((comboItem, idx) => (
+                                <li key={idx}>{comboItem.quantity}x {comboItem.name}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+                <p className="text-sm text-gray-500 mt-1">
+                    ${price.toFixed(2)} c/u
                 </p>
             </div>
 
@@ -179,11 +193,11 @@ export default function CartItem({ item }) {
 
                 <motion.button
                     onClick={handleIncrement}
-                    disabled={quantity >= product.stock || updating}
+                    disabled={(item_type === 'product' && stock && quantity >= stock) || updating}
                     className="w-8 h-8 rounded-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
-                    title={quantity >= product.stock ? `Stock máximo: ${product.stock}` : 'Incrementar'}
-                    whileHover={{ scale: quantity < product.stock && !updating ? 1.1 : 1 }}
-                    whileTap={{ scale: quantity < product.stock && !updating ? 0.9 : 1 }}
+                    title={(item_type === 'product' && stock && quantity >= stock) ? `Stock máximo: ${stock}` : 'Incrementar'}
+                    whileHover={{ scale: (item_type === 'combo' || (stock && quantity < stock)) && !updating ? 1.1 : 1 }}
+                    whileTap={{ scale: (item_type === 'combo' || (stock && quantity < stock)) && !updating ? 0.9 : 1 }}
                 >
                     <Plus size={16} className="text-white" />
                 </motion.button>
@@ -198,7 +212,7 @@ export default function CartItem({ item }) {
                         animate={{ scale: 1, color: '#9333ea' }}
                         transition={{ duration: 0.3 }}
                     >
-                        ${(product.price * quantity).toFixed(2)}
+                        ${(price * quantity).toFixed(2)}
                     </motion.p>
                 </AnimatePresence>
                 <Button variant="danger" size="sm" onClick={handleRemove}>
