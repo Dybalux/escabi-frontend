@@ -1,6 +1,16 @@
-import { Building2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Building2, Instagram, MessageCircle, Mail } from 'lucide-react';
+import { getPaymentSettings } from '../../services/api';
 
 export default function Footer() {
+    const [settings, setSettings] = useState(null);
+
+    useEffect(() => {
+        getPaymentSettings()
+            .then(res => setSettings(res.data))
+            .catch(err => console.error('Error loading footer settings:', err));
+    }, []);
+
     return (
         <footer className="bg-gray-900 text-white py-8 mt-auto">
             <div className="container mx-auto px-4">
@@ -27,6 +37,48 @@ export default function Footer() {
                         🔒 Pagos 100% seguros y protegidos
                     </p>
                 </div>
+
+                {/* Social Media & Contact */}
+                {(settings?.instagram_url || settings?.transfer_whatsapp || settings?.email) && (
+                    <div className="mb-6 pb-6 border-b border-gray-700">
+                        <h3 className="text-lg font-semibold mb-4 text-center">Contactanos</h3>
+                        <div className="flex justify-center items-center gap-6 flex-wrap">
+                            {settings.instagram_url && (
+                                <a
+                                    href={settings.instagram_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-white hover:text-pink-400 transition-colors"
+                                >
+                                    <Instagram size={24} />
+                                    <span>Instagram</span>
+                                </a>
+                            )}
+
+                            {settings.transfer_whatsapp && (
+                                <a
+                                    href={`https://wa.me/${settings.transfer_whatsapp.replace(/\D/g, '')}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-white hover:text-green-400 transition-colors"
+                                >
+                                    <MessageCircle size={24} />
+                                    <span>WhatsApp</span>
+                                </a>
+                            )}
+
+                            {settings.email && (
+                                <a
+                                    href={`mailto:${settings.email}`}
+                                    className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors"
+                                >
+                                    <Mail size={24} />
+                                    <span>Email</span>
+                                </a>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Footer Info */}
                 <div className="text-center">
