@@ -50,7 +50,11 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-2 text-white hover:text-pink-400 transition-colors"
                                 >
-                                    <Instagram size={24} />
+                                    <img
+                                        src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
+                                        alt="Instagram"
+                                        className="w-6 h-6"
+                                    />
                                     <span>Instagram</span>
                                 </a>
                             )}
@@ -62,7 +66,11 @@ export default function Footer() {
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-2 text-white hover:text-green-400 transition-colors"
                                 >
-                                    <MessageCircle size={24} />
+                                    <img
+                                        src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+                                        alt="WhatsApp"
+                                        className="w-6 h-6"
+                                    />
                                     <span>WhatsApp</span>
                                 </a>
                             )}
