@@ -126,7 +126,13 @@ export default function ComboForm({ combo, onClose }) {
 
             if (combo) {
                 // Actualizar combo existente
-                await updateCombo(combo.id, comboData);
+                const comboId = combo.id || combo._id;
+                if (!comboId) {
+                    setError('Error: ID de combo no válido');
+                    setLoading(false);
+                    return;
+                }
+                await updateCombo(comboId, comboData);
                 toast.success('Combo actualizado exitosamente');
             } else {
                 // Crear nuevo combo
@@ -290,8 +296,8 @@ export default function ComboForm({ combo, onClose }) {
                                                     required
                                                 >
                                                     <option value="">Seleccionar producto</option>
-                                                    {products.map(product => (
-                                                        <option key={product.id} value={product.id}>
+                                                    {products.map((product) => (
+                                                        <option key={`product-${product.id}`} value={product.id}>
                                                             {product.name} (Stock: {product.stock})
                                                         </option>
                                                     ))}

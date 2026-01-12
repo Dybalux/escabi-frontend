@@ -128,66 +128,69 @@ export default function ComboManagement() {
 
                 {/* Combos Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredCombos.map((combo) => (
-                        <div key={combo.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                            {/* Image */}
-                            <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
-                                {combo.image_url ? (
-                                    <img
-                                        src={combo.image_url}
-                                        alt={combo.name}
-                                        className="w-full h-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-6xl">
-                                        📦
+                    {filteredCombos.map((combo) => {
+                        const comboId = combo.id || combo._id;
+                        return (
+                            <div key={comboId} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                                {/* Image */}
+                                <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
+                                    {combo.image_url ? (
+                                        <img
+                                            src={combo.image_url}
+                                            alt={combo.name}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-6xl">
+                                            📦
+                                        </div>
+                                    )}
+                                    {!combo.active && (
+                                        <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                                            Inactivo
+                                        </div>
+                                    )}
+                                    <div className="absolute bottom-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                                        COMBO
                                     </div>
-                                )}
-                                {!combo.active && (
-                                    <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                        Inactivo
+                                </div>
+
+                                {/* Content */}
+                                <div className="p-4">
+                                    <h3 className="text-lg font-bold text-gray-800 mb-2">{combo.name}</h3>
+                                    <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
+
+                                    <div className="flex items-center gap-2 mb-3">
+                                        <Package size={16} className="text-gray-400" />
+                                        <span className="text-sm text-gray-600">
+                                            {combo.items?.length || 0} productos
+                                        </span>
                                     </div>
-                                )}
-                                <div className="absolute bottom-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                    COMBO
+
+                                    <div className="text-2xl font-bold text-purple-600 mb-4">
+                                        ${combo.price?.toLocaleString('es-AR')}
+                                    </div>
+
+                                    {/* Actions */}
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => handleEdit(combo)}
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                                        >
+                                            <Edit size={16} />
+                                            <span className="text-sm font-medium">Editar</span>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(comboId, combo.name)}
+                                            className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Content */}
-                            <div className="p-4">
-                                <h3 className="text-lg font-bold text-gray-800 mb-2">{combo.name}</h3>
-                                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
-
-                                <div className="flex items-center gap-2 mb-3">
-                                    <Package size={16} className="text-gray-400" />
-                                    <span className="text-sm text-gray-600">
-                                        {combo.items?.length || 0} productos
-                                    </span>
-                                </div>
-
-                                <div className="text-2xl font-bold text-purple-600 mb-4">
-                                    ${combo.price?.toLocaleString('es-AR')}
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleEdit(combo)}
-                                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                                    >
-                                        <Edit size={16} />
-                                        <span className="text-sm font-medium">Editar</span>
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(combo.id, combo.name)}
-                                        className="flex items-center justify-center px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                                    >
-                                        <Trash2 size={16} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {filteredCombos.length === 0 && (
