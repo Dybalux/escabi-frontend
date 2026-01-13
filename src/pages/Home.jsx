@@ -257,7 +257,7 @@ export default function Home() {
                                                             {isAuthenticated && (
                                                                 <button
                                                                     onClick={() => handleAddToCart(comboId, combo.name)}
-                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
+                                                                    className="w-full bg-[#10B981] text-white px-4 py-3 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
                                                                 >
                                                                     Agregar al Carrito
                                                                 </button>
@@ -358,7 +358,7 @@ export default function Home() {
                                                             {isAuthenticated && product.stock > 0 && (
                                                                 <button
                                                                     onClick={() => handleAddProductToCart(productId, product.name)}
-                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-2.5 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
+                                                                    className="w-full bg-[#10B981] text-white px-4 py-2.5 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
                                                                 >
                                                                     Agregar
                                                                 </button>

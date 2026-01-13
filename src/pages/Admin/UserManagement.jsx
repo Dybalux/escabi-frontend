@@ -205,7 +205,7 @@ export default function UserManagement() {
                                                 {user.role === 'customer' ? (
                                                     <button
                                                         onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white rounded-lg font-semibold transition-colors duration-200"
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white rounded-lg font-semibold transition-colors duration-200"
                                                         title="Promover a administrador"
                                                     >
                                                         <UserPlus size={16} />
@@ -303,7 +303,7 @@ export default function UserManagement() {
                                     {user.role === 'customer' ? (
                                         <button
                                             onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
-                                            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white rounded-lg font-semibold transition-colors duration-200"
+                                            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#10B981] hover:bg-[#059669] text-white rounded-lg font-semibold transition-colors duration-200"
                                         >
                                             <UserPlus size={18} />
                                             Promover a Administrador
