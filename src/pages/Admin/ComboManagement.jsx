@@ -160,15 +160,67 @@ export default function ComboManagement() {
                                     <h3 className="text-lg font-bold text-gray-800 mb-2">{combo.name}</h3>
                                     <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
 
-                                    <div className="flex items-center gap-2 mb-3">
-                                        <Package size={16} className="text-gray-400" />
-                                        <span className="text-sm text-gray-600">
-                                            {combo.items?.length || 0} productos
-                                        </span>
-                                    </div>
+                                    {/* Products in Combo */}
+                                    {combo.items && combo.items.length > 0 && (
+                                        <div className="mb-3 p-3 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg border border-gray-200">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Package size={14} className="text-[#0D4F4F]" />
+                                                <span className="text-xs font-semibold text-gray-700">Productos incluidos:</span>
+                                            </div>
+                                            <ul className="space-y-2">
+                                                {combo.items.map((item, idx) => (
+                                                    <li key={idx} className="flex items-center gap-2 text-xs">
+                                                        {item.image_url && (
+                                                            <img
+                                                                src={item.image_url}
+                                                                alt={item.name}
+                                                                className="w-8 h-8 rounded object-cover"
+                                                                onError={(e) => e.target.style.display = 'none'}
+                                                            />
+                                                        )}
+                                                        <div className="flex-1">
+                                                            <div className="flex items-center gap-1">
+                                                                <span className="text-[#0D4F4F] font-bold">{item.quantity}x</span>
+                                                                <span className="text-gray-700 font-medium">{item.name}</span>
+                                                            </div>
+                                                            {item.price && (
+                                                                <span className="text-gray-500 text-[10px]">
+                                                                    ${item.price.toLocaleString('es-AR')} c/u
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
 
-                                    <div className="text-2xl font-bold text-[#0D4F4F] mb-4">
-                                        ${combo.price?.toLocaleString('es-AR')}
+                                    {/* Pricing Information */}
+                                    <div className="space-y-2 mb-4">
+                                        {combo.total_items_cost && (
+                                            <div className="flex justify-between items-center text-xs">
+                                                <span className="text-gray-500">Precio individual:</span>
+                                                <span className="text-gray-600 line-through">
+                                                    ${combo.total_items_cost.toLocaleString('es-AR')}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm font-semibold text-gray-700">Precio del combo:</span>
+                                            <span className="text-2xl font-bold text-[#0D4F4F]">
+                                                ${combo.price?.toLocaleString('es-AR')}
+                                            </span>
+                                        </div>
+
+                                        {combo.savings && combo.savings > 0 && (
+                                            <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-2 rounded-lg text-center">
+                                                <div className="text-xs font-medium">¡Ahorrás!</div>
+                                                <div className="text-lg font-bold">
+                                                    ${combo.savings.toLocaleString('es-AR')}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Actions */}

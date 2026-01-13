@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, AlertCircle } from 'lucide-react';
-import { getProducts, deleteProduct } from '../../services/api';
+import { Plus, Edit, Trash2, Search, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { getProducts, deleteProduct, toggleProductActive } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
 import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
@@ -13,6 +13,7 @@ export default function ProductManagement() {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('');
+    const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'inactive'
     const [showForm, setShowForm] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
 
@@ -23,12 +24,19 @@ export default function ProductManagement() {
     const loadProducts = async () => {
         try {
             setLoading(true);
-            const response = await getProducts({ include_out_of_stock: true });
+            const response = await getProducts({
+                include_out_of_stock: true,
+                include_inactive: true
+            });
             // El backend ahora devuelve { items: [...], total: X, page: Y, ... }
             const productsData = response.data.items || response.data;
+            console.log('Productos cargados:', productsData); // Debug
+            console.log('Tipo de datos:', Array.isArray(productsData) ? 'Array' : typeof productsData); // Debug
+            console.log('Cantidad:', productsData?.length || 'N/A'); // Debug
             setProducts(productsData);
         } catch (error) {
             console.error('Error loading products:', error);
+            console.error('Error response:', error.response?.data); // Debug
             setError('Error al cargar los productos');
             setProducts([]);
         } finally {
@@ -59,6 +67,21 @@ export default function ProductManagement() {
         setShowForm(true);
     };
 
+    const handleToggleActive = async (productId) => {
+        try {
+            await toggleProductActive(productId);
+            // Actualizar localmente el estado para no recargar todo si es posible
+            // Aunque loadProducts es más seguro
+            setProducts(products.map(p =>
+                p.id === productId ? { ...p, active: !p.active } : p
+            ));
+            toast.success('Estado del producto actualizado');
+        } catch (error) {
+            console.error('Error toggling product status:', error);
+            toast.error('Error al cambiar el estado del producto');
+        }
+    };
+
     const handleFormClose = () => {
         setShowForm(false);
         setEditingProduct(null);
@@ -69,7 +92,9 @@ export default function ProductManagement() {
         const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             product.description?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesCategory = !selectedCategory || product.category === selectedCategory;
-        return matchesSearch && matchesCategory;
+        const matchesStatus = statusFilter === 'all' ||
+            (statusFilter === 'active' ? product.active !== false : product.active === false);
+        return matchesSearch && matchesCategory && matchesStatus;
     }) : [];
 
     const categories = Array.isArray(products) ? [...new Set(products.map(p => p.category))] : [];
@@ -124,6 +149,15 @@ export default function ProductManagement() {
                                 <option key={cat} value={cat}>{cat}</option>
                             ))}
                         </select>
+                        <select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value)}
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
+                        >
+                            <option value="all">Todos los estados</option>
+                            <option value="active">Solo Activos</option>
+                            <option value="inactive">Solo Ocultos</option>
+                        </select>
                     </div>
                 </div>
 
@@ -157,6 +191,9 @@ export default function ProductManagement() {
                                     </th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Stock
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Estado
                                     </th>
                                     <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Acciones
@@ -207,7 +244,25 @@ export default function ProductManagement() {
                                                 {product.stock} unidades
                                             </span>
                                         </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {product.active !== false ? (
+                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Activo
+                                                </span>
+                                            ) : (
+                                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                                    Oculto
+                                                </span>
+                                            )}
+                                        </td>
                                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                            <button
+                                                onClick={() => handleToggleActive(product.id)}
+                                                className={`${product.active !== false ? 'text-gray-400 hover:text-orange-500' : 'text-emerald-500 hover:text-emerald-700'} mr-4 transition-colors`}
+                                                title={product.active !== false ? "Deshabilitar" : "Habilitar"}
+                                            >
+                                                {product.active !== false ? <EyeOff size={18} /> : <Eye size={18} />}
+                                            </button>
                                             <button
                                                 onClick={() => handleEdit(product)}
                                                 className="text-[#0D4F4F] hover:text-[#1E7E7A] mr-4"
@@ -275,7 +330,7 @@ export default function ProductManagement() {
                                         ${product.price.toLocaleString('es-AR')}
                                     </span>
                                 </div>
-                                <div className="col-span-2">
+                                <div className="flex-1">
                                     <span className="text-gray-500 block text-xs">Stock</span>
                                     <span className={`px-2 py-1 inline-flex text-xs font-semibold rounded-full ${product.stock < 10
                                         ? 'bg-red-100 text-red-800'
@@ -284,9 +339,28 @@ export default function ProductManagement() {
                                         {product.stock} unidades
                                     </span>
                                 </div>
+                                <div className="flex-1">
+                                    <span className="text-gray-500 block text-xs">Estado</span>
+                                    {product.active !== false ? (
+                                        <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                            Activo
+                                        </span>
+                                    ) : (
+                                        <span className="px-2 py-1 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                            Oculto
+                                        </span>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="flex gap-2 pt-3 border-t border-gray-200">
+                                <button
+                                    onClick={() => handleToggleActive(product.id)}
+                                    className={`flex items-center justify-center px-4 py-2 rounded-lg transition-colors ${product.active !== false ? 'bg-orange-50 text-orange-600 border border-orange-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'}`}
+                                    title={product.active !== false ? "Deshabilitar" : "Habilitar"}
+                                >
+                                    {product.active !== false ? <EyeOff size={20} /> : <Eye size={20} />}
+                                </button>
                                 <button
                                     onClick={() => handleEdit(product)}
                                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0D4F4F] text-white rounded-lg hover:bg-[#1E7E7A] transition-colors"
@@ -313,12 +387,14 @@ export default function ProductManagement() {
             </div>
 
             {/* Product Form Modal */}
-            {showForm && (
-                <ProductForm
-                    product={editingProduct}
-                    onClose={handleFormClose}
-                />
-            )}
-        </div>
+            {
+                showForm && (
+                    <ProductForm
+                        product={editingProduct}
+                        onClose={handleFormClose}
+                    />
+                )
+            }
+        </div >
     );
 }

@@ -16,9 +16,10 @@ export default function ProductForm({ product, onClose }) {
         category: '',
         stock: '',
         image_url: '',
-        alcohol_content: '',
+        abv: '',
         volume_ml: '',
         origin: '',
+        active: true,
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -33,9 +34,10 @@ export default function ProductForm({ product, onClose }) {
                 category: product.category || '',
                 stock: product.stock || '',
                 image_url: product.image_url || '',
-                alcohol_content: product.alcohol_content || '',
+                abv: product.abv || '',
                 volume_ml: product.volume_ml || '',
                 origin: product.origin || '',
+                active: product.active !== undefined ? product.active : true,
             });
         }
     }, [product]);
@@ -67,13 +69,13 @@ export default function ProductForm({ product, onClose }) {
                 return;
             }
 
-            if (formData.alcohol_content && parseFloat(formData.alcohol_content) < 0) {
+            if (formData.abv && parseFloat(formData.abv) < 0) {
                 setError('El contenido alcohólico no puede ser negativo');
                 setLoading(false);
                 return;
             }
 
-            if (formData.alcohol_content && parseFloat(formData.alcohol_content) > 100) {
+            if (formData.abv && parseFloat(formData.abv) > 100) {
                 setError('El contenido alcohólico no puede ser mayor a 100%');
                 setLoading(false);
                 return;
@@ -90,7 +92,7 @@ export default function ProductForm({ product, onClose }) {
                 ...formData,
                 price: parseFloat(formData.price),
                 stock: parseInt(formData.stock),
-                alcohol_content: formData.alcohol_content ? parseFloat(formData.alcohol_content) : undefined,
+                abv: formData.abv ? parseFloat(formData.abv) : undefined,
                 volume_ml: formData.volume_ml ? parseInt(formData.volume_ml) : undefined,
                 origin: formData.origin || undefined,
             };
@@ -108,7 +110,33 @@ export default function ProductForm({ product, onClose }) {
             onClose();
         } catch (error) {
             console.error('Error saving product:', error);
-            setError(error.response?.data?.detail || 'Error al guardar el producto');
+
+            // Manejar diferentes tipos de errores del backend
+            let errorMessage = 'Error al guardar el producto';
+
+            if (error.response?.data) {
+                const errorData = error.response.data;
+
+                // Si es un error de validación de Pydantic (array de errores)
+                if (Array.isArray(errorData.detail)) {
+                    errorMessage = errorData.detail
+                        .map(err => {
+                            const field = err.loc?.[err.loc.length - 1] || 'campo';
+                            return `${field}: ${err.msg}`;
+                        })
+                        .join(', ');
+                }
+                // Si es un string simple
+                else if (typeof errorData.detail === 'string') {
+                    errorMessage = errorData.detail;
+                }
+                // Si es un objeto con mensaje
+                else if (errorData.message) {
+                    errorMessage = errorData.message;
+                }
+            }
+
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
@@ -205,8 +233,8 @@ export default function ProductForm({ product, onClose }) {
                                     <div className="flex items-center justify-between">
                                         <span className="text-sm font-medium text-gray-700">Margen:</span>
                                         <span className={`text-lg font-bold ${((formData.price - formData.net_price) / formData.net_price * 100) >= 30
-                                                ? 'text-green-600'
-                                                : 'text-orange-600'
+                                            ? 'text-green-600'
+                                            : 'text-orange-600'
                                             }`}>
                                             {((formData.price - formData.net_price) / formData.net_price * 100).toFixed(1)}%
                                         </span>
@@ -276,15 +304,31 @@ export default function ProductForm({ product, onClose }) {
                             </select>
                         </div>
 
+                        <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <input
+                                type="checkbox"
+                                id="active"
+                                checked={formData.active}
+                                onChange={(e) => setFormData(prev => ({ ...prev, active: e.target.checked }))}
+                                className="w-5 h-5 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500 cursor-pointer"
+                            />
+                            <label htmlFor="active" className="text-sm font-semibold text-gray-700 cursor-pointer">
+                                ✅ Producto Habilitado
+                            </label>
+                            <p className="text-[10px] text-gray-500 flex-1 text-right">
+                                {formData.active ? 'Visible para clientes' : 'Oculto para clientes'}
+                            </p>
+                        </div>
+
                         <div>
                             <Input
                                 label="Contenido Alcohólico (%)"
-                                name="alcohol_content"
+                                name="abv"
                                 type="number"
                                 step="0.1"
                                 min="0"
                                 max="100"
-                                value={formData.alcohol_content}
+                                value={formData.abv}
                                 onChange={handleChange}
                                 placeholder="5.0"
                             />
