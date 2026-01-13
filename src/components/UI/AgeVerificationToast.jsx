@@ -5,7 +5,7 @@ import { ShieldAlert } from 'lucide-react';
 export const showAgeVerificationToast = (onVerify) => {
     toast.custom((t) => (
         <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 pointer-events-none">
-            <div className="w-full max-w-md pointer-events-auto transform translate-y-[18vh]">
+            <div className="w-full max-w-md pointer-events-auto">
                 <div className="w-full bg-white shadow-2xl rounded-3xl overflow-hidden flex flex-col p-8 border-t-8 border-[#0D4F4F] transform transition-all duration-300 scale-100">
                     <div className="flex flex-col items-center text-center gap-4 mb-6">
                         <div className="bg-teal-50 p-4 rounded-full">
