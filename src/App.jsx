@@ -19,6 +19,7 @@ import OrderManagement from './pages/Admin/OrderManagement';
 import UserManagement from './pages/Admin/UserManagement';
 import PaymentSettings from './pages/Admin/PaymentSettings';
 import ShippingSettings from './pages/Admin/ShippingSettings';
+import PricingSettings from './pages/Admin/PricingSettings';
 import ComboManagement from './pages/Admin/ComboManagement';
 import NotFound from './pages/NotFound';
 import { Toaster } from 'react-hot-toast';
@@ -147,6 +148,14 @@ function AppRoutes() {
               element={
                 <AdminRoute>
                   <ShippingSettings />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/pricing-settings"
+              element={
+                <AdminRoute>
+                  <PricingSettings />
                 </AdminRoute>
               }
             />
