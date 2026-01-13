@@ -49,9 +49,43 @@ export default function Home() {
 
     const handleAddToCart = async (comboId, comboName) => {
         if (!isAuthenticated) {
-            toast.error('Debes iniciar sesión o crear una cuenta para poder comprar', {
-                duration: 4000,
-                icon: '🔒'
+            toast.custom((t) => (
+                <div className="bg-white rounded-lg shadow-xl p-4 max-w-md border-l-4 border-[#10B981]">
+                    <div className="flex items-start gap-3">
+                        <div className="text-2xl">🔒</div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-800 mb-1">Inicia sesión para comprar</h3>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Necesitas una cuenta para agregar productos al carrito
+                            </p>
+                            <div className="flex gap-2">
+                                <Link
+                                    to="/login"
+                                    className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                    Iniciar Sesión
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                    Crear Cuenta
+                                </Link>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => toast.dismiss(t.id)}
+                            className="text-gray-400 hover:text-gray-600"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            ), {
+                duration: 6000,
+                position: 'top-center'
             });
             return;
         }
@@ -68,9 +102,43 @@ export default function Home() {
 
     const handleAddProductToCart = async (productId, productName) => {
         if (!isAuthenticated) {
-            toast.error('Debes iniciar sesión o crear una cuenta para poder comprar', {
-                duration: 4000,
-                icon: '🔒'
+            toast.custom((t) => (
+                <div className="bg-white rounded-lg shadow-xl p-4 max-w-md border-l-4 border-[#10B981]">
+                    <div className="flex items-start gap-3">
+                        <div className="text-2xl">🔒</div>
+                        <div className="flex-1">
+                            <h3 className="font-bold text-gray-800 mb-1">Inicia sesión para comprar</h3>
+                            <p className="text-sm text-gray-600 mb-3">
+                                Necesitas una cuenta para agregar productos al carrito
+                            </p>
+                            <div className="flex gap-2">
+                                <Link
+                                    to="/login"
+                                    className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                    Iniciar Sesión
+                                </Link>
+                                <Link
+                                    to="/register"
+                                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
+                                    onClick={() => toast.dismiss(t.id)}
+                                >
+                                    Crear Cuenta
+                                </Link>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => toast.dismiss(t.id)}
+                            className="text-gray-400 hover:text-gray-600"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            ), {
+                duration: 6000,
+                position: 'top-center'
             });
             return;
         }
