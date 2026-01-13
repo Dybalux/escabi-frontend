@@ -25,7 +25,7 @@ export default function ProductFilters({ filters, setFilters }) {
                     <select
                         value={filters.category}
                         onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                        className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:outline-none"
+                        className="w-full px-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-[#0D4F4F] focus:outline-none"
                     >
                         <option value="">Todas las categorías</option>
                         {categories.map(cat => (
@@ -45,7 +45,7 @@ export default function ProductFilters({ filters, setFilters }) {
                             placeholder="Buscar producto..."
                             value={filters.search}
                             onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-                            className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-purple-600 focus:outline-none"
+                            className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:border-[#0D4F4F] focus:outline-none"
                         />
                     </div>
                 </div>

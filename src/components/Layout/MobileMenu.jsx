@@ -37,7 +37,7 @@ export default function MobileMenu() {
             {/* Hamburger Button */}
             <button
                 onClick={toggleMenu}
-                className="md:hidden p-2 text-gray-700 hover:text-purple-600 transition-colors"
+                className="md:hidden p-2 text-gray-700 hover:text-[#0D4F4F] transition-colors"
                 aria-label="Toggle menu"
             >
                 {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -59,10 +59,10 @@ export default function MobileMenu() {
                 <div className="flex flex-col h-full">
                     {/* Header */}
                     <div className="flex items-center justify-between p-4 border-b border-gray-200">
-                        <h2 className="text-xl font-bold text-purple-600">Menú</h2>
+                        <h2 className="text-xl font-bold text-[#0D4F4F]">Menú</h2>
                         <button
                             onClick={toggleMenu}
-                            className="p-2 text-gray-700 hover:text-purple-600 transition-colors"
+                            className="p-2 text-gray-700 hover:text-[#0D4F4F] transition-colors"
                             aria-label="Close menu"
                         >
                             <X size={24} />
@@ -71,15 +71,15 @@ export default function MobileMenu() {
 
                     {/* User Info */}
                     {isAuthenticated && (
-                        <div className="p-4 bg-purple-50 border-b border-gray-200">
+                        <div className="p-4 bg-teal-50 border-b border-gray-200">
                             <div className="flex items-center gap-3">
-                                <div className="bg-purple-600 text-white rounded-full w-12 h-12 flex items-center justify-center">
+                                <div className="bg-[#0D4F4F] text-white rounded-full w-12 h-12 flex items-center justify-center">
                                     <User size={24} />
                                 </div>
                                 <div className="flex-1">
                                     <p className="font-semibold text-gray-800">{user?.username}</p>
                                     {isAdmin && (
-                                        <span className="inline-block bg-purple-600 text-white text-xs px-2 py-1 rounded-full mt-1">
+                                        <span className="inline-block bg-[#0D4F4F] text-white text-xs px-2 py-1 rounded-full mt-1">
                                             Admin
                                         </span>
                                     )}
@@ -97,7 +97,7 @@ export default function MobileMenu() {
                                     <Link
                                         to="/"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-[#0D4F4F] transition-colors"
                                     >
                                         <Home size={20} />
                                         <span className="font-medium">Inicio</span>
@@ -106,7 +106,7 @@ export default function MobileMenu() {
                                     <Link
                                         to="/products"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-[#0D4F4F] transition-colors"
                                     >
                                         <Package size={20} />
                                         <span className="font-medium">Productos</span>
@@ -117,7 +117,7 @@ export default function MobileMenu() {
                                             <Link
                                                 to="/orders"
                                                 onClick={handleLinkClick}
-                                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors"
+                                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-[#0D4F4F] transition-colors"
                                             >
                                                 <ShoppingBag size={20} />
                                                 <span className="font-medium">Mis Pedidos</span>
@@ -126,12 +126,12 @@ export default function MobileMenu() {
                                             <Link
                                                 to="/cart"
                                                 onClick={handleLinkClick}
-                                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors relative"
+                                                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-[#0D4F4F] transition-colors relative"
                                             >
                                                 <ShoppingCart size={20} />
                                                 <span className="font-medium">Carrito</span>
                                                 {getCartTotal() > 0 && (
-                                                    <span className="ml-auto bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                                                    <span className="ml-auto bg-[#C29F4C] text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
                                                         {getCartTotal()}
                                                     </span>
                                                 )}
@@ -153,7 +153,7 @@ export default function MobileMenu() {
                                     <Link
                                         to="/admin"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors font-semibold"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-[#0D4F4F] hover:bg-teal-50 transition-colors font-semibold"
                                     >
                                         <LayoutDashboard size={20} />
                                         <span>Dashboard</span>
@@ -162,7 +162,7 @@ export default function MobileMenu() {
                                     <Link
                                         to="/admin/products"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-[#0D4F4F] hover:bg-teal-50 transition-colors"
                                     >
                                         <Package size={20} />
                                         <span className="font-medium">Gestión de Productos</span>
@@ -171,7 +171,7 @@ export default function MobileMenu() {
                                     <Link
                                         to="/admin/orders"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-[#0D4F4F] hover:bg-teal-50 transition-colors"
                                     >
                                         <ShoppingBag size={20} />
                                         <span className="font-medium">Gestión de Pedidos</span>
@@ -180,7 +180,7 @@ export default function MobileMenu() {
                                     <Link
                                         to="/admin/users"
                                         onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-purple-600 hover:bg-purple-50 transition-colors"
+                                        className="flex items-center gap-3 p-3 rounded-lg text-[#0D4F4F] hover:bg-teal-50 transition-colors"
                                     >
                                         <Users size={20} />
                                         <span className="font-medium">Gestión de Usuarios</span>

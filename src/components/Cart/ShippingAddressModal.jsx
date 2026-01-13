@@ -146,7 +146,7 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                         name="street"
                                         value={formData.street}
                                         onChange={handleChange}
-                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${errors.street ? 'border-red-500' : 'border-gray-300'
+                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all ${errors.street ? 'border-red-500' : 'border-gray-300'
                                             }`}
                                         placeholder="Ej: Av. 9 de Julio 1234"
                                     />
@@ -166,7 +166,7 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                     name="phone"
                                     value={formData.phone}
                                     onChange={handleChange}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${errors.phone ? 'border-red-500' : 'border-gray-300'
+                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all ${errors.phone ? 'border-red-500' : 'border-gray-300'
                                         }`}
                                     placeholder="Ej: 3838 123456"
                                 />
@@ -182,19 +182,19 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                 </label>
                                 {loadingPrices ? (
                                     <div className="flex justify-center py-4">
-                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#0D4F4F]"></div>
                                     </div>
                                 ) : shippingPrices ? (
                                     <div className="space-y-2">
                                         {/* Opción Central */}
-                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all ${selectedZone === 'central' ? 'border-purple-600 bg-purple-50' : 'border-gray-200'}`}>
+                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-teal-50 transition-all ${selectedZone === 'central' ? 'border-[#0D4F4F] bg-teal-50' : 'border-gray-200'}`}>
                                             <input
                                                 type="radio"
                                                 name="zone"
                                                 value="central"
                                                 checked={selectedZone === 'central'}
                                                 onChange={(e) => setSelectedZone(e.target.value)}
-                                                className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                                className="mr-3 w-4 h-4 text-[#0D4F4F] focus:ring-[#0D4F4F]"
                                             />
                                             <div className="flex-1">
                                                 <div className="font-medium text-gray-800">
@@ -207,14 +207,14 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                         </label>
 
                                         {/* Opción Remote */}
-                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-orange-50 transition-all ${selectedZone === 'remote' ? 'border-orange-600 bg-orange-50' : 'border-gray-200'}`}>
+                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-teal-50 transition-all ${selectedZone === 'remote' ? 'border-[#0D4F4F] bg-teal-50' : 'border-gray-200'}`}>
                                             <input
                                                 type="radio"
                                                 name="zone"
                                                 value="remote"
                                                 checked={selectedZone === 'remote'}
                                                 onChange={(e) => setSelectedZone(e.target.value)}
-                                                className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                                className="mr-3 w-4 h-4 text-[#0D4F4F] focus:ring-[#0D4F4F]"
                                             />
                                             <div className="flex-1">
                                                 <div className="font-medium text-gray-800">
@@ -227,14 +227,14 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                         </label>
 
                                         {/* Opción Pickup - GRATIS */}
-                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-green-50 transition-all ${selectedZone === 'pickup' ? 'border-green-600 bg-green-50' : 'border-gray-200'}`}>
+                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-amber-50 transition-all ${selectedZone === 'pickup' ? 'border-[#C29F4C] bg-amber-50' : 'border-gray-200'}`}>
                                             <input
                                                 type="radio"
                                                 name="zone"
                                                 value="pickup"
                                                 checked={selectedZone === 'pickup'}
                                                 onChange={(e) => setSelectedZone(e.target.value)}
-                                                className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                                className="mr-3 w-4 h-4 text-[#C29F4C] focus:ring-[#C29F4C]"
                                             />
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2">

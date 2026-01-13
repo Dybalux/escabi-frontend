@@ -72,7 +72,7 @@ export default function VerifyAge() {
 
     if (user?.age_verified) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-900 px-4">
+            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] px-4">
                 <div className="bg-white rounded-2xl shadow-2xl p-8 text-center max-w-md">
                     <ShieldCheck className="mx-auto text-green-600 mb-4" size={64} />
                     <h1 className="text-2xl font-bold text-gray-800 mb-4">
@@ -90,10 +90,10 @@ export default function VerifyAge() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-900 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] px-4">
             <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md">
                 <div className="text-center mb-6">
-                    <ShieldCheck className="mx-auto text-purple-600 mb-4" size={64} />
+                    <ShieldCheck className="mx-auto text-[#0D4F4F] mb-4" size={64} />
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">
                         Verificación de Edad
                     </h1>
@@ -117,8 +117,8 @@ export default function VerifyAge() {
                     </div>
                 )}
 
-                <div className="bg-purple-50 border-2 border-purple-200 rounded-lg p-4 mb-6">
-                    <p className="text-purple-800 text-sm">
+                <div className="bg-teal-50 border-2 border-teal-200 rounded-lg p-4 mb-6">
+                    <p className="text-[#0D4F4F] text-sm">
                         ℹ️ La verificación se realiza según la fecha de nacimiento que proporcionaste al registrarte.
                     </p>
                 </div>

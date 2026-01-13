@@ -68,7 +68,7 @@ export default function ComboManagement() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -103,7 +103,7 @@ export default function ComboManagement() {
                                 placeholder="Buscar combos..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                             />
                         </div>
                         <label className="flex items-center gap-2 cursor-pointer">
@@ -111,7 +111,7 @@ export default function ComboManagement() {
                                 type="checkbox"
                                 checked={includeInactive}
                                 onChange={(e) => setIncludeInactive(e.target.checked)}
-                                className="w-4 h-4 text-purple-600 focus:ring-purple-500 rounded"
+                                className="w-4 h-4 text-[#0D4F4F] focus:ring-[#0D4F4F] rounded"
                             />
                             <span className="text-sm text-gray-700">Mostrar combos inactivos</span>
                         </label>
@@ -133,7 +133,7 @@ export default function ComboManagement() {
                         return (
                             <div key={comboId} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                                 {/* Image */}
-                                <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
+                                <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
                                     {combo.image_url ? (
                                         <img
                                             src={combo.image_url}
@@ -150,7 +150,7 @@ export default function ComboManagement() {
                                             Inactivo
                                         </div>
                                     )}
-                                    <div className="absolute bottom-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                                    <div className="absolute bottom-2 left-2 bg-[#C29F4C] text-white text-xs px-2 py-1 rounded-full font-semibold">
                                         COMBO
                                     </div>
                                 </div>
@@ -167,7 +167,7 @@ export default function ComboManagement() {
                                         </span>
                                     </div>
 
-                                    <div className="text-2xl font-bold text-purple-600 mb-4">
+                                    <div className="text-2xl font-bold text-[#0D4F4F] mb-4">
                                         ${combo.price?.toLocaleString('es-AR')}
                                     </div>
 
@@ -175,7 +175,7 @@ export default function ComboManagement() {
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => handleEdit(combo)}
-                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0D4F4F] text-white rounded-lg hover:bg-[#1E7E7A] transition-colors"
                                         >
                                             <Edit size={16} />
                                             <span className="text-sm font-medium">Editar</span>

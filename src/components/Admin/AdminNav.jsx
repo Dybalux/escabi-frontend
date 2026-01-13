@@ -27,8 +27,8 @@ export default function AdminNav() {
                                 key={item.path}
                                 to={item.path}
                                 className={`flex-1 flex items-center justify-center gap-2 px-3 sm:px-3 md:px-4 lg:px-6 py-3 sm:py-4 border-b-2 transition-colors whitespace-nowrap min-w-fit ${isActive
-                                    ? 'border-purple-600 text-purple-600 font-semibold'
-                                    : 'border-transparent text-gray-600 hover:text-purple-600 hover:border-gray-300'
+                                    ? 'border-[#0D4F4F] text-[#0D4F4F] font-semibold'
+                                    : 'border-transparent text-gray-600 hover:text-[#0D4F4F] hover:border-gray-300'
                                     }`}
                             >
                                 <Icon size={20} className="flex-shrink-0" />

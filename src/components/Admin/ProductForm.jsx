@@ -157,7 +157,7 @@ export default function ProductForm({ product, onClose }) {
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows={3}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                                 placeholder="Descripción del producto..."
                             />
                         </div>
@@ -198,7 +198,7 @@ export default function ProductForm({ product, onClose }) {
                                 value={formData.category}
                                 onChange={handleChange}
                                 required
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                             >
                                 <option value="">Seleccionar categoría</option>
                                 <option value="Cerveza">Cerveza</option>
@@ -250,7 +250,7 @@ export default function ProductForm({ product, onClose }) {
                                 name="origin"
                                 value={formData.origin}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                             >
                                 <option value="">Seleccionar origen</option>
                                 <option value="Nacional">Nacional</option>
@@ -271,7 +271,7 @@ export default function ProductForm({ product, onClose }) {
                                 type="button"
                                 variant="outline"
                                 onClick={() => openCloudinaryWidget((url) => setFormData(prev => ({ ...prev, image_url: url })))}
-                                className="w-full flex items-center justify-center gap-2 border-purple-600 text-purple-600 hover:bg-purple-50"
+                                className="w-full flex items-center justify-center gap-2 border-[#0D4F4F] text-[#0D4F4F] hover:bg-teal-50"
                             >
                                 <Plus size={18} />
                                 Subir Imagen a Cloudinary

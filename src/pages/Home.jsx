@@ -79,53 +79,77 @@ export default function Home() {
         }
     };
 
+    // Responsive carousel logic
+    const [itemsPerView, setItemsPerView] = useState(3);
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) setItemsPerView(1.5); // Mobile partially shows next
+            else if (window.innerWidth < 1024) setItemsPerView(2);
+            else setItemsPerView(3);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Auto-scroll del carrusel de Productos
     useEffect(() => {
-        if (products.length === 0) return;
+        if (products.length <= itemsPerView) return;
 
         const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % Math.max(1, products.length - 1));
-        }, 4000); // Cambiar cada 4 segundos
+            setCurrentSlide((prev) => {
+                const maxSlide = products.length - Math.floor(itemsPerView);
+                return prev >= maxSlide ? 0 : prev + 1;
+            });
+        }, 4000);
 
         return () => clearInterval(interval);
-    }, [products.length]);
+    }, [products.length, itemsPerView]);
 
     const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % Math.max(1, products.length - 1));
+        const maxSlide = products.length - Math.floor(itemsPerView);
+        setCurrentSlide((prev) => (prev >= maxSlide ? 0 : prev + 1));
     };
 
     const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + Math.max(1, products.length - 1)) % Math.max(1, products.length - 1));
+        const maxSlide = products.length - Math.floor(itemsPerView);
+        setCurrentSlide((prev) => (prev <= 0 ? maxSlide : prev - 1));
     };
 
     // Auto-scroll del carrusel de Combos
     useEffect(() => {
-        if (combos.length === 0) return;
+        if (combos.length <= itemsPerView) return;
 
         const interval = setInterval(() => {
-            setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 1));
-        }, 5000); // Cambiar cada 5 segundos
+            setCurrentComboSlide((prev) => {
+                const maxSlide = combos.length - Math.floor(itemsPerView);
+                return prev >= maxSlide ? 0 : prev + 1;
+            });
+        }, 5000);
 
         return () => clearInterval(interval);
-    }, [combos.length]);
+    }, [combos.length, itemsPerView]);
 
     const nextComboSlide = () => {
-        setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 1));
+        const maxSlide = combos.length - Math.floor(itemsPerView);
+        setCurrentComboSlide((prev) => (prev >= maxSlide ? 0 : prev + 1));
     };
 
     const prevComboSlide = () => {
-        setCurrentComboSlide((prev) => (prev - 1 + Math.max(1, combos.length - 1)) % Math.max(1, combos.length - 1));
+        const maxSlide = combos.length - Math.floor(itemsPerView);
+        setCurrentComboSlide((prev) => (prev <= 0 ? maxSlide : prev - 1));
     };
 
     return (
         <div>
             {/* Hero Section */}
-            <section className="bg-gradient-to-br from-purple-600 to-purple-900 text-white py-20">
+            <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-20">
                 <div className="container mx-auto px-4 text-center">
                     <h1 className="text-5xl md:text-6xl font-bold mb-6">
                         Bienvenido a Alto Trago
                     </h1>
-                    <p className="text-xl md:text-2xl mb-8 text-purple-100">
+                    <p className="text-xl md:text-2xl mb-8 text-teal-50">
                         Tu tienda online de bebidas con las mejores marcas
                     </p>
                     {!isAuthenticated ? (
@@ -158,34 +182,38 @@ export default function Home() {
 
                         <div className="relative">
                             {/* Navigation Buttons - Combos */}
-                            <button
-                                onClick={prevComboSlide}
-                                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                aria-label="Anterior Combo"
-                            >
-                                <ChevronLeft size={24} className="text-purple-600" />
-                            </button>
-                            <button
-                                onClick={nextComboSlide}
-                                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                aria-label="Siguiente Combo"
-                            >
-                                <ChevronRight size={24} className="text-purple-600" />
-                            </button>
+                            {combos.length > itemsPerView && (
+                                <>
+                                    <button
+                                        onClick={prevComboSlide}
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                        aria-label="Anterior Combo"
+                                    >
+                                        <ChevronLeft size={24} className="text-[#0D4F4F]" />
+                                    </button>
+                                    <button
+                                        onClick={nextComboSlide}
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                        aria-label="Siguiente Combo"
+                                    >
+                                        <ChevronRight size={24} className="text-[#0D4F4F]" />
+                                    </button>
+                                </>
+                            )}
 
                             {/* Carousel Container - Combos */}
                             <div className="overflow-hidden" ref={comboCarouselRef}>
                                 <div
                                     className="flex transition-transform duration-500 ease-in-out"
-                                    style={{ transform: `translateX(-${currentComboSlide * 66.66}%)` }}
+                                    style={{ transform: `translateX(-${currentComboSlide * (itemsPerView === 1.5 ? 66.66 : (100 / itemsPerView))}%)` }}
                                 >
                                     {combos.map((combo) => {
                                         const comboId = combo.id || combo._id;
                                         return (
                                             <div key={comboId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
-                                                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-purple-100 h-full">
+                                                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-[#C29F4C]/20 h-full">
                                                     {/* Image */}
-                                                    <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
+                                                    <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
                                                         {combo.image_url ? (
                                                             <img
                                                                 src={combo.image_url}
@@ -197,7 +225,7 @@ export default function Home() {
                                                                 📦
                                                             </div>
                                                         )}
-                                                        <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-3 py-1 rounded-full font-bold">
+                                                        <div className="absolute top-2 left-2 bg-[#C29F4C] text-white text-xs px-3 py-1 rounded-full font-bold">
                                                             COMBO
                                                         </div>
                                                     </div>
@@ -209,12 +237,12 @@ export default function Home() {
 
                                                         {/* Productos del combo */}
                                                         {combo.items && combo.items.length > 0 && (
-                                                            <div className="mb-4 p-3 bg-purple-50 rounded-lg border border-purple-100">
-                                                                <p className="text-xs font-semibold text-purple-700 mb-2">Incluye:</p>
+                                                            <div className="mb-4 p-3 bg-teal-50/50 rounded-lg border border-teal-100">
+                                                                <p className="text-xs font-semibold text-[#0D4F4F] mb-2">Incluye:</p>
                                                                 <ul className="space-y-1">
                                                                     {combo.items.map((item, idx) => (
                                                                         <li key={idx} className="text-xs text-gray-700 flex items-center gap-1">
-                                                                            <span className="text-purple-600 font-bold">{item.quantity}x</span>
+                                                                            <span className="text-[#C29F4C] font-bold">{item.quantity}x</span>
                                                                             <span>{item.name || 'Producto'}</span>
                                                                         </li>
                                                                     ))}
@@ -222,17 +250,16 @@ export default function Home() {
                                                             </div>
                                                         )}
 
-                                                        <div className="flex items-center justify-between mt-auto">
-                                                            <div className="text-3xl font-bold text-purple-600">
+                                                        <div className="flex flex-col gap-3 mt-auto">
+                                                            <div className="text-3xl font-bold text-[#0D4F4F]">
                                                                 ${combo.price?.toLocaleString('es-AR')}
                                                             </div>
                                                             {isAuthenticated && (
                                                                 <button
                                                                     onClick={() => handleAddToCart(comboId, combo.name)}
-                                                                    className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
                                                                 >
-                                                                    <Plus size={18} />
-                                                                    Agregar
+                                                                    Agregar al Carrito
                                                                 </button>
                                                             )}
                                                         </div>
@@ -245,17 +272,19 @@ export default function Home() {
                             </div>
 
                             {/* Dots Indicator - Combos */}
-                            <div className="flex justify-center gap-2 mt-6">
-                                {Array.from({ length: Math.max(1, combos.length - 1) }).map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setCurrentComboSlide(index)}
-                                        className={`w-3 h-3 rounded-full transition-colors ${currentComboSlide === index ? 'bg-purple-600' : 'bg-gray-300'
-                                            }`}
-                                        aria-label={`Ir a slide combo ${index + 1}`}
-                                    />
-                                ))}
-                            </div>
+                            {combos.length > itemsPerView && (
+                                <div className="flex justify-center gap-2 mt-6">
+                                    {Array.from({ length: Math.max(1, combos.length - Math.floor(itemsPerView) + 1) }).map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setCurrentComboSlide(index)}
+                                            className={`w-3 h-3 rounded-full transition-colors ${currentComboSlide === index ? 'bg-[#C29F4C]' : 'bg-gray-300'
+                                                }`}
+                                            aria-label={`Ir a slide combo ${index + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
@@ -272,26 +301,30 @@ export default function Home() {
 
                         <div className="relative">
                             {/* Navigation Buttons */}
-                            <button
-                                onClick={prevSlide}
-                                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                aria-label="Anterior"
-                            >
-                                <ChevronLeft size={24} className="text-purple-600" />
-                            </button>
-                            <button
-                                onClick={nextSlide}
-                                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                aria-label="Siguiente"
-                            >
-                                <ChevronRight size={24} className="text-purple-600" />
-                            </button>
+                            {products.length > itemsPerView && (
+                                <>
+                                    <button
+                                        onClick={prevSlide}
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                        aria-label="Anterior"
+                                    >
+                                        <ChevronLeft size={24} className="text-[#0D4F4F]" />
+                                    </button>
+                                    <button
+                                        onClick={nextSlide}
+                                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                        aria-label="Siguiente"
+                                    >
+                                        <ChevronRight size={24} className="text-[#0D4F4F]" />
+                                    </button>
+                                </>
+                            )}
 
                             {/* Carousel Container */}
                             <div className="overflow-hidden" ref={carouselRef}>
                                 <div
                                     className="flex transition-transform duration-500 ease-in-out"
-                                    style={{ transform: `translateX(-${currentSlide * 66.66}%)` }}
+                                    style={{ transform: `translateX(-${currentSlide * (itemsPerView === 1.5 ? 66.66 : (100 / itemsPerView))}%)` }}
                                 >
                                     {products.map((product) => {
                                         const productId = product.id || product._id;
@@ -299,7 +332,7 @@ export default function Home() {
                                             <div key={productId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
                                                 <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow h-full">
                                                     {/* Image */}
-                                                    <div className="relative h-48 bg-gradient-to-br from-blue-100 to-cyan-100">
+                                                    <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
                                                         {product.image_url ? (
                                                             <img
                                                                 src={product.image_url}
@@ -318,21 +351,22 @@ export default function Home() {
                                                         <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{product.name}</h3>
                                                         <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description || 'Producto de calidad'}</p>
 
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="text-2xl font-bold text-blue-600">
+                                                        <div className="flex flex-col gap-3 mt-4">
+                                                            <div className="text-2xl font-bold text-[#0D4F4F]">
                                                                 ${product.price?.toLocaleString('es-AR')}
                                                             </div>
                                                             {isAuthenticated && product.stock > 0 && (
                                                                 <button
                                                                     onClick={() => handleAddProductToCart(productId, product.name)}
-                                                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-2.5 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
                                                                 >
-                                                                    <Plus size={18} />
                                                                     Agregar
                                                                 </button>
                                                             )}
                                                             {product.stock === 0 && (
-                                                                <span className="text-red-600 text-sm font-semibold">Sin stock</span>
+                                                                <span className="text-red-600 text-sm font-bold bg-red-50 text-center py-2 rounded-lg border border-red-100 italic">
+                                                                    Agotado
+                                                                </span>
                                                             )}
                                                         </div>
                                                     </div>
@@ -344,17 +378,19 @@ export default function Home() {
                             </div>
 
                             {/* Dots Indicator */}
-                            <div className="flex justify-center gap-2 mt-6">
-                                {Array.from({ length: Math.max(1, products.length - 1) }).map((_, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setCurrentSlide(index)}
-                                        className={`w-3 h-3 rounded-full transition-colors ${currentSlide === index ? 'bg-purple-600' : 'bg-gray-300'
-                                            }`}
-                                        aria-label={`Ir a slide ${index + 1}`}
-                                    />
-                                ))}
-                            </div>
+                            {products.length > itemsPerView && (
+                                <div className="flex justify-center gap-2 mt-6">
+                                    {Array.from({ length: Math.max(1, products.length - Math.floor(itemsPerView) + 1) }).map((_, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setCurrentSlide(index)}
+                                            className={`w-3 h-3 rounded-full transition-colors ${currentSlide === index ? 'bg-[#C29F4C]' : 'bg-gray-300'
+                                                }`}
+                                            aria-label={`Ir a slide ${index + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
@@ -367,8 +403,8 @@ export default function Home() {
 
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                         <div className="text-center">
-                            <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Beer className="text-purple-600" size={32} />
+                            <div className="bg-teal-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Beer className="text-[#0D4F4F]" size={32} />
                             </div>
                             <h3 className="font-bold text-xl mb-2">Gran Variedad</h3>
                             <p className="text-gray-600">
@@ -377,8 +413,8 @@ export default function Home() {
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <ShoppingCart className="text-green-600" size={32} />
+                            <div className="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <ShoppingCart className="text-[#C29F4C]" size={32} />
                             </div>
                             <h3 className="font-bold text-xl mb-2">Fácil de Comprar</h3>
                             <p className="text-gray-600">
@@ -387,8 +423,8 @@ export default function Home() {
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Shield className="text-blue-600" size={32} />
+                            <div className="bg-teal-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Shield className="text-[#1E7E7A]" size={32} />
                             </div>
                             <h3 className="font-bold text-xl mb-2">Compra Segura</h3>
                             <p className="text-gray-600">
@@ -397,8 +433,8 @@ export default function Home() {
                         </div>
 
                         <div className="text-center">
-                            <div className="bg-orange-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Zap className="text-orange-600" size={32} />
+                            <div className="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Zap className="text-[#C29F4C]" size={32} />
                             </div>
                             <h3 className="font-bold text-xl mb-2">Envío Rápido</h3>
                             <p className="text-gray-600">
@@ -410,12 +446,12 @@ export default function Home() {
             </section>
 
             {/* CTA Section */}
-            <section className="bg-gradient-to-br from-purple-600 to-purple-900 text-white py-16">
+            <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-16">
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl font-bold mb-4">
                         ¿Listo para tu primera compra?
                     </h2>
-                    <p className="text-xl mb-8 text-purple-100">
+                    <p className="text-xl mb-8 text-teal-50">
                         Explora nuestro catálogo y encuentra tus bebidas favoritas
                     </p>
                     <Link to="/products">

@@ -8,10 +8,10 @@ export default function Button({
     const baseStyles = 'font-semibold rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02]';
 
     const variants = {
-        primary: 'bg-purple-600 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl',
-        secondary: 'bg-green-600 hover:bg-green-700 text-white shadow-lg hover:shadow-xl',
+        primary: 'bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white shadow-lg hover:shadow-xl',
+        secondary: 'bg-[#C29F4C] hover:bg-[#D4B366] text-white shadow-lg hover:shadow-xl',
         danger: 'bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl',
-        outline: 'border-2 border-purple-600 text-purple-600 hover:bg-purple-50 shadow-md hover:shadow-lg',
+        outline: 'border-2 border-[#C29F4C] text-[#0D4F4F] hover:bg-[#F8F9FA] shadow-md hover:shadow-lg',
     };
 
     const sizes = {

@@ -34,7 +34,7 @@ export default function Login() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-600 to-purple-900 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] px-4">
             <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">Iniciar Sesión</h1>
@@ -65,7 +65,7 @@ export default function Login() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6"
+                        className="w-full bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white font-bold py-4 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none mt-6"
                     >
                         {loading ? (
                             <div className="flex items-center justify-center gap-2">
@@ -80,7 +80,7 @@ export default function Login() {
 
                 <p className="text-center mt-6 text-gray-600">
                     ¿No tienes cuenta?{' '}
-                    <Link to="/register" className="text-purple-600 font-semibold hover:underline">
+                    <Link to="/register" className="text-[#0D4F4F] font-semibold hover:underline">
                         Regístrate
                     </Link>
                 </p>

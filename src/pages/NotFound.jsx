@@ -4,7 +4,7 @@ import Button from '../components/UI/Button';
 
 export default function NotFound() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] flex items-center justify-center px-4">
             <div className="max-w-2xl w-full text-center">
                 {/* 404 Number */}
                 <div className="mb-8">
@@ -21,10 +21,10 @@ export default function NotFound() {
                     <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
                         ¡Ups! Página no encontrada
                     </h2>
-                    <p className="text-xl text-purple-100 mb-2">
+                    <p className="text-xl text-teal-50 mb-2">
                         Parece que esta página se tomó unas vacaciones
                     </p>
-                    <p className="text-lg text-purple-200">
+                    <p className="text-lg text-teal-100">
                         La URL que buscas no existe o fue movida
                     </p>
                 </div>
@@ -47,17 +47,17 @@ export default function NotFound() {
 
                 {/* Helpful Links */}
                 <div className="mt-12 pt-8 border-t border-white/20">
-                    <p className="text-purple-100 mb-4">¿Necesitas ayuda?</p>
+                    <p className="text-teal-50 mb-4">¿Necesitas ayuda?</p>
                     <div className="flex flex-wrap gap-4 justify-center text-sm">
-                        <Link to="/" className="text-white hover:text-purple-200 transition-colors">
+                        <Link to="/" className="text-white hover:text-teal-100 transition-colors">
                             Inicio
                         </Link>
-                        <span className="text-purple-300">•</span>
-                        <Link to="/products" className="text-white hover:text-purple-200 transition-colors">
+                        <span className="text-teal-200">•</span>
+                        <Link to="/products" className="text-white hover:text-teal-100 transition-colors">
                             Productos
                         </Link>
-                        <span className="text-purple-300">•</span>
-                        <Link to="/cart" className="text-white hover:text-purple-200 transition-colors">
+                        <span className="text-teal-200">•</span>
+                        <Link to="/cart" className="text-white hover:text-teal-100 transition-colors">
                             Carrito
                         </Link>
                     </div>

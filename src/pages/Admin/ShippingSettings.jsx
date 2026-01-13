@@ -80,7 +80,7 @@ export default function ShippingSettings() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -89,14 +89,14 @@ export default function ShippingSettings() {
         <div className="min-h-screen bg-gray-50">
             <AdminNav />
             <div className="container mx-auto px-4 py-8">
-                <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-3xl font-bold mb-6 bg-gradient-to-r from-[#0D4F4F] to-[#C29F4C] bg-clip-text text-transparent">
                     ⚙️ Configuración de Envíos
                 </h1>
 
                 <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
                     {/* Zona Céntrica */}
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                        <h3 className="text-lg font-semibold text-purple-800 mb-4">🏙️ Zona Céntrica</h3>
+                    <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-[#0D4F4F] mb-4">🏙️ Zona Céntrica</h3>
 
                         <div className="space-y-4">
                             <div>
@@ -112,7 +112,7 @@ export default function ShippingSettings() {
                                             ...prices,
                                             central_zone_price: parseFloat(e.target.value) || 0
                                         })}
-                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all"
                                         min="0"
                                         step="50"
                                     />
@@ -130,7 +130,7 @@ export default function ShippingSettings() {
                                         ...prices,
                                         central_zone_description: e.target.value
                                     })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all"
                                     placeholder="Ej: Envío a zona céntrica"
                                 />
                                 <p className="text-sm text-gray-500 mt-1">
@@ -141,8 +141,8 @@ export default function ShippingSettings() {
                     </div>
 
                     {/* Zonas Lejanas */}
-                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                        <h3 className="text-lg font-semibold text-orange-800 mb-4">🌄 Zonas Lejanas</h3>
+                    <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-[#1E7E7A] mb-4">🌄 Zonas Lejanas</h3>
 
                         <div className="space-y-4">
                             <div>
@@ -158,7 +158,7 @@ export default function ShippingSettings() {
                                             ...prices,
                                             remote_zone_price: parseFloat(e.target.value) || 0
                                         })}
-                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all"
                                         min="0"
                                         step="50"
                                     />
@@ -176,7 +176,7 @@ export default function ShippingSettings() {
                                         ...prices,
                                         remote_zone_description: e.target.value
                                     })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all"
                                     placeholder="Ej: Envío a zonas lejanas"
                                 />
                                 <p className="text-sm text-gray-500 mt-1">
@@ -187,12 +187,12 @@ export default function ShippingSettings() {
                     </div>
 
                     {/* Retiro en Persona */}
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h3 className="text-lg font-semibold text-green-800 mb-4">📦 Retiro en Persona</h3>
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-amber-800 mb-4">📦 Retiro en Persona</h3>
 
                         <div className="space-y-4">
-                            <div className="bg-green-100 border border-green-300 rounded-lg p-3">
-                                <p className="text-sm text-green-800 font-medium">
+                            <div className="bg-amber-100 border border-amber-300 rounded-lg p-3">
+                                <p className="text-sm text-amber-800 font-medium">
                                     ✨ El retiro en persona siempre es GRATIS ($0)
                                 </p>
                             </div>
@@ -208,7 +208,7 @@ export default function ShippingSettings() {
                                         ...prices,
                                         pickup_address: e.target.value
                                     })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all"
                                     placeholder="Ej: Calle Principal 123, Santa María"
                                 />
                                 <p className="text-sm text-gray-500 mt-1">
@@ -227,7 +227,7 @@ export default function ShippingSettings() {
                                         ...prices,
                                         pickup_description: e.target.value
                                     })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all"
                                     placeholder="Ej: Retiro en persona"
                                 />
                                 <p className="text-sm text-gray-500 mt-1">
@@ -238,8 +238,8 @@ export default function ShippingSettings() {
                     </div>
 
                     {/* Información adicional */}
-                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                        <p className="text-sm text-purple-800">
+                    <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                        <p className="text-sm text-[#0D4F4F]">
                             <strong>💡 Nota:</strong> Los cambios se aplicarán inmediatamente a todos los nuevos pedidos.
                             Los pedidos existentes mantendrán el precio de envío original.
                         </p>
@@ -249,7 +249,7 @@ export default function ShippingSettings() {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-lg hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl font-medium"
+                        className="w-full bg-[#0D4F4F] text-white py-3 rounded-lg hover:bg-[#1E7E7A] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl font-medium"
                     >
                         {saving ? (
                             <span className="flex items-center justify-center gap-2">

@@ -49,7 +49,7 @@ export default function BankTransferConfirmation({ order, paymentSettings }) {
                         ✅ Orden Creada
                     </h1>
                     <p className="text-gray-600">
-                        Orden <strong className="text-purple-600">#{orderIdShort}</strong>
+                        Orden <strong className="text-[#0D4F4F]">#{orderIdShort}</strong>
                     </p>
                 </div>
 
@@ -63,7 +63,7 @@ export default function BankTransferConfirmation({ order, paymentSettings }) {
                     </div>
                     <div className="flex justify-between items-center mt-2">
                         <span className="text-gray-600">Total:</span>
-                        <span className="text-2xl font-bold text-purple-600">
+                        <span className="text-2xl font-bold text-[#0D4F4F]">
                             ${order.total_amount?.toFixed(2) || '0.00'}
                         </span>
                     </div>
@@ -90,7 +90,7 @@ export default function BankTransferConfirmation({ order, paymentSettings }) {
                                 onClick={handleCopyAlias}
                                 className={`px-4 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center gap-2 ${aliasCopied
                                     ? 'bg-green-500 text-white'
-                                    : 'bg-purple-600 hover:bg-purple-700 text-white'
+                                    : 'bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white'
                                     }`}
                             >
                                 <Copy size={20} />
@@ -138,7 +138,7 @@ export default function BankTransferConfirmation({ order, paymentSettings }) {
                 <div className="flex flex-col sm:flex-row gap-3">
                     <Link
                         to="/orders"
-                        className="flex-1 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-center flex items-center justify-center gap-2"
+                        className="flex-1 bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 text-center flex items-center justify-center gap-2"
                     >
                         <Package size={20} />
                         Ver Mis Órdenes

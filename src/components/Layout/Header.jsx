@@ -13,18 +13,18 @@ export default function Header() {
         <header className="bg-white shadow-md sticky top-0 z-50">
             <div className="container mx-auto px-4 py-4">
                 <div className="flex items-center justify-between">
-                    <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-purple-600">
-                        <Beer size={32} />
+                    <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-[#0D4F4F]">
+                        <Beer size={32} className="text-[#C29F4C]" />
                         Alto Trago
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-6">
                         {user?.role !== 'admin' && (
                             <>
-                                <Link to="/" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                <Link to="/" className="text-gray-700 hover:text-[#0D4F4F] transition-colors">
                                     Inicio
                                 </Link>
-                                <Link to="/products" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                <Link to="/products" className="text-gray-700 hover:text-[#0D4F4F] transition-colors">
                                     Productos
                                 </Link>
                             </>
@@ -32,13 +32,13 @@ export default function Header() {
                         {isAuthenticated && (
                             <>
                                 {user?.role !== 'admin' && (
-                                    <Link to="/orders" className="text-gray-700 hover:text-purple-600 transition-colors">
+                                    <Link to="/orders" className="text-gray-700 hover:text-[#0D4F4F] transition-colors">
                                         Mis Pedidos
                                     </Link>
                                 )}
                                 {user?.role === 'admin' && (
-                                    <Link to="/admin" className="text-purple-600 hover:text-purple-700 transition-colors font-semibold flex items-center gap-2">
-                                        <Beer size={20} />
+                                    <Link to="/admin" className="text-[#0D4F4F] hover:text-[#1E7E7A] transition-colors font-semibold flex items-center gap-2">
+                                        <Beer size={20} className="text-[#C29F4C]" />
                                         Panel de Administración
                                     </Link>
                                 )}
@@ -53,9 +53,9 @@ export default function Header() {
                                 <>
                                     {user?.role !== 'admin' && (
                                         <Link to="/cart" className="relative">
-                                            <ShoppingCart className="text-purple-600 hover:text-purple-700" size={24} />
+                                            <ShoppingCart className="text-[#0D4F4F] hover:text-[#1E7E7A]" size={24} />
                                             {getCartTotal() > 0 && (
-                                                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                                <span className="absolute -top-2 -right-2 bg-[#C29F4C] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                                     {getCartTotal()}
                                                 </span>
                                             )}
@@ -66,7 +66,7 @@ export default function Header() {
                                         <User size={20} className="text-gray-700" />
                                         <span className="text-gray-700 font-medium">{user?.username}</span>
                                         {user?.role === 'admin' && (
-                                            <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full">
+                                            <span className="bg-[#E6F0F0] text-[#0D4F4F] text-xs px-2 py-1 rounded-full">
                                                 Admin
                                             </span>
                                         )}

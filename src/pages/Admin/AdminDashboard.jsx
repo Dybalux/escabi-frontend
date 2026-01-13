@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
                             title="Total de Usuarios"
                             value={stats?.users?.total || 0}
                             icon={Users}
-                            color="purple"
+                            color="teal"
                         />
                         <StatsCard
                             title="Usuarios Verificados"
@@ -112,7 +112,7 @@ export default function AdminDashboard() {
                             title="Total de Pedidos"
                             value={stats?.orders?.total || 0}
                             icon={ShoppingBag}
-                            color="purple"
+                            color="teal"
                         />
                         <StatsCard
                             title="Pendientes"

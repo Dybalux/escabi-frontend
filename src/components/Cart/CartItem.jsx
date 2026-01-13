@@ -128,7 +128,7 @@ export default function CartItem({ item }) {
             exit={{ opacity: 0, x: -100 }}
             transition={{ duration: 0.3 }}
         >
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-100 to-purple-200 rounded-lg flex items-center justify-center overflow-hidden">
+            <div className="w-20 h-20 bg-gradient-to-br from-teal-50 to-teal-100 rounded-lg flex items-center justify-center overflow-hidden">
                 {!imageError && getImageUrl() ? (
                     <img
                         src={getImageUrl()}
@@ -145,7 +145,7 @@ export default function CartItem({ item }) {
                 <div className="flex items-center gap-2">
                     <h3 className="font-bold text-gray-800">{name}</h3>
                     {item_type === 'combo' && (
-                        <span className="bg-purple-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">COMBO</span>
+                        <span className="bg-[#C29F4C] text-white text-xs px-2 py-0.5 rounded-full font-bold">COMBO</span>
                     )}
                 </div>
                 {item_type === 'combo' && combo_items && combo_items.length > 0 && (
@@ -178,7 +178,7 @@ export default function CartItem({ item }) {
 
                 <div className="w-16 text-center">
                     {updating ? (
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-purple-600 mx-auto"></div>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[#0D4F4F] mx-auto"></div>
                     ) : (
                         <input
                             type="text"
@@ -188,7 +188,7 @@ export default function CartItem({ item }) {
                             onKeyDown={handleInputKeyDown}
                             onFocus={() => setIsEditing(true)}
                             disabled={updating}
-                            className="w-full text-center font-semibold text-gray-800 bg-transparent border-2 border-transparent hover:border-purple-200 focus:border-purple-400 focus:outline-none rounded px-1 py-1 transition-colors"
+                            className="w-full text-center font-semibold text-gray-800 bg-transparent border-2 border-transparent hover:border-teal-100 focus:border-[#0D4F4F] focus:outline-none rounded px-1 py-1 transition-colors"
                             style={{
                                 appearance: 'textfield',
                                 MozAppearance: 'textfield',
@@ -200,7 +200,7 @@ export default function CartItem({ item }) {
                 <motion.button
                     onClick={handleIncrement}
                     disabled={(item_type === 'product' && stock && quantity >= stock) || updating}
-                    className="w-8 h-8 rounded-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                    className="w-8 h-8 rounded-full bg-[#0D4F4F] hover:bg-[#1E7E7A] disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
                     title={(item_type === 'product' && stock && quantity >= stock) ? `Stock máximo: ${stock}` : 'Incrementar'}
                     whileHover={{ scale: (item_type === 'combo' || (stock && quantity < stock)) && !updating ? 1.1 : 1 }}
                     whileTap={{ scale: (item_type === 'combo' || (stock && quantity < stock)) && !updating ? 0.9 : 1 }}
@@ -213,9 +213,9 @@ export default function CartItem({ item }) {
                 <AnimatePresence mode="wait">
                     <motion.p
                         key={quantity}
-                        className="text-xl font-bold text-purple-600"
+                        className="text-xl font-bold text-[#0D4F4F]"
                         initial={{ scale: 1.2, color: '#10b981' }}
-                        animate={{ scale: 1, color: '#9333ea' }}
+                        animate={{ scale: 1, color: '#0D4F4F' }}
                         transition={{ duration: 0.3 }}
                     >
                         ${(price * quantity).toFixed(2)}

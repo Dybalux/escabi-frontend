@@ -58,7 +58,7 @@ export default function OrderManagement() {
             'Enviado': 'bg-indigo-100 text-indigo-800',
             'Entregado': 'bg-green-100 text-green-800',
             'Cancelado': 'bg-red-100 text-red-800',
-            'Reembolsado': 'bg-purple-100 text-purple-800',
+            'Reembolsado': 'bg-teal-100 text-[#0D4F4F]',
         };
         return colors[status] || 'bg-gray-100 text-gray-800';
     };
@@ -75,7 +75,7 @@ export default function OrderManagement() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -104,13 +104,13 @@ export default function OrderManagement() {
                                 placeholder="Buscar por usuario, email o ID..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                             />
                         </div>
                         <select
                             value={statusFilter}
                             onChange={(e) => setStatusFilter(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                         >
                             <option value="">Todos los estados</option>
                             <option value="Pendiente">Pendiente</option>
@@ -262,7 +262,7 @@ export default function OrderManagement() {
                                         </div>
                                         <div>
                                             <span className="text-xs text-gray-500 block mb-1">Total</span>
-                                            <p className="text-lg font-bold text-purple-600">
+                                            <p className="text-lg font-bold text-[#0D4F4F]">
                                                 ${order.total_amount?.toLocaleString('es-AR')}
                                             </p>
                                         </div>

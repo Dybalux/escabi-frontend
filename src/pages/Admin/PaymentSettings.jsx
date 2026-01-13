@@ -88,7 +88,7 @@ export default function PaymentSettings() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -96,11 +96,11 @@ export default function PaymentSettings() {
     return (
         <div className="min-h-screen bg-gray-50">
             <AdminNav />
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-8 flex flex-col items-center">
                 {/* Header */}
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-                        <Settings className="text-purple-600" size={36} />
+                <div className="mb-8 w-full max-w-2xl text-center">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-2 flex items-center justify-center gap-3">
+                        <Settings className="text-[#0D4F4F]" size={36} />
                         Configuración de Pagos
                     </h1>
                     <p className="text-gray-600">
@@ -109,7 +109,7 @@ export default function PaymentSettings() {
                 </div>
 
                 {/* Form */}
-                <div className="max-w-2xl bg-white rounded-lg shadow-md p-6">
+                <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-6">
                     <h2 className="text-xl font-bold text-gray-800 mb-6">
                         Transferencia Bancaria
                     </h2>
@@ -123,7 +123,7 @@ export default function PaymentSettings() {
                             type="text"
                             value={alias}
                             onChange={(e) => setAlias(e.target.value)}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.alias ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent ${errors.alias ? 'border-red-500' : 'border-gray-300'
                                 }`}
                             placeholder="ESCABI.API.MP"
                             minLength={3}
@@ -146,7 +146,7 @@ export default function PaymentSettings() {
                             type="tel"
                             value={whatsapp}
                             onChange={(e) => setWhatsapp(e.target.value)}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.whatsapp ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent ${errors.whatsapp ? 'border-red-500' : 'border-gray-300'
                                 }`}
                             placeholder="+5491112345678"
                             pattern="^\+?[0-9]{10,15}$"
@@ -172,7 +172,7 @@ export default function PaymentSettings() {
                             type="url"
                             value={instagram}
                             onChange={(e) => setInstagram(e.target.value)}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.instagram ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent ${errors.instagram ? 'border-red-500' : 'border-gray-300'
                                 }`}
                             placeholder="https://instagram.com/tu_tienda"
                         />
@@ -193,7 +193,7 @@ export default function PaymentSettings() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.email ? 'border-red-500' : 'border-gray-300'
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent ${errors.email ? 'border-red-500' : 'border-gray-300'
                                 }`}
                             placeholder="contacto@tutienda.com"
                         />
@@ -230,7 +230,7 @@ export default function PaymentSettings() {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                        className="w-full bg-gradient-to-r from-[#0D4F4F] to-[#1E7E7A] hover:opacity-90 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
                     >
                         {saving ? (
                             <>

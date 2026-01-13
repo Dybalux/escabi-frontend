@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+:root {
+    --color-brand-primary: #0D4F4F;
+    --color-brand-secondary: #1E7E7A;
+    --color-brand-accent: #C29F4C;
+    --color-brand-light: #F8F9FA;
+    --color-brand-dark: #0A3636;
+}
+
 @layer utilities {
     .scrollbar-hide {
         -ms-overflow-style: none;

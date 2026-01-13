@@ -14,7 +14,7 @@ export default function PaymentMethodSelector({ selectedMethod, onMethodChange }
             name: 'Transferencia Bancaria',
             description: 'Transferí y enviá el comprobante',
             icon: Building2,
-            color: 'from-purple-500 to-purple-600'
+            color: 'from-[#0D4F4F] to-[#1E7E7A]'
         }
     ];
 
@@ -32,8 +32,8 @@ export default function PaymentMethodSelector({ selectedMethod, onMethodChange }
                         <label
                             key={method.id}
                             className={`relative flex items-start p-4 border-2 rounded-lg cursor-pointer transition-all duration-200 ${isSelected
-                                    ? 'border-purple-600 bg-purple-50 shadow-md'
-                                    : 'border-gray-200 bg-white hover:border-purple-300 hover:shadow-sm'
+                                ? 'border-[#0D4F4F] bg-teal-50 shadow-md'
+                                : 'border-gray-200 bg-white hover:border-[#1E7E7A] hover:shadow-sm'
                                 }`}
                         >
                             <input
@@ -55,7 +55,7 @@ export default function PaymentMethodSelector({ selectedMethod, onMethodChange }
                                         </h4>
                                         {isSelected && (
                                             <div className="flex-shrink-0 ml-2">
-                                                <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <svg className="w-5 h-5 text-[#0D4F4F]" fill="currentColor" viewBox="0 0 20 20">
                                                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                                                 </svg>
                                             </div>

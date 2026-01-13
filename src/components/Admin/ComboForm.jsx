@@ -194,7 +194,7 @@ export default function ComboForm({ combo, onClose }) {
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows={3}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                                 placeholder="Descripción del combo..."
                             />
                         </div>
@@ -226,7 +226,7 @@ export default function ComboForm({ combo, onClose }) {
                                 type="button"
                                 variant="outline"
                                 onClick={() => openCloudinaryWidget((url) => setFormData(prev => ({ ...prev, image_url: url })))}
-                                className="w-full flex items-center justify-center gap-2 border-purple-600 text-purple-600 hover:bg-purple-50"
+                                className="w-full flex items-center justify-center gap-2 border-[#0D4F4F] text-[#0D4F4F] hover:bg-teal-50"
                             >
                                 <Plus size={18} />
                                 Subir Imagen a Cloudinary
@@ -257,7 +257,7 @@ export default function ComboForm({ combo, onClose }) {
                                 name="active"
                                 checked={formData.active}
                                 onChange={handleChange}
-                                className="w-4 h-4 text-purple-600 focus:ring-purple-500 rounded"
+                                className="w-4 h-4 text-[#0D4F4F] focus:ring-[#0D4F4F] rounded"
                             />
                             <span className="text-sm text-gray-700">Combo activo (visible para clientes)</span>
                         </label>
@@ -279,7 +279,7 @@ export default function ComboForm({ combo, onClose }) {
 
                             {loadingProducts ? (
                                 <div className="text-center py-4">
-                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+                                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0D4F4F] mx-auto"></div>
                                 </div>
                             ) : (
                                 <div className="space-y-3">
@@ -292,7 +292,7 @@ export default function ComboForm({ combo, onClose }) {
                                                 <select
                                                     value={item.product_id}
                                                     onChange={(e) => handleProductChange(index, 'product_id', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent text-sm"
                                                     required
                                                 >
                                                     <option value="">Seleccionar producto</option>
@@ -312,7 +312,7 @@ export default function ComboForm({ combo, onClose }) {
                                                     min="1"
                                                     value={item.quantity}
                                                     onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
-                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent text-sm"
                                                     required
                                                 />
                                             </div>

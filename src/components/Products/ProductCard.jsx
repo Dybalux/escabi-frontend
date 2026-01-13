@@ -52,7 +52,7 @@ export default function ProductCard({ product }) {
                 </div>
             )}
 
-            <div className="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center overflow-hidden">
+            <div className="h-48 bg-gradient-to-br from-[#0D4F4F] to-[#1E7E7A] flex items-center justify-center overflow-hidden">
                 {product.image_url ? (
                     <img
                         src={product.image_url}
@@ -77,7 +77,7 @@ export default function ProductCard({ product }) {
                 <div className="space-y-2 mb-4">
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Categoría:</span>
-                        <span className="font-semibold text-purple-600">{product.category}</span>
+                        <span className="font-semibold text-[#0D4F4F]">{product.category}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Stock:</span>
@@ -100,7 +100,7 @@ export default function ProductCard({ product }) {
                 </div>
 
                 <div className="flex items-center justify-between pt-4 border-t">
-                    <span className="text-3xl font-bold text-purple-600">
+                    <span className="text-3xl font-bold text-[#0D4F4F]">
                         ${product.price.toFixed(2)}
                     </span>
 
@@ -110,7 +110,7 @@ export default function ProductCard({ product }) {
                             <button
                                 onClick={decrementQuantity}
                                 disabled={quantity <= 1}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-purple-600 text-purple-600 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-[#0D4F4F] text-[#0D4F4F] hover:bg-teal-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 <Minus size={16} />
                             </button>
@@ -120,7 +120,7 @@ export default function ProductCard({ product }) {
                             <button
                                 onClick={incrementQuantity}
                                 disabled={quantity >= product.stock}
-                                className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-purple-600 text-purple-600 hover:bg-purple-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                className="w-8 h-8 flex items-center justify-center rounded-lg border-2 border-[#0D4F4F] text-[#0D4F4F] hover:bg-teal-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                             >
                                 <Plus size={16} />
                             </button>

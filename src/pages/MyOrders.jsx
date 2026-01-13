@@ -25,7 +25,7 @@ export default function MyOrders() {
         const colors = {
             'Pendiente': 'bg-yellow-100 text-yellow-800',
             'En Proceso': 'bg-blue-100 text-blue-800',
-            'Enviado': 'bg-purple-100 text-purple-800',
+            'Enviado': 'bg-teal-100 text-[#0D4F4F]',
             'Entregado': 'bg-green-100 text-green-800',
             'Cancelado': 'bg-red-100 text-red-800',
         };
@@ -42,7 +42,7 @@ export default function MyOrders() {
         } else if (method === 'Transferencia Bancaria') {
             return {
                 icon: Building2,
-                color: 'bg-purple-100 text-purple-800',
+                color: 'bg-teal-100 text-[#0D4F4F]',
                 label: 'Transferencia'
             };
         }
@@ -56,7 +56,7 @@ export default function MyOrders() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-[400px]">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -83,11 +83,11 @@ export default function MyOrders() {
                     return (
                         <div key={order.id || order._id || index} className="bg-white rounded-lg shadow-md p-6">
                             {/* Número de Orden destacado */}
-                            <div className="mb-4 pb-3 border-b-2 border-purple-100">
-                                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 px-4 py-2 rounded-lg border-2 border-purple-200">
-                                    <Package size={20} className="text-purple-600" />
+                            <div className="mb-4 pb-3 border-b-2 border-teal-100">
+                                <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-50 to-amber-50 px-4 py-2 rounded-lg border-2 border-teal-200">
+                                    <Package size={20} className="text-[#0D4F4F]" />
                                     <span className="text-sm font-medium text-gray-600">Pedido</span>
-                                    <span className="text-lg font-bold text-purple-700">
+                                    <span className="text-lg font-bold text-[#0D4F4F]">
                                         #{order._id || order.id}
                                     </span>
                                 </div>
@@ -136,7 +136,7 @@ export default function MyOrders() {
 
                             <div className="border-t mt-4 pt-4 flex justify-between items-center">
                                 <span className="font-semibold">Total:</span>
-                                <span className="text-2xl font-bold text-purple-600">
+                                <span className="text-2xl font-bold text-[#0D4F4F]">
                                     ${order.total_amount.toFixed(2)}
                                 </span>
                             </div>

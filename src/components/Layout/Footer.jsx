@@ -28,7 +28,7 @@ export default function Footer() {
                         </div>
 
                         {/* Transferencia Bancaria */}
-                        <div className="flex items-center gap-3 bg-purple-600 px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <div className="flex items-center gap-3 bg-[#0D4F4F] px-6 py-3 rounded-lg shadow-md hover:shadow-lg transition-shadow">
                             <Building2 size={24} />
                             <span className="font-semibold text-lg">Transferencia Bancaria</span>
                         </div>

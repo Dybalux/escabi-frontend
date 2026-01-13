@@ -58,7 +58,7 @@ export default function PaymentSuccess() {
         return (
             <div className="min-h-[60vh] flex items-center justify-center px-4">
                 <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 text-center">
-                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F] mx-auto mb-4"></div>
                     <p className="text-gray-600">Validando pago...</p>
                 </div>
             </div>
@@ -90,7 +90,7 @@ export default function PaymentSuccess() {
 
                 <div className="mb-8">
                     <p className="text-gray-600 mb-4">
-                        Tu orden <strong className="text-purple-600">#{orderId}</strong> ha sido confirmada.
+                        Tu orden <strong className="text-[#0D4F4F]">#{orderId}</strong> ha sido confirmada.
                     </p>
                     <p className="text-gray-500 text-sm">
                         Recibirás un email con los detalles de tu compra.
@@ -100,7 +100,7 @@ export default function PaymentSuccess() {
                 <div className="space-y-3">
                     <Link
                         to="/orders"
-                        className="block w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                        className="block w-full bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                     >
                         Ver mis pedidos
                     </Link>

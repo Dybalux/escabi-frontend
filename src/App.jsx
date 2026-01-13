@@ -30,7 +30,7 @@ function ProtectedRoute({ children }) {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
       </div>
     );
   }
@@ -38,8 +38,19 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
+import { showAgeVerificationToast } from './components/UI/AgeVerificationToast';
+import { useEffect } from 'react';
+
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
+
+  useEffect(() => {
+    // Solo mostrar si NO está verificado Y el usuario NO es admin
+    const isVerified = localStorage.getItem('ageVerified');
+    if (!isVerified && user?.role !== 'admin') {
+      showAgeVerificationToast();
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-50">

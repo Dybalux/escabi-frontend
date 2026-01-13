@@ -237,7 +237,7 @@ export default function Cart() {
                                 </span>
                                 <span className="text-gray-800 font-semibold">
                                     {shippingZone === 'pickup' ? (
-                                        <span className="text-green-600 font-bold">GRATIS</span>
+                                        <span className="text-emerald-700 font-bold">GRATIS</span>
                                     ) : (
                                         `$${shippingCost.toFixed(2)}`
                                     )}
@@ -245,9 +245,9 @@ export default function Cart() {
                             </div>
                         )}
                     </div>
-                    <div className="flex justify-between items-center text-2xl font-bold mb-6 pt-4 border-t">
+                    <div className="flex justify-between items-center text-2xl font-bold mb-6 pt-4 border-t border-teal-50">
                         <span>Total:</span>
-                        <span className="text-purple-600">${(getTotal() + shippingCost).toFixed(2)}</span>
+                        <span className="text-[#0D4F4F]">${(getTotal() + shippingCost).toFixed(2)}</span>
                     </div>
 
                     {/* Mostrar selector de método de pago si estamos en ese paso */}

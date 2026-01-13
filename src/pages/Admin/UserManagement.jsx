@@ -70,7 +70,7 @@ export default function UserManagement() {
     if (loading) {
         return (
             <div className="flex justify-center items-center min-h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-purple-600"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
             </div>
         );
     }
@@ -99,13 +99,13 @@ export default function UserManagement() {
                                 placeholder="Buscar por usuario o email..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                             />
                         </div>
                         <select
                             value={roleFilter}
                             onChange={(e) => setRoleFilter(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                         >
                             <option value="">Todos los roles</option>
                             <option value="customer">Clientes</option>
@@ -114,7 +114,7 @@ export default function UserManagement() {
                         <select
                             value={ageVerifiedFilter}
                             onChange={(e) => setAgeVerifiedFilter(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
                         >
                             <option value="">Todos (verificación)</option>
                             <option value="true">Verificados</option>
@@ -157,8 +157,8 @@ export default function UserManagement() {
                                         <tr key={key} className="hover:bg-gray-50">
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <div className="flex items-center">
-                                                    <div className="flex-shrink-0 h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
-                                                        <UsersIcon className="text-purple-600" size={20} />
+                                                    <div className="flex-shrink-0 h-10 w-10 bg-teal-50 rounded-full flex items-center justify-center">
+                                                        <UsersIcon className="text-[#0D4F4F]" size={20} />
                                                     </div>
                                                     <div className="ml-4">
                                                         <div className="text-sm font-medium text-gray-900">
@@ -175,7 +175,7 @@ export default function UserManagement() {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className={`px-3 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-full ${user.role === 'admin'
-                                                    ? 'bg-purple-100 text-purple-800'
+                                                    ? 'bg-teal-100 text-[#0D4F4F]'
                                                     : 'bg-blue-100 text-blue-800'
                                                     }`}>
                                                     {user.role === 'admin' && <Shield size={14} className="mr-1" />}
@@ -205,7 +205,7 @@ export default function UserManagement() {
                                                 {user.role === 'customer' ? (
                                                     <button
                                                         onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
-                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors duration-200"
+                                                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white rounded-lg font-semibold transition-colors duration-200"
                                                         title="Promover a administrador"
                                                     >
                                                         <UserPlus size={16} />
@@ -245,8 +245,8 @@ export default function UserManagement() {
                         return (
                             <div key={key} className="bg-white rounded-lg shadow-md p-4">
                                 <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-200">
-                                    <div className="flex-shrink-0 h-14 w-14 bg-purple-100 rounded-full flex items-center justify-center">
-                                        <UsersIcon className="text-purple-600" size={24} />
+                                    <div className="flex-shrink-0 h-14 w-14 bg-teal-50 rounded-full flex items-center justify-center">
+                                        <UsersIcon className="text-[#0D4F4F]" size={24} />
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <h3 className="text-base font-semibold text-gray-900 mb-1">
@@ -263,7 +263,7 @@ export default function UserManagement() {
                                     <div>
                                         <span className="text-xs text-gray-500 block mb-2">Rol</span>
                                         <span className={`px-3 py-1 inline-flex items-center text-xs font-semibold rounded-full ${user.role === 'admin'
-                                            ? 'bg-purple-100 text-purple-800'
+                                            ? 'bg-teal-100 text-[#0D4F4F]'
                                             : 'bg-blue-100 text-blue-800'
                                             }`}>
                                             {user.role === 'admin' && <Shield size={14} className="mr-1" />}
@@ -303,7 +303,7 @@ export default function UserManagement() {
                                     {user.role === 'customer' ? (
                                         <button
                                             onClick={() => handleRoleChange(user.id || user._id, user.role, user.username)}
-                                            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold transition-colors duration-200"
+                                            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white rounded-lg font-semibold transition-colors duration-200"
                                         >
                                             <UserPlus size={18} />
                                             Promover a Administrador
@@ -339,7 +339,7 @@ export default function UserManagement() {
                                 <p className="text-sm font-medium text-gray-600">Total Usuarios</p>
                                 <p className="text-2xl font-bold text-gray-900">{users.length}</p>
                             </div>
-                            <UsersIcon className="text-purple-600" size={32} />
+                            <UsersIcon className="text-[#0D4F4F]" size={32} />
                         </div>
                     </div>
                     <div className="bg-white rounded-lg shadow-md p-6">
@@ -357,11 +357,11 @@ export default function UserManagement() {
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-sm font-medium text-gray-600">Administradores</p>
-                                <p className="text-2xl font-bold text-purple-600">
+                                <p className="text-2xl font-bold text-[#0D4F4F]">
                                     {users.filter(u => u.role === 'admin').length}
                                 </p>
                             </div>
-                            <Shield className="text-purple-600" size={32} />
+                            <Shield className="text-[#0D4F4F]" size={32} />
                         </div>
                     </div>
                 </div>
