@@ -84,18 +84,18 @@ export default function Home() {
         if (products.length === 0) return;
 
         const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % Math.max(1, products.length - 2));
+            setCurrentSlide((prev) => (prev + 1) % Math.max(1, products.length - 1));
         }, 4000); // Cambiar cada 4 segundos
 
         return () => clearInterval(interval);
     }, [products.length]);
 
     const nextSlide = () => {
-        setCurrentSlide((prev) => (prev + 1) % Math.max(1, products.length - 2));
+        setCurrentSlide((prev) => (prev + 1) % Math.max(1, products.length - 1));
     };
 
     const prevSlide = () => {
-        setCurrentSlide((prev) => (prev - 1 + Math.max(1, products.length - 2)) % Math.max(1, products.length - 2));
+        setCurrentSlide((prev) => (prev - 1 + Math.max(1, products.length - 1)) % Math.max(1, products.length - 1));
     };
 
     // Auto-scroll del carrusel de Combos
@@ -103,18 +103,18 @@ export default function Home() {
         if (combos.length === 0) return;
 
         const interval = setInterval(() => {
-            setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 2));
+            setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 1));
         }, 5000); // Cambiar cada 5 segundos
 
         return () => clearInterval(interval);
     }, [combos.length]);
 
     const nextComboSlide = () => {
-        setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 2));
+        setCurrentComboSlide((prev) => (prev + 1) % Math.max(1, combos.length - 1));
     };
 
     const prevComboSlide = () => {
-        setCurrentComboSlide((prev) => (prev - 1 + Math.max(1, combos.length - 2)) % Math.max(1, combos.length - 2));
+        setCurrentComboSlide((prev) => (prev - 1 + Math.max(1, combos.length - 1)) % Math.max(1, combos.length - 1));
     };
 
     return (
@@ -177,12 +177,12 @@ export default function Home() {
                             <div className="overflow-hidden" ref={comboCarouselRef}>
                                 <div
                                     className="flex transition-transform duration-500 ease-in-out"
-                                    style={{ transform: `translateX(-${currentComboSlide * (100 / 3)}%)` }}
+                                    style={{ transform: `translateX(-${currentComboSlide * 66.66}%)` }}
                                 >
                                     {combos.map((combo) => {
                                         const comboId = combo.id || combo._id;
                                         return (
-                                            <div key={comboId} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-4">
+                                            <div key={comboId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
                                                 <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-purple-100 h-full">
                                                     {/* Image */}
                                                     <div className="relative h-48 bg-gradient-to-br from-purple-100 to-pink-100">
@@ -246,7 +246,7 @@ export default function Home() {
 
                             {/* Dots Indicator - Combos */}
                             <div className="flex justify-center gap-2 mt-6">
-                                {Array.from({ length: Math.max(1, combos.length - 2) }).map((_, index) => (
+                                {Array.from({ length: Math.max(1, combos.length - 1) }).map((_, index) => (
                                     <button
                                         key={index}
                                         onClick={() => setCurrentComboSlide(index)}
@@ -291,12 +291,12 @@ export default function Home() {
                             <div className="overflow-hidden" ref={carouselRef}>
                                 <div
                                     className="flex transition-transform duration-500 ease-in-out"
-                                    style={{ transform: `translateX(-${currentSlide * (100 / 3)}%)` }}
+                                    style={{ transform: `translateX(-${currentSlide * 66.66}%)` }}
                                 >
                                     {products.map((product) => {
                                         const productId = product.id || product._id;
                                         return (
-                                            <div key={productId} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 px-4">
+                                            <div key={productId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
                                                 <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow h-full">
                                                     {/* Image */}
                                                     <div className="relative h-48 bg-gradient-to-br from-blue-100 to-cyan-100">
@@ -345,7 +345,7 @@ export default function Home() {
 
                             {/* Dots Indicator */}
                             <div className="flex justify-center gap-2 mt-6">
-                                {Array.from({ length: Math.max(1, products.length - 2) }).map((_, index) => (
+                                {Array.from({ length: Math.max(1, products.length - 1) }).map((_, index) => (
                                     <button
                                         key={index}
                                         onClick={() => setCurrentSlide(index)}

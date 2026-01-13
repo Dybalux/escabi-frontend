@@ -8,7 +8,11 @@ export default function ShippingSettings() {
     const [saving, setSaving] = useState(false);
     const [prices, setPrices] = useState({
         central_zone_price: 500,
-        remote_zone_price: 1000
+        central_zone_description: '',
+        remote_zone_price: 1000,
+        remote_zone_description: '',
+        pickup_address: '',
+        pickup_description: ''
     });
 
     useEffect(() => {
@@ -20,7 +24,11 @@ export default function ShippingSettings() {
             const response = await getShippingSettings();
             setPrices({
                 central_zone_price: response.data.central_zone_price,
-                remote_zone_price: response.data.remote_zone_price
+                central_zone_description: response.data.central_zone_description || '',
+                remote_zone_price: response.data.remote_zone_price,
+                remote_zone_description: response.data.remote_zone_description || '',
+                pickup_address: response.data.pickup_address || '',
+                pickup_description: response.data.pickup_description || ''
             });
         } catch (error) {
             console.error('Error al cargar configuración:', error);
@@ -37,16 +45,33 @@ export default function ShippingSettings() {
             return;
         }
 
+        if (!prices.central_zone_description.trim()) {
+            toast.error('La descripción de zona céntrica es requerida');
+            return;
+        }
+
+        if (!prices.remote_zone_description.trim()) {
+            toast.error('La descripción de zona remota es requerida');
+            return;
+        }
+
+        if (!prices.pickup_address.trim()) {
+            toast.error('La dirección de retiro es requerida');
+            return;
+        }
+
+        if (!prices.pickup_description.trim()) {
+            toast.error('La descripción de retiro es requerida');
+            return;
+        }
+
         setSaving(true);
         try {
-            await updateShippingSettings(
-                prices.central_zone_price,
-                prices.remote_zone_price
-            );
-            toast.success('Precios actualizados correctamente');
+            await updateShippingSettings(prices);
+            toast.success('Configuración actualizada correctamente');
         } catch (error) {
-            console.error('Error al actualizar precios:', error);
-            toast.error('Error al actualizar precios de envío');
+            console.error('Error al actualizar configuración:', error);
+            toast.error('Error al actualizar configuración de envíos');
         } finally {
             setSaving(false);
         }
@@ -70,51 +95,146 @@ export default function ShippingSettings() {
 
                 <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
                     {/* Zona Céntrica */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            🏙️ Precio Zona Céntrica
-                        </label>
-                        <div className="flex items-center gap-2">
-                            <span className="text-2xl font-bold text-gray-700">$</span>
-                            <input
-                                type="number"
-                                value={prices.central_zone_price}
-                                onChange={(e) => setPrices({
-                                    ...prices,
-                                    central_zone_price: parseFloat(e.target.value) || 0
-                                })}
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                                min="0"
-                                step="50"
-                            />
+                    <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-purple-800 mb-4">🏙️ Zona Céntrica</h3>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Precio
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-bold text-gray-700">$</span>
+                                    <input
+                                        type="number"
+                                        value={prices.central_zone_price}
+                                        onChange={(e) => setPrices({
+                                            ...prices,
+                                            central_zone_price: parseFloat(e.target.value) || 0
+                                        })}
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                        min="0"
+                                        step="50"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Descripción
+                                </label>
+                                <input
+                                    type="text"
+                                    value={prices.central_zone_description}
+                                    onChange={(e) => setPrices({
+                                        ...prices,
+                                        central_zone_description: e.target.value
+                                    })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    placeholder="Ej: Envío a zona céntrica"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Esta descripción se mostrará a los clientes durante el checkout
+                                </p>
+                            </div>
                         </div>
-                        <p className="text-sm text-gray-500 mt-1">
-                            Para entregas en zonas céntricas o cercanas
-                        </p>
                     </div>
 
                     {/* Zonas Lejanas */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            🌄 Precio Zonas Lejanas
-                        </label>
-                        <div className="flex items-center gap-2">
-                            <span className="text-2xl font-bold text-gray-700">$</span>
-                            <input
-                                type="number"
-                                value={prices.remote_zone_price}
-                                onChange={(e) => setPrices({
-                                    ...prices,
-                                    remote_zone_price: parseFloat(e.target.value) || 0
-                                })}
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                                min="0"
-                                step="50"
-                            />
+                    <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-orange-800 mb-4">🌄 Zonas Lejanas</h3>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Precio
+                                </label>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-2xl font-bold text-gray-700">$</span>
+                                    <input
+                                        type="number"
+                                        value={prices.remote_zone_price}
+                                        onChange={(e) => setPrices({
+                                            ...prices,
+                                            remote_zone_price: parseFloat(e.target.value) || 0
+                                        })}
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                        min="0"
+                                        step="50"
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Descripción
+                                </label>
+                                <input
+                                    type="text"
+                                    value={prices.remote_zone_description}
+                                    onChange={(e) => setPrices({
+                                        ...prices,
+                                        remote_zone_description: e.target.value
+                                    })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    placeholder="Ej: Envío a zonas lejanas"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Esta descripción se mostrará a los clientes durante el checkout
+                                </p>
+                            </div>
                         </div>
-                        <p className="text-sm text-gray-500 mt-1">
-                            Para entregas en zonas alejadas o de difícil acceso
-                        </p>
+                    </div>
+
+                    {/* Retiro en Persona */}
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h3 className="text-lg font-semibold text-green-800 mb-4">📦 Retiro en Persona</h3>
+
+                        <div className="space-y-4">
+                            <div className="bg-green-100 border border-green-300 rounded-lg p-3">
+                                <p className="text-sm text-green-800 font-medium">
+                                    ✨ El retiro en persona siempre es GRATIS ($0)
+                                </p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Dirección de Retiro
+                                </label>
+                                <input
+                                    type="text"
+                                    value={prices.pickup_address}
+                                    onChange={(e) => setPrices({
+                                        ...prices,
+                                        pickup_address: e.target.value
+                                    })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    placeholder="Ej: Calle Principal 123, Santa María"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Dirección donde los clientes pueden retirar sus pedidos
+                                </p>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Descripción
+                                </label>
+                                <input
+                                    type="text"
+                                    value={prices.pickup_description}
+                                    onChange={(e) => setPrices({
+                                        ...prices,
+                                        pickup_description: e.target.value
+                                    })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                                    placeholder="Ej: Retiro en persona"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Esta descripción se mostrará a los clientes durante el checkout
+                                </p>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Información adicional */}

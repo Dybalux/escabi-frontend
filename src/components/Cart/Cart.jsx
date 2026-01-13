@@ -226,10 +226,22 @@ export default function Cart() {
                             <span className="text-gray-600">Subtotal:</span>
                             <span className="text-gray-800 font-semibold">${getTotal().toFixed(2)}</span>
                         </div>
-                        {shippingCost > 0 && (
+                        {shippingZone && (
                             <div className="flex justify-between items-center text-lg">
-                                <span className="text-gray-600">Envío ({shippingZone === 'central' ? '🏙️ Zona Céntrica' : '🌄 Zonas Lejanas'}):</span>
-                                <span className="text-gray-800 font-semibold">${shippingCost.toFixed(2)}</span>
+                                <span className="text-gray-600">
+                                    Envío (
+                                    {shippingZone === 'central' && '🏙️ Zona Céntrica'}
+                                    {shippingZone === 'remote' && '🌄 Zonas Lejanas'}
+                                    {shippingZone === 'pickup' && '📦 Retiro en Persona'}
+                                    ):
+                                </span>
+                                <span className="text-gray-800 font-semibold">
+                                    {shippingZone === 'pickup' ? (
+                                        <span className="text-green-600 font-bold">GRATIS</span>
+                                    ) : (
+                                        `$${shippingCost.toFixed(2)}`
+                                    )}
+                                </span>
                             </div>
                         )}
                     </div>

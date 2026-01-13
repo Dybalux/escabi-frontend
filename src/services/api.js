@@ -215,11 +215,15 @@ export const updatePaymentSettings = (settings) => api.put('/admin/payment-setti
 
 // Admin - Shipping Settings
 export const getShippingSettings = () => api.get('/admin/shipping-settings');
-export const updateShippingSettings = (centralPrice, remotePrice) =>
+export const updateShippingSettings = (settings) =>
     api.put('/admin/shipping-settings', null, {
         params: {
-            central_zone_price: centralPrice,
-            remote_zone_price: remotePrice
+            central_zone_price: settings.central_zone_price,
+            central_zone_description: settings.central_zone_description,
+            remote_zone_price: settings.remote_zone_price,
+            remote_zone_description: settings.remote_zone_description,
+            pickup_address: settings.pickup_address,
+            pickup_description: settings.pickup_description
         }
     });
 

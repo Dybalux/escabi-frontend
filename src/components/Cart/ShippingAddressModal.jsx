@@ -12,10 +12,7 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
 
     const [errors, setErrors] = useState({});
     const [selectedZone, setSelectedZone] = useState('central');
-    const [shippingPrices, setShippingPrices] = useState({
-        central_zone_price: 500,
-        remote_zone_price: 1000
-    });
+    const [shippingPrices, setShippingPrices] = useState(null);
     const [loadingPrices, setLoadingPrices] = useState(true);
 
     useEffect(() => {
@@ -49,11 +46,19 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
     const validate = () => {
         const newErrors = {};
 
-        if (!formData.street.trim()) {
-            newErrors.street = 'La dirección es requerida';
-        }
-        if (!formData.phone.trim()) {
-            newErrors.phone = 'El teléfono es requerido';
+        // Solo validar dirección y teléfono si NO es retiro en persona
+        if (selectedZone !== 'pickup') {
+            if (!formData.street.trim()) {
+                newErrors.street = 'La dirección es requerida';
+            }
+            if (!formData.phone.trim()) {
+                newErrors.phone = 'El teléfono es requerido';
+            }
+        } else {
+            // Para pickup, solo validamos el teléfono
+            if (!formData.phone.trim()) {
+                newErrors.phone = 'El teléfono es requerido';
+            }
         }
 
         setErrors(newErrors);
@@ -65,12 +70,25 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
 
         if (validate()) {
             // Calcular costo de envío según zona seleccionada
-            const shippingCost = selectedZone === 'central'
-                ? shippingPrices.central_zone_price
-                : shippingPrices.remote_zone_price;
+            let shippingCost = 0;
+            if (selectedZone === 'central') {
+                shippingCost = shippingPrices?.central?.price || 0;
+            } else if (selectedZone === 'remote') {
+                shippingCost = shippingPrices?.remote?.price || 0;
+            } else if (selectedZone === 'pickup') {
+                shippingCost = 0; // Siempre gratis
+            }
 
-            // Formatear dirección con valores fijos para Santa María, Catamarca
-            const addressData = {
+            // Formatear dirección - para pickup, usar la dirección de retiro
+            const addressData = selectedZone === 'pickup' ? {
+                street: shippingPrices?.pickup?.address || 'Retiro en persona',
+                city: "Santa María",
+                state: "Catamarca",
+                zip_code: "4139",
+                country: "Argentina",
+                phone: formData.phone.trim(),
+                notes: formData.notes.trim() || undefined
+            } : {
                 street: formData.street.trim(),
                 city: "Santa María",
                 state: "Catamarca",
@@ -117,24 +135,26 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                         </p>
 
                         <form onSubmit={handleSubmit} className="space-y-4">
-                            {/* Dirección/Calle */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Dirección *
-                                </label>
-                                <input
-                                    type="text"
-                                    name="street"
-                                    value={formData.street}
-                                    onChange={handleChange}
-                                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${errors.street ? 'border-red-500' : 'border-gray-300'
-                                        }`}
-                                    placeholder="Ej: Av. 9 de Julio 1234"
-                                />
-                                {errors.street && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.street}</p>
-                                )}
-                            </div>
+                            {/* Dirección/Calle - Solo mostrar si NO es pickup */}
+                            {selectedZone !== 'pickup' && (
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                                        Dirección *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="street"
+                                        value={formData.street}
+                                        onChange={handleChange}
+                                        className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all ${errors.street ? 'border-red-500' : 'border-gray-300'
+                                            }`}
+                                        placeholder="Ej: Av. 9 de Julio 1234"
+                                    />
+                                    {errors.street && (
+                                        <p className="text-red-500 text-sm mt-1">{errors.street}</p>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Teléfono */}
                             <div>
@@ -158,15 +178,16 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                             {/* Zona de Envío */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Zona de Envío *
+                                    Método de Envío *
                                 </label>
                                 {loadingPrices ? (
                                     <div className="flex justify-center py-4">
                                         <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
                                     </div>
-                                ) : (
+                                ) : shippingPrices ? (
                                     <div className="space-y-2">
-                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all group">
+                                        {/* Opción Central */}
+                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all ${selectedZone === 'central' ? 'border-purple-600 bg-purple-50' : 'border-gray-200'}`}>
                                             <input
                                                 type="radio"
                                                 name="zone"
@@ -176,17 +197,17 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                                 className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
                                             />
                                             <div className="flex-1">
-                                                <div className="font-medium text-gray-800">🏙️ Zona Céntrica</div>
-                                                <div className="text-sm text-gray-500">
-                                                    Costo: ${shippingPrices.central_zone_price.toFixed(2)}
+                                                <div className="font-medium text-gray-800">
+                                                    🏙️ {shippingPrices.central?.description || 'Zona Céntrica'}
                                                 </div>
-                                                <div className="text-xs text-gray-400 mt-1">
-                                                    Centro de la ciudad y alrededores cercanos
+                                                <div className="text-sm text-gray-500">
+                                                    Costo: ${shippingPrices.central?.price?.toFixed(2) || '0.00'}
                                                 </div>
                                             </div>
                                         </label>
 
-                                        <label className="flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-purple-50 transition-all group">
+                                        {/* Opción Remote */}
+                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-orange-50 transition-all ${selectedZone === 'remote' ? 'border-orange-600 bg-orange-50' : 'border-gray-200'}`}>
                                             <input
                                                 type="radio"
                                                 name="zone"
@@ -196,16 +217,42 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                                 className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
                                             />
                                             <div className="flex-1">
-                                                <div className="font-medium text-gray-800">🌄 Zonas Lejanas</div>
-                                                <div className="text-sm text-gray-500">
-                                                    Costo: ${shippingPrices.remote_zone_price.toFixed(2)}
+                                                <div className="font-medium text-gray-800">
+                                                    🌄 {shippingPrices.remote?.description || 'Zonas Lejanas'}
                                                 </div>
-                                                <div className="text-xs text-gray-400 mt-1">
-                                                    Barrios alejados y zonas de difícil acceso
+                                                <div className="text-sm text-gray-500">
+                                                    Costo: ${shippingPrices.remote?.price?.toFixed(2) || '0.00'}
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        {/* Opción Pickup - GRATIS */}
+                                        <label className={`flex items-center p-3 border-2 rounded-lg cursor-pointer hover:bg-green-50 transition-all ${selectedZone === 'pickup' ? 'border-green-600 bg-green-50' : 'border-gray-200'}`}>
+                                            <input
+                                                type="radio"
+                                                name="zone"
+                                                value="pickup"
+                                                checked={selectedZone === 'pickup'}
+                                                onChange={(e) => setSelectedZone(e.target.value)}
+                                                className="mr-3 w-4 h-4 text-purple-600 focus:ring-purple-500"
+                                            />
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-medium text-gray-800">
+                                                        📦 {shippingPrices.pickup?.description || 'Retiro en Persona'}
+                                                    </span>
+                                                    <span className="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                                        GRATIS
+                                                    </span>
+                                                </div>
+                                                <div className="text-sm text-gray-600 mt-1">
+                                                    📍 {shippingPrices.pickup?.address || 'Dirección no configurada'}
                                                 </div>
                                             </div>
                                         </label>
                                     </div>
+                                ) : (
+                                    <p className="text-red-500 text-sm">Error al cargar opciones de envío</p>
                                 )}
                             </div>
 
