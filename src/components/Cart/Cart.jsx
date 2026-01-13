@@ -198,8 +198,8 @@ export default function Cart() {
     }
 
     return (
-        <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">🛒 Mi Carrito</h1>
+        <div className="max-w-4xl mx-auto px-2 sm:px-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">🛒 Mi Carrito</h1>
 
             {alert && (
                 <Alert type={alert.type} message={alert.message} onClose={() => setAlert(null)} />
@@ -212,7 +212,7 @@ export default function Cart() {
                 onSubmit={handleAddressSubmit}
             />
 
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-md p-3 sm:p-6 mb-6 border border-gray-100">
                 <div className="space-y-4">
                     {cartItems.map(item => (
                         <CartItem key={item.product_id} item={item} />
