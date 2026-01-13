@@ -104,18 +104,9 @@ export const AuthProvider = ({ children }) => {
                 return { success: true, message: 'Registro exitoso. Por favor inicia sesión.' };
             }
 
-            // 3. Verificar edad automáticamente si es mayor de 18
-            const age = calculateAge(userData.birth_date);
-            if (age >= 18) {
-                try {
-                    await apiVerifyAge();
-                    // Recargar usuario para obtener age_verified actualizado
-                    await loadUser();
-                } catch (verifyError) {
-                    console.error('Error al verificar edad automáticamente:', verifyError);
-                    // Continuar aunque falle la verificación automática
-                }
-            }
+            // El backend ya verificó la edad automáticamente durante el registro
+            // Solo necesitamos recargar el usuario para sincronizar el estado
+            await loadUser();
 
             return { success: true, autoLogin: true };
         } catch (error) {
