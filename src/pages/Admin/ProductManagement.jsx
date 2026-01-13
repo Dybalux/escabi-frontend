@@ -3,6 +3,7 @@ import { Plus, Edit, Trash2, Search, AlertCircle } from 'lucide-react';
 import { getProducts, deleteProduct } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
+import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 
@@ -124,6 +125,11 @@ export default function ProductManagement() {
                             ))}
                         </select>
                     </div>
+                </div>
+
+                {/* Bulk Price Update */}
+                <div className="mb-6">
+                    <BulkPriceUpdate onUpdate={loadProducts} />
                 </div>
 
                 {/* Error Message */}

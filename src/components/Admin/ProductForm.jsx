@@ -12,6 +12,7 @@ export default function ProductForm({ product, onClose }) {
         name: '',
         description: '',
         price: '',
+        net_price: '',
         category: '',
         stock: '',
         image_url: '',
@@ -28,6 +29,7 @@ export default function ProductForm({ product, onClose }) {
                 name: product.name || '',
                 description: product.description || '',
                 price: product.price || '',
+                net_price: product.net_price || '',
                 category: product.category || '',
                 stock: product.stock || '',
                 image_url: product.image_url || '',
@@ -162,18 +164,76 @@ export default function ProductForm({ product, onClose }) {
                             />
                         </div>
 
-                        <div>
-                            <Input
-                                label="Precio"
-                                name="price"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                value={formData.price}
-                                onChange={handleChange}
-                                required
-                                placeholder="0.00"
-                            />
+                        {/* Sección de Precios */}
+                        <div className="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-4">💰 Gestión de Precios</h3>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <Input
+                                        label="Precio de Costo (Neto)"
+                                        name="net_price"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={formData.net_price}
+                                        onChange={handleChange}
+                                        placeholder="0.00"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Precio que te cobra el proveedor</p>
+                                </div>
+
+                                <div>
+                                    <Input
+                                        label="Precio de Venta"
+                                        name="price"
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={formData.price}
+                                        onChange={handleChange}
+                                        required
+                                        placeholder="0.00"
+                                    />
+                                    <p className="text-xs text-gray-500 mt-1">Precio al que vendes al cliente</p>
+                                </div>
+                            </div>
+
+                            {/* Calculadora de Margen */}
+                            {formData.net_price && formData.price && (
+                                <div className="mt-4 p-3 bg-white rounded border border-gray-200">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium text-gray-700">Margen:</span>
+                                        <span className={`text-lg font-bold ${((formData.price - formData.net_price) / formData.net_price * 100) >= 30
+                                                ? 'text-green-600'
+                                                : 'text-orange-600'
+                                            }`}>
+                                            {((formData.price - formData.net_price) / formData.net_price * 100).toFixed(1)}%
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center justify-between mt-1">
+                                        <span className="text-xs text-gray-500">Ganancia:</span>
+                                        <span className="text-sm font-semibold text-gray-700">
+                                            ${(formData.price - formData.net_price).toFixed(2)}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Botón de Precio Sugerido */}
+                            {formData.net_price && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        const suggestedPrice = (parseFloat(formData.net_price) * 1.3).toFixed(2);
+                                        setFormData(prev => ({ ...prev, price: suggestedPrice }));
+                                        toast.success(`Precio sugerido aplicado: $${suggestedPrice} (30% margen)`);
+                                    }}
+                                    className="mt-3 w-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+                                >
+                                    💡 Calcular Precio Sugerido (30% margen)
+                                </button>
+                            )}
                         </div>
 
                         <div>
