@@ -49,7 +49,10 @@ export default function Home() {
 
     const handleAddToCart = async (comboId, comboName) => {
         if (!isAuthenticated) {
-            toast.error('Debes iniciar sesión para agregar al carrito');
+            toast.error('Debes iniciar sesión o crear una cuenta para poder comprar', {
+                duration: 4000,
+                icon: '🔒'
+            });
             return;
         }
 
@@ -65,7 +68,10 @@ export default function Home() {
 
     const handleAddProductToCart = async (productId, productName) => {
         if (!isAuthenticated) {
-            toast.error('Debes iniciar sesión para agregar al carrito');
+            toast.error('Debes iniciar sesión o crear una cuenta para poder comprar', {
+                duration: 4000,
+                icon: '🔒'
+            });
             return;
         }
 
@@ -254,14 +260,12 @@ export default function Home() {
                                                             <div className="text-3xl font-bold text-[#0D4F4F]">
                                                                 ${combo.price?.toLocaleString('es-AR')}
                                                             </div>
-                                                            {isAuthenticated && (
-                                                                <button
-                                                                    onClick={() => handleAddToCart(comboId, combo.name)}
-                                                                    className="w-full bg-[#10B981] text-white px-4 py-3 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
-                                                                >
-                                                                    Agregar al Carrito
-                                                                </button>
-                                                            )}
+                                                            <button
+                                                                onClick={() => handleAddToCart(comboId, combo.name)}
+                                                                className="w-full bg-[#10B981] text-white px-4 py-3 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
+                                                            >
+                                                                Agregar al Carrito
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -355,15 +359,14 @@ export default function Home() {
                                                             <div className="text-2xl font-bold text-[#0D4F4F]">
                                                                 ${product.price?.toLocaleString('es-AR')}
                                                             </div>
-                                                            {isAuthenticated && product.stock > 0 && (
+                                                            {product.stock > 0 ? (
                                                                 <button
                                                                     onClick={() => handleAddProductToCart(productId, product.name)}
                                                                     className="w-full bg-[#10B981] text-white px-4 py-2.5 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
                                                                 >
                                                                     Agregar
                                                                 </button>
-                                                            )}
-                                                            {product.stock === 0 && (
+                                                            ) : (
                                                                 <span className="text-red-600 text-sm font-bold bg-red-50 text-center py-2 rounded-lg border border-red-100 italic">
                                                                     Agotado
                                                                 </span>
