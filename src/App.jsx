@@ -39,118 +39,124 @@ function ProtectedRoute({ children }) {
 }
 
 import { showAgeVerificationToast } from './components/UI/AgeVerificationToast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function AppRoutes() {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth();
+  const [showBlur, setShowBlur] = useState(false);
 
   useEffect(() => {
+    if (loading) return;
+
     // Solo mostrar si NO está verificado Y el usuario NO es admin
     const isVerified = localStorage.getItem('ageVerified');
-    if (!isVerified && user?.role !== 'admin') {
-      showAgeVerificationToast();
+    if (!isVerified && user?.role !== 'admin' && !showBlur) {
+      setShowBlur(true);
+      showAgeVerificationToast(() => setShowBlur(false));
     }
-  }, [user]);
+  }, [user, loading, showBlur]);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <main className="container mx-auto px-4 py-8">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <>
+      <div className={`min-h-screen flex flex-col bg-gray-50 transition-all duration-700 ${showBlur ? 'blur-2xl grayscale-[0.3] pointer-events-none scale-[1.02]' : ''}`}>
+        <Header />
+        <main className="container mx-auto px-4 py-8 flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          <Route path="/products" element={<Products />} />
+            <Route path="/products" element={<Products />} />
 
-          <Route
-            path="/cart"
-            element={
-              <ProtectedRoute>
-                <Cart />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
 
-          <Route
-            path="/orders"
-            element={
-              <ProtectedRoute>
-                <MyOrders />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/orders"
+              element={
+                <ProtectedRoute>
+                  <MyOrders />
+                </ProtectedRoute>
+              }
+            />
 
 
 
-          {/* Payment Routes */}
-          <Route path="/payment/success" element={<PaymentSuccess />} />
-          <Route path="/payment/failure" element={<PaymentFailure />} />
-          <Route path="/payment/pending" element={<PaymentPending />} />
+            {/* Payment Routes */}
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/failure" element={<PaymentFailure />} />
+            <Route path="/payment/pending" element={<PaymentPending />} />
 
-          {/* Admin Routes */}
-          <Route
-            path="/admin"
-            element={
-              <AdminRoute>
-                <AdminDashboard />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/products"
-            element={
-              <AdminRoute>
-                <ProductManagement />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/combos"
-            element={
-              <AdminRoute>
-                <ComboManagement />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/orders"
-            element={
-              <AdminRoute>
-                <OrderManagement />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/users"
-            element={
-              <AdminRoute>
-                <UserManagement />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/payment-settings"
-            element={
-              <AdminRoute>
-                <PaymentSettings />
-              </AdminRoute>
-            }
-          />
-          <Route
-            path="/admin/shipping-settings"
-            element={
-              <AdminRoute>
-                <ShippingSettings />
-              </AdminRoute>
-            }
-          />
+            {/* Admin Routes */}
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/products"
+              element={
+                <AdminRoute>
+                  <ProductManagement />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/combos"
+              element={
+                <AdminRoute>
+                  <ComboManagement />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/orders"
+              element={
+                <AdminRoute>
+                  <OrderManagement />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <AdminRoute>
+                  <UserManagement />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/payment-settings"
+              element={
+                <AdminRoute>
+                  <PaymentSettings />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/shipping-settings"
+              element={
+                <AdminRoute>
+                  <ShippingSettings />
+                </AdminRoute>
+              }
+            />
 
-          {/* 404 - Página no encontrada */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </main>
-      <Footer />
+            {/* 404 - Página no encontrada */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </main>
+        <Footer />
+      </div>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -175,7 +181,7 @@ function AppRoutes() {
           },
         }}
       />
-    </div>
+    </>
   );
 }
 

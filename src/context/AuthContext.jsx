@@ -39,6 +39,12 @@ export const AuthProvider = ({ children }) => {
         try {
             const response = await getCurrentUser();
             setUser(response.data);
+
+            // Sincronizar estado de verificación de edad del backend con localStorage
+            if (response.data.age_verified) {
+                localStorage.setItem('ageVerified', 'true');
+            }
+
             return response.data; // Retornar los datos del usuario
         } catch (error) {
             console.error('Error loading user:', error);
