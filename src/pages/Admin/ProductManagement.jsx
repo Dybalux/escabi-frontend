@@ -3,7 +3,6 @@ import { Plus, Edit, Trash2, Search, AlertCircle } from 'lucide-react';
 import { getProducts, deleteProduct } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
-import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 
@@ -125,11 +124,6 @@ export default function ProductManagement() {
                             ))}
                         </select>
                     </div>
-                </div>
-
-                {/* Bulk Price Update Section */}
-                <div className="mb-6">
-                    <BulkPriceUpdate />
                 </div>
 
                 {/* Error Message */}
@@ -289,7 +283,7 @@ export default function ProductManagement() {
                             <div className="flex gap-2 pt-3 border-t border-gray-200">
                                 <button
                                     onClick={() => handleEdit(product)}
-                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#10B981] text-white rounded-lg hover:bg-[#059669] transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-[#0D4F4F] text-white rounded-lg hover:bg-[#1E7E7A] transition-colors"
                                 >
                                     <Edit size={16} />
                                     <span className="text-sm font-medium">Editar</span>

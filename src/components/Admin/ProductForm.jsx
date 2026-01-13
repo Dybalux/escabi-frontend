@@ -12,7 +12,6 @@ export default function ProductForm({ product, onClose }) {
         name: '',
         description: '',
         price: '',
-        net_price: '',
         category: '',
         stock: '',
         image_url: '',
@@ -29,7 +28,6 @@ export default function ProductForm({ product, onClose }) {
                 name: product.name || '',
                 description: product.description || '',
                 price: product.price || '',
-                net_price: product.net_price || '',
                 category: product.category || '',
                 stock: product.stock || '',
                 image_url: product.image_url || '',
@@ -57,12 +55,6 @@ export default function ProductForm({ product, onClose }) {
             // Validar que no haya valores negativos
             if (parseFloat(formData.price) < 0) {
                 setError('El precio no puede ser negativo');
-                setLoading(false);
-                return;
-            }
-
-            if (formData.net_price && parseFloat(formData.net_price) < 0) {
-                setError('El precio neto no puede ser negativo');
                 setLoading(false);
                 return;
             }
@@ -95,7 +87,6 @@ export default function ProductForm({ product, onClose }) {
             const productData = {
                 ...formData,
                 price: parseFloat(formData.price),
-                net_price: formData.net_price ? parseFloat(formData.net_price) : undefined,
                 stock: parseInt(formData.stock),
                 alcohol_content: formData.alcohol_content ? parseFloat(formData.alcohol_content) : undefined,
                 volume_ml: formData.volume_ml ? parseInt(formData.volume_ml) : undefined,
@@ -171,63 +162,18 @@ export default function ProductForm({ product, onClose }) {
                             />
                         </div>
 
-                        <div className="md:col-span-2 bg-amber-50 border border-amber-200 rounded-lg p-4">
-                            <h3 className="text-sm font-semibold text-amber-800 mb-3 flex items-center gap-2">
-                                💰 Gestión de Precios
-                            </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <Input
-                                        label="Precio Neto (Costo)"
-                                        name="net_price"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={formData.net_price}
-                                        onChange={handleChange}
-                                        placeholder="0.00"
-                                    />
-                                    <p className="text-xs text-gray-600 mt-1">
-                                        Precio que te cobra el proveedor
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <Input
-                                        label="Precio de Venta"
-                                        name="price"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={formData.price}
-                                        onChange={handleChange}
-                                        required
-                                        placeholder="0.00"
-                                    />
-                                    {formData.net_price && formData.price && (
-                                        <p className="text-xs text-green-600 mt-1 font-semibold">
-                                            Margen: {(((parseFloat(formData.price) - parseFloat(formData.net_price)) / parseFloat(formData.net_price)) * 100).toFixed(1)}%
-                                        </p>
-                                    )}
-                                </div>
-
-                                {formData.net_price && (
-                                    <div className="md:col-span-2">
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                const netPrice = parseFloat(formData.net_price);
-                                                const suggestedPrice = (netPrice * 1.30).toFixed(2);
-                                                setFormData(prev => ({ ...prev, price: suggestedPrice }));
-                                                toast.success(`Precio sugerido: $${suggestedPrice} (30% de margen)`);
-                                            }}
-                                            className="w-full bg-amber-100 hover:bg-amber-200 text-amber-800 font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
-                                        >
-                                            💡 Calcular Precio Sugerido (30% margen)
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                        <div>
+                            <Input
+                                label="Precio"
+                                name="price"
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                value={formData.price}
+                                onChange={handleChange}
+                                required
+                                placeholder="0.00"
+                            />
                         </div>
 
                         <div>

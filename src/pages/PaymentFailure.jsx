@@ -94,7 +94,7 @@ export default function PaymentFailure() {
                 <div className="space-y-3">
                     <Link
                         to="/cart"
-                        className="block w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                        className="block w-full bg-[#0D4F4F] hover:bg-[#1E7E7A] text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                     >
                         Volver al carrito
                     </Link>

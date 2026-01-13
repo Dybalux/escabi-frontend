@@ -49,44 +49,7 @@ export default function Home() {
 
     const handleAddToCart = async (comboId, comboName) => {
         if (!isAuthenticated) {
-            toast.custom((t) => (
-                <div className="bg-white rounded-lg shadow-xl p-4 max-w-md border-l-4 border-[#10B981]">
-                    <div className="flex items-start gap-3">
-                        <div className="text-2xl">🔒</div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-gray-800 mb-1">Inicia sesión para comprar</h3>
-                            <p className="text-sm text-gray-600 mb-3">
-                                Necesitas una cuenta para agregar productos al carrito
-                            </p>
-                            <div className="flex gap-2">
-                                <Link
-                                    to="/login"
-                                    className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
-                                    onClick={() => toast.dismiss(t.id)}
-                                >
-                                    Iniciar Sesión
-                                </Link>
-                                <Link
-                                    to="/register"
-                                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
-                                    onClick={() => toast.dismiss(t.id)}
-                                >
-                                    Crear Cuenta
-                                </Link>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => toast.dismiss(t.id)}
-                            className="text-gray-400 hover:text-gray-600"
-                        >
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            ), {
-                duration: 6000,
-                position: 'top-center'
-            });
+            toast.error('Debes iniciar sesión para agregar al carrito');
             return;
         }
 
@@ -102,44 +65,7 @@ export default function Home() {
 
     const handleAddProductToCart = async (productId, productName) => {
         if (!isAuthenticated) {
-            toast.custom((t) => (
-                <div className="bg-white rounded-lg shadow-xl p-4 max-w-md border-l-4 border-[#10B981]">
-                    <div className="flex items-start gap-3">
-                        <div className="text-2xl">🔒</div>
-                        <div className="flex-1">
-                            <h3 className="font-bold text-gray-800 mb-1">Inicia sesión para comprar</h3>
-                            <p className="text-sm text-gray-600 mb-3">
-                                Necesitas una cuenta para agregar productos al carrito
-                            </p>
-                            <div className="flex gap-2">
-                                <Link
-                                    to="/login"
-                                    className="flex-1 bg-[#10B981] hover:bg-[#059669] text-white text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
-                                    onClick={() => toast.dismiss(t.id)}
-                                >
-                                    Iniciar Sesión
-                                </Link>
-                                <Link
-                                    to="/register"
-                                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-semibold py-2 px-4 rounded-lg text-center transition-colors"
-                                    onClick={() => toast.dismiss(t.id)}
-                                >
-                                    Crear Cuenta
-                                </Link>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => toast.dismiss(t.id)}
-                            className="text-gray-400 hover:text-gray-600"
-                        >
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            ), {
-                duration: 6000,
-                position: 'top-center'
-            });
+            toast.error('Debes iniciar sesión para agregar al carrito');
             return;
         }
 
@@ -328,12 +254,14 @@ export default function Home() {
                                                             <div className="text-3xl font-bold text-[#0D4F4F]">
                                                                 ${combo.price?.toLocaleString('es-AR')}
                                                             </div>
-                                                            <button
-                                                                onClick={() => handleAddToCart(comboId, combo.name)}
-                                                                className="w-full bg-[#10B981] text-white px-4 py-3 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
-                                                            >
-                                                                Agregar al Carrito
-                                                            </button>
+                                                            {isAuthenticated && (
+                                                                <button
+                                                                    onClick={() => handleAddToCart(comboId, combo.name)}
+                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
+                                                                >
+                                                                    Agregar al Carrito
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -427,14 +355,15 @@ export default function Home() {
                                                             <div className="text-2xl font-bold text-[#0D4F4F]">
                                                                 ${product.price?.toLocaleString('es-AR')}
                                                             </div>
-                                                            {product.stock > 0 ? (
+                                                            {isAuthenticated && product.stock > 0 && (
                                                                 <button
                                                                     onClick={() => handleAddProductToCart(productId, product.name)}
-                                                                    className="w-full bg-[#10B981] text-white px-4 py-2.5 rounded-xl hover:bg-[#059669] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
+                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-2.5 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
                                                                 >
                                                                     Agregar
                                                                 </button>
-                                                            ) : (
+                                                            )}
+                                                            {product.stock === 0 && (
                                                                 <span className="text-red-600 text-sm font-bold bg-red-50 text-center py-2 rounded-lg border border-red-100 italic">
                                                                     Agotado
                                                                 </span>

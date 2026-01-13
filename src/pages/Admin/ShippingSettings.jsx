@@ -9,13 +9,10 @@ export default function ShippingSettings() {
     const [prices, setPrices] = useState({
         central_zone_price: 500,
         central_zone_description: '',
-        central_zone_enabled: true,
         remote_zone_price: 1000,
         remote_zone_description: '',
-        remote_zone_enabled: true,
         pickup_address: '',
-        pickup_description: '',
-        pickup_enabled: true
+        pickup_description: ''
     });
 
     useEffect(() => {
@@ -28,13 +25,10 @@ export default function ShippingSettings() {
             setPrices({
                 central_zone_price: response.data.central_zone_price,
                 central_zone_description: response.data.central_zone_description || '',
-                central_zone_enabled: response.data.central_zone_enabled !== undefined ? response.data.central_zone_enabled : true,
                 remote_zone_price: response.data.remote_zone_price,
                 remote_zone_description: response.data.remote_zone_description || '',
-                remote_zone_enabled: response.data.remote_zone_enabled !== undefined ? response.data.remote_zone_enabled : true,
                 pickup_address: response.data.pickup_address || '',
-                pickup_description: response.data.pickup_description || '',
-                pickup_enabled: response.data.pickup_enabled !== undefined ? response.data.pickup_enabled : true
+                pickup_description: response.data.pickup_description || ''
             });
         } catch (error) {
             console.error('Error al cargar configuración:', error);
@@ -102,23 +96,9 @@ export default function ShippingSettings() {
                 <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
                     {/* Zona Céntrica */}
                     <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-[#0D4F4F]">🏙️ Zona Céntrica</h3>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={prices.central_zone_enabled}
-                                    onChange={(e) => setPrices({ ...prices, central_zone_enabled: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#10B981]"></div>
-                                <span className="ml-3 text-sm font-medium text-gray-700">
-                                    {prices.central_zone_enabled ? 'Habilitado' : 'Deshabilitado'}
-                                </span>
-                            </label>
-                        </div>
+                        <h3 className="text-lg font-semibold text-[#0D4F4F] mb-4">🏙️ Zona Céntrica</h3>
 
-                        <div className={`space-y-4 ${!prices.central_zone_enabled ? 'opacity-50 pointer-events-none' : ''}`}>
+                        <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Precio
@@ -162,23 +142,9 @@ export default function ShippingSettings() {
 
                     {/* Zonas Lejanas */}
                     <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-[#1E7E7A]">🌄 Zonas Lejanas</h3>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={prices.remote_zone_enabled}
-                                    onChange={(e) => setPrices({ ...prices, remote_zone_enabled: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-teal-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#10B981]"></div>
-                                <span className="ml-3 text-sm font-medium text-gray-700">
-                                    {prices.remote_zone_enabled ? 'Habilitado' : 'Deshabilitado'}
-                                </span>
-                            </label>
-                        </div>
+                        <h3 className="text-lg font-semibold text-[#1E7E7A] mb-4">🌄 Zonas Lejanas</h3>
 
-                        <div className={`space-y-4 ${!prices.remote_zone_enabled ? 'opacity-50 pointer-events-none' : ''}`}>
+                        <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Precio
@@ -222,23 +188,9 @@ export default function ShippingSettings() {
 
                     {/* Retiro en Persona */}
                     <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between mb-4">
-                            <h3 className="text-lg font-semibold text-amber-800">📦 Retiro en Persona</h3>
-                            <label className="relative inline-flex items-center cursor-pointer">
-                                <input
-                                    type="checkbox"
-                                    checked={prices.pickup_enabled}
-                                    onChange={(e) => setPrices({ ...prices, pickup_enabled: e.target.checked })}
-                                    className="sr-only peer"
-                                />
-                                <div className="w-14 h-7 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#10B981]"></div>
-                                <span className="ml-3 text-sm font-medium text-gray-700">
-                                    {prices.pickup_enabled ? 'Habilitado' : 'Deshabilitado'}
-                                </span>
-                            </label>
-                        </div>
+                        <h3 className="text-lg font-semibold text-amber-800 mb-4">📦 Retiro en Persona</h3>
 
-                        <div className={`space-y-4 ${!prices.pickup_enabled ? 'opacity-50 pointer-events-none' : ''}`}>
+                        <div className="space-y-4">
                             <div className="bg-amber-100 border border-amber-300 rounded-lg p-3">
                                 <p className="text-sm text-amber-800 font-medium">
                                     ✨ El retiro en persona siempre es GRATIS ($0)
@@ -297,7 +249,7 @@ export default function ShippingSettings() {
                     <button
                         onClick={handleSave}
                         disabled={saving}
-                        className="w-full bg-[#10B981] text-white py-3 rounded-lg hover:bg-[#059669] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl font-medium"
+                        className="w-full bg-[#0D4F4F] text-white py-3 rounded-lg hover:bg-[#1E7E7A] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg hover:shadow-xl font-medium"
                     >
                         {saving ? (
                             <span className="flex items-center justify-center gap-2">
