@@ -39,7 +39,7 @@ export default function Footer() {
                 </div>
 
                 {/* Social Media & Contact */}
-                {(settings?.instagram_url || settings?.transfer_whatsapp || settings?.email) && (
+                {(settings?.instagram_url || settings?.facebook_url || settings?.transfer_whatsapp || settings?.email) && (
                     <div className="mb-6 pb-6 border-b border-gray-700">
                         <h3 className="text-lg font-semibold mb-4 text-center">Contactanos</h3>
                         <div className="flex justify-center items-center gap-6 flex-wrap">
@@ -56,6 +56,22 @@ export default function Footer() {
                                         className="w-6 h-6"
                                     />
                                     <span>Instagram</span>
+                                </a>
+                            )}
+
+                            {settings.facebook_url && (
+                                <a
+                                    href={settings.facebook_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-white hover:text-blue-400 transition-colors"
+                                >
+                                    <img
+                                        src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg"
+                                        alt="Facebook"
+                                        className="w-6 h-6"
+                                    />
+                                    <span>Facebook</span>
                                 </a>
                             )}
 

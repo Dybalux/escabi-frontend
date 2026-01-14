@@ -9,6 +9,7 @@ export default function PaymentSettings() {
     const [alias, setAlias] = useState('');
     const [whatsapp, setWhatsapp] = useState('');
     const [instagram, setInstagram] = useState('');
+    const [facebook, setFacebook] = useState('');
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -26,6 +27,7 @@ export default function PaymentSettings() {
             setAlias(response.data.transfer_alias || '');
             setWhatsapp(response.data.transfer_whatsapp || '');
             setInstagram(response.data.instagram_url || '');
+            setFacebook(response.data.facebook_url || '');
             setEmail(response.data.email || '');
         } catch (error) {
             console.error('Error loading payment settings:', error);
@@ -51,6 +53,10 @@ export default function PaymentSettings() {
             newErrors.instagram = 'La URL de Instagram debe ser válida (ej: https://instagram.com/usuario)';
         }
 
+        if (facebook && !/^https?:\/\/(www\.)?facebook\.com/.test(facebook)) {
+            newErrors.facebook = 'La URL de Facebook debe ser válida (ej: https://facebook.com/pagina)';
+        }
+
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             newErrors.email = 'El email debe ser válido';
         }
@@ -71,6 +77,7 @@ export default function PaymentSettings() {
                 transfer_alias: alias.trim(),
                 transfer_whatsapp: whatsapp.trim(),
                 instagram_url: instagram.trim(),
+                facebook_url: facebook.trim(),
                 email: email.trim()
             });
 
@@ -181,6 +188,27 @@ export default function PaymentSettings() {
                         )}
                         <p className="mt-1 text-xs text-gray-500">
                             Enlace a tu perfil de Instagram (aparecerá en el footer)
+                        </p>
+                    </div>
+
+                    {/* Facebook */}
+                    <div className="mb-6">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Facebook URL
+                        </label>
+                        <input
+                            type="url"
+                            value={facebook}
+                            onChange={(e) => setFacebook(e.target.value)}
+                            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent ${errors.facebook ? 'border-red-500' : 'border-gray-300'
+                                }`}
+                            placeholder="https://facebook.com/tu_pagina"
+                        />
+                        {errors.facebook && (
+                            <p className="mt-1 text-sm text-red-500">{errors.facebook}</p>
+                        )}
+                        <p className="mt-1 text-xs text-gray-500">
+                            Enlace a tu página de Facebook (aparecerá en el footer)
                         </p>
                     </div>
 
