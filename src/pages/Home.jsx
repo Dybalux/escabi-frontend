@@ -26,8 +26,58 @@ export default function Home() {
 
     const loadCombos = async () => {
         try {
-            const response = await getCombos();
-            setCombos(response.data); // Mostrar todos los combos
+            // Cargar combos y productos en paralelo
+            const [combosResponse, productsResponse] = await Promise.all([
+                getCombos(),
+                getProducts({ include_out_of_stock: true, include_inactive: true })
+            ]);
+
+            const combosData = combosResponse.data;
+            const productsData = productsResponse.data.items || productsResponse.data;
+
+            // Crear mapa de productos
+            const productsMap = {};
+            if (Array.isArray(productsData)) {
+                productsData.forEach(p => {
+                    productsMap[p.id || p._id] = p;
+                });
+            }
+
+            // Enriquecer combos con datos de productos
+            const enrichedCombos = combosData.map(combo => {
+                let totalCost = 0;
+
+                const enrichedItems = combo.items?.map(item => {
+                    const productId = item.product_id || item.id;
+                    const product = productsMap[productId];
+
+                    if (product) {
+                        const quantity = item.quantity || 1;
+                        totalCost += (product.price || 0) * quantity;
+
+                        return {
+                            ...item,
+                            name: product.name,
+                            image_url: product.image_url,
+                            price: product.price,
+                            product_name: product.name
+                        };
+                    }
+                    return item;
+                }) || [];
+
+                const price = combo.price || 0;
+                const savings = totalCost > price ? totalCost - price : 0;
+
+                return {
+                    ...combo,
+                    items: enrichedItems,
+                    total_items_cost: combo.total_items_cost || totalCost,
+                    savings: combo.savings || savings
+                };
+            });
+
+            setCombos(enrichedCombos);
         } catch (error) {
             console.error('Error loading combos:', error);
         } finally {
@@ -251,6 +301,18 @@ export default function Home() {
                                                         )}
 
                                                         <div className="flex flex-col gap-3 mt-auto">
+                                                            {/* Pricing with Savings */}
+                                                            {combo.savings && combo.savings > 0 && (
+                                                                <div className="flex items-center justify-between">
+                                                                    <div className="text-sm text-gray-500 line-through">
+                                                                        ${combo.total_items_cost?.toLocaleString('es-AR')}
+                                                                    </div>
+                                                                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
+                                                                        ¡Ahorrás ${combo.savings.toLocaleString('es-AR')}!
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
                                                             <div className="text-3xl font-bold text-[#0D4F4F]">
                                                                 ${combo.price?.toLocaleString('es-AR')}
                                                             </div>
