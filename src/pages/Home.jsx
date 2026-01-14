@@ -5,6 +5,7 @@ import Button from '../components/UI/Button';
 import { useAuth } from '../context/AuthContext';
 import { getCombos, addComboToCart, getProducts, addToCart } from '../services/api';
 import toast from 'react-hot-toast';
+import AuthModal from '../components/Auth/AuthModal';
 
 export default function Home() {
     const { isAuthenticated, user } = useAuth();
@@ -18,6 +19,8 @@ export default function Home() {
     // Combos Carousel State
     const [currentComboSlide, setCurrentComboSlide] = useState(0);
     const comboCarouselRef = useRef(null);
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [pendingAction, setPendingAction] = useState(null);
 
     useEffect(() => {
         loadCombos();
@@ -49,20 +52,20 @@ export default function Home() {
 
     const handleAddToCart = async (comboId, comboName) => {
         if (!isAuthenticated) {
-            toast((t) => (
-                <div className="flex flex-col gap-2">
-                    <p className="font-bold">Debes tener una cuenta para comprar</p>
-                    <div className="flex gap-2">
-                        <Link to="/register" className="text-emerald-600 font-semibold hover:underline">
-                            Registrarse
-                        </Link>
-                        <span>o</span>
-                        <Link to="/login" className="text-blue-600 font-semibold hover:underline">
-                            Iniciar Sesión
-                        </Link>
-                    </div>
-                </div>
-            ), { duration: 4000 });
+            // Store pending action and show auth modal
+            setPendingAction({ type: 'combo', id: comboId, name: comboName });
+            console.log('Setting showAuthModal to true');
+            setShowAuthModal(true);
+
+            // Lock scroll and add blur to page
+            const appContent = document.getElementById('app-content');
+            if (appContent) {
+                appContent.style.filter = 'blur(8px)';
+            }
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
             return;
         }
 
@@ -78,20 +81,19 @@ export default function Home() {
 
     const handleAddProductToCart = async (productId, productName) => {
         if (!isAuthenticated) {
-            toast((t) => (
-                <div className="flex flex-col gap-2">
-                    <p className="font-bold">Debes tener una cuenta para comprar</p>
-                    <div className="flex gap-2">
-                        <Link to="/register" className="text-emerald-600 font-semibold hover:underline">
-                            Registrarse
-                        </Link>
-                        <span>o</span>
-                        <Link to="/login" className="text-blue-600 font-semibold hover:underline">
-                            Iniciar Sesión
-                        </Link>
-                    </div>
-                </div>
-            ), { duration: 4000 });
+            // Store pending action and show auth modal
+            setPendingAction({ type: 'product', id: productId, name: productName });
+            setShowAuthModal(true);
+
+            // Lock scroll and add blur to page
+            const appContent = document.getElementById('app-content');
+            if (appContent) {
+                appContent.style.filter = 'blur(8px)';
+            }
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
             return;
         }
 
@@ -103,6 +105,51 @@ export default function Home() {
             const errorMsg = error.response?.data?.detail?.[0]?.msg || error.response?.data?.detail || 'Error al agregar al carrito';
             toast.error(errorMsg);
         }
+    };
+
+    const handleAuthSuccess = async () => {
+        // Close modal and restore page
+        setShowAuthModal(false);
+        const appContent = document.getElementById('app-content');
+        if (appContent) {
+            appContent.style.filter = '';
+        }
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+
+        // Execute pending action
+        if (pendingAction) {
+            try {
+                if (pendingAction.type === 'combo') {
+                    await addComboToCart(pendingAction.id, 1);
+                    toast.success(`${pendingAction.name} agregado al carrito`);
+                } else if (pendingAction.type === 'product') {
+                    await addToCart(pendingAction.id, 1);
+                    toast.success(`${pendingAction.name} agregado al carrito`);
+                }
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                toast.error('Error al agregar al carrito');
+            }
+            setPendingAction(null);
+        }
+    };
+
+    const handleAuthClose = () => {
+        setShowAuthModal(false);
+        setPendingAction(null);
+
+        // Restore page
+        const appContent = document.getElementById('app-content');
+        if (appContent) {
+            appContent.style.filter = '';
+        }
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
     };
 
     // Responsive carousel logic
@@ -168,334 +215,344 @@ export default function Home() {
     };
 
     return (
-        <div>
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-20">
-                <div className="container mx-auto px-4 text-center">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-6">
-                        Bienvenido a Alto Trago
-                    </h1>
-                    <p className="text-xl md:text-2xl mb-8 text-teal-50">
-                        Tu tienda online de bebidas con las mejores marcas
-                    </p>
-                    {!isAuthenticated ? (
-                        <div className="flex gap-4 justify-center">
-                            <Link to="/register">
-                                <Button size="lg">Crear Cuenta</Button>
+        <>
+            <div>
+                {/* Hero Section */}
+                <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-20">
+                    <div className="container mx-auto px-4 text-center">
+                        <h1 className="text-5xl md:text-6xl font-bold mb-6">
+                            Bienvenido a Alto Trago
+                        </h1>
+                        <p className="text-xl md:text-2xl mb-8 text-teal-50">
+                            Tu tienda online de bebidas con las mejores marcas
+                        </p>
+                        {!isAuthenticated ? (
+                            <div className="flex gap-4 justify-center">
+                                <Link to="/register">
+                                    <Button size="lg">Crear Cuenta</Button>
+                                </Link>
+                                <Link to="/login">
+                                    <Button size="lg">
+                                        Iniciar Sesión
+                                    </Button>
+                                </Link>
+                            </div>
+                        ) : (
+                            <Link to="/products">
+                                <Button size="lg">Ver Productos</Button>
                             </Link>
-                            <Link to="/login">
-                                <Button size="lg">
-                                    Iniciar Sesión
-                                </Button>
-                            </Link>
-                        </div>
-                    ) : (
-                        <Link to="/products">
-                            <Button size="lg">Ver Productos</Button>
-                        </Link>
-                    )}
-                </div>
-            </section>
+                        )}
+                    </div>
+                </section>
 
-            {/* Combos Section */}
-            {combos.length > 0 && (
-                <section className="py-16 bg-white">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold mb-4">🎁 Combos Especiales</h2>
-                            <p className="text-gray-600">Aprovechá nuestros packs con precios increíbles</p>
-                        </div>
+                {/* Combos Section */}
+                {combos.length > 0 && (
+                    <section className="py-16 bg-white">
+                        <div className="container mx-auto px-4">
+                            <div className="text-center mb-12">
+                                <h2 className="text-3xl font-bold mb-4">🎁 Combos Especiales</h2>
+                                <p className="text-gray-600">Aprovechá nuestros packs con precios increíbles</p>
+                            </div>
 
-                        <div className="relative">
-                            {/* Navigation Buttons - Combos */}
-                            {combos.length > itemsPerView && (
-                                <>
-                                    <button
-                                        onClick={prevComboSlide}
-                                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                        aria-label="Anterior Combo"
+                            <div className="relative">
+                                {/* Navigation Buttons - Combos */}
+                                {combos.length > itemsPerView && (
+                                    <>
+                                        <button
+                                            onClick={prevComboSlide}
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                            aria-label="Anterior Combo"
+                                        >
+                                            <ChevronLeft size={24} className="text-[#0D4F4F]" />
+                                        </button>
+                                        <button
+                                            onClick={nextComboSlide}
+                                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                            aria-label="Siguiente Combo"
+                                        >
+                                            <ChevronRight size={24} className="text-[#0D4F4F]" />
+                                        </button>
+                                    </>
+                                )}
+
+                                {/* Carousel Container - Combos */}
+                                <div className="overflow-hidden" ref={comboCarouselRef}>
+                                    <div
+                                        className="flex transition-transform duration-500 ease-in-out"
+                                        style={{ transform: `translateX(-${currentComboSlide * (itemsPerView === 1.5 ? 66.66 : (100 / itemsPerView))}%)` }}
                                     >
-                                        <ChevronLeft size={24} className="text-[#0D4F4F]" />
-                                    </button>
-                                    <button
-                                        onClick={nextComboSlide}
-                                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                        aria-label="Siguiente Combo"
-                                    >
-                                        <ChevronRight size={24} className="text-[#0D4F4F]" />
-                                    </button>
-                                </>
-                            )}
-
-                            {/* Carousel Container - Combos */}
-                            <div className="overflow-hidden" ref={comboCarouselRef}>
-                                <div
-                                    className="flex transition-transform duration-500 ease-in-out"
-                                    style={{ transform: `translateX(-${currentComboSlide * (itemsPerView === 1.5 ? 66.66 : (100 / itemsPerView))}%)` }}
-                                >
-                                    {combos.map((combo) => {
-                                        const comboId = combo.id || combo._id;
-                                        return (
-                                            <div key={comboId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
-                                                <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-[#C29F4C]/20 h-full">
-                                                    {/* Image */}
-                                                    <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
-                                                        {combo.image_url ? (
-                                                            <img
-                                                                src={combo.image_url}
-                                                                alt={combo.name}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-6xl">
-                                                                📦
+                                        {combos.map((combo) => {
+                                            const comboId = combo.id || combo._id;
+                                            return (
+                                                <div key={comboId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
+                                                    <div className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow border-2 border-[#C29F4C]/20 h-full">
+                                                        {/* Image */}
+                                                        <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
+                                                            {combo.image_url ? (
+                                                                <img
+                                                                    src={combo.image_url}
+                                                                    alt={combo.name}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-6xl">
+                                                                    📦
+                                                                </div>
+                                                            )}
+                                                            <div className="absolute top-2 left-2 bg-[#C29F4C] text-white text-xs px-3 py-1 rounded-full font-bold">
+                                                                COMBO
                                                             </div>
-                                                        )}
-                                                        <div className="absolute top-2 left-2 bg-[#C29F4C] text-white text-xs px-3 py-1 rounded-full font-bold">
-                                                            COMBO
                                                         </div>
-                                                    </div>
 
-                                                    {/* Content */}
-                                                    <div className="p-6">
-                                                        <h3 className="text-xl font-bold text-gray-800 mb-2">{combo.name}</h3>
-                                                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
+                                                        {/* Content */}
+                                                        <div className="p-6">
+                                                            <h3 className="text-xl font-bold text-gray-800 mb-2">{combo.name}</h3>
+                                                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">{combo.description}</p>
 
-                                                        {/* Productos del combo */}
-                                                        {combo.items && combo.items.length > 0 && (
-                                                            <div className="mb-4 p-3 bg-teal-50/50 rounded-lg border border-teal-100">
-                                                                <p className="text-xs font-semibold text-[#0D4F4F] mb-2">Incluye:</p>
-                                                                <ul className="space-y-1">
-                                                                    {combo.items.map((item, idx) => (
-                                                                        <li key={idx} className="text-xs text-gray-700 flex items-center gap-1">
-                                                                            <span className="text-[#C29F4C] font-bold">{item.quantity}x</span>
-                                                                            <span>{item.name || 'Producto'}</span>
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            </div>
-                                                        )}
-
-                                                        <div className="flex flex-col gap-3 mt-auto">
-                                                            {/* Pricing with Savings */}
-                                                            {combo.savings && combo.savings > 0 && (
-                                                                <div className="flex items-center justify-between">
-                                                                    <div className="text-sm text-gray-500 line-through">
-                                                                        ${combo.total_items_cost?.toLocaleString('es-AR')}
-                                                                    </div>
-                                                                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
-                                                                        ¡Ahorrás ${combo.savings.toLocaleString('es-AR')}!
-                                                                    </div>
+                                                            {/* Productos del combo */}
+                                                            {combo.items && combo.items.length > 0 && (
+                                                                <div className="mb-4 p-3 bg-teal-50/50 rounded-lg border border-teal-100">
+                                                                    <p className="text-xs font-semibold text-[#0D4F4F] mb-2">Incluye:</p>
+                                                                    <ul className="space-y-1">
+                                                                        {combo.items.map((item, idx) => (
+                                                                            <li key={idx} className="text-xs text-gray-700 flex items-center gap-1">
+                                                                                <span className="text-[#C29F4C] font-bold">{item.quantity}x</span>
+                                                                                <span>{item.name || 'Producto'}</span>
+                                                                            </li>
+                                                                        ))}
+                                                                    </ul>
                                                                 </div>
                                                             )}
 
-                                                            <div className="text-3xl font-bold text-[#0D4F4F]">
-                                                                ${combo.price?.toLocaleString('es-AR')}
+                                                            <div className="flex flex-col gap-3 mt-auto">
+                                                                {/* Pricing with Savings */}
+                                                                {combo.savings && combo.savings > 0 && (
+                                                                    <div className="flex items-center justify-between">
+                                                                        <div className="text-sm text-gray-500 line-through">
+                                                                            ${combo.total_items_cost?.toLocaleString('es-AR')}
+                                                                        </div>
+                                                                        <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs px-3 py-1 rounded-full font-bold shadow-md">
+                                                                            ¡Ahorrás ${combo.savings.toLocaleString('es-AR')}!
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                <div className="text-3xl font-bold text-[#0D4F4F]">
+                                                                    ${combo.price?.toLocaleString('es-AR')}
+                                                                </div>
+                                                                <button
+                                                                    onClick={() => handleAddToCart(comboId, combo.name)}
+                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
+                                                                >
+                                                                    Agregar al Carrito
+                                                                </button>
                                                             </div>
-                                                            <button
-                                                                onClick={() => handleAddToCart(comboId, combo.name)}
-                                                                className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
-                                                            >
-                                                                Agregar al Carrito
-                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })}
+                                    </div>
                                 </div>
+
+                                {/* Dots Indicator - Combos */}
+                                {combos.length > itemsPerView && (
+                                    <div className="flex justify-center gap-2 mt-6">
+                                        {Array.from({ length: Math.max(1, combos.length - Math.floor(itemsPerView) + 1) }).map((_, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => setCurrentComboSlide(index)}
+                                                className={`w-3 h-3 rounded-full transition-colors ${currentComboSlide === index ? 'bg-[#C29F4C]' : 'bg-gray-300'
+                                                    }`}
+                                                aria-label={`Ir a slide combo ${index + 1}`}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Products Carousel */}
+                {products.length > 0 && (
+                    <section className="py-16 bg-gray-50">
+                        <div className="container mx-auto px-4">
+                            <div className="text-center mb-12">
+                                <h2 className="text-3xl font-bold mb-4">🍺 Nuestros Productos</h2>
+                                <p className="text-gray-600">Descubrí nuestra selección de bebidas</p>
                             </div>
 
-                            {/* Dots Indicator - Combos */}
-                            {combos.length > itemsPerView && (
-                                <div className="flex justify-center gap-2 mt-6">
-                                    {Array.from({ length: Math.max(1, combos.length - Math.floor(itemsPerView) + 1) }).map((_, index) => (
+                            <div className="relative">
+                                {/* Navigation Buttons */}
+                                {products.length > itemsPerView && (
+                                    <>
                                         <button
-                                            key={index}
-                                            onClick={() => setCurrentComboSlide(index)}
-                                            className={`w-3 h-3 rounded-full transition-colors ${currentComboSlide === index ? 'bg-[#C29F4C]' : 'bg-gray-300'
-                                                }`}
-                                            aria-label={`Ir a slide combo ${index + 1}`}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </section>
-            )}
+                                            onClick={prevSlide}
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                            aria-label="Anterior"
+                                        >
+                                            <ChevronLeft size={24} className="text-[#0D4F4F]" />
+                                        </button>
+                                        <button
+                                            onClick={nextSlide}
+                                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+                                            aria-label="Siguiente"
+                                        >
+                                            <ChevronRight size={24} className="text-[#0D4F4F]" />
+                                        </button>
+                                    </>
+                                )}
 
-            {/* Products Carousel */}
-            {products.length > 0 && (
-                <section className="py-16 bg-gray-50">
-                    <div className="container mx-auto px-4">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold mb-4">🍺 Nuestros Productos</h2>
-                            <p className="text-gray-600">Descubrí nuestra selección de bebidas</p>
-                        </div>
-
-                        <div className="relative">
-                            {/* Navigation Buttons */}
-                            {products.length > itemsPerView && (
-                                <>
-                                    <button
-                                        onClick={prevSlide}
-                                        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                        aria-label="Anterior"
+                                {/* Carousel Container */}
+                                <div className="overflow-hidden" ref={carouselRef}>
+                                    <div
+                                        className="flex transition-transform duration-500 ease-in-out"
+                                        style={{ transform: `translateX(-${currentSlide * (itemsPerView === 1.5 ? 66.66 : (100 / itemsPerView))}%)` }}
                                     >
-                                        <ChevronLeft size={24} className="text-[#0D4F4F]" />
-                                    </button>
-                                    <button
-                                        onClick={nextSlide}
-                                        className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
-                                        aria-label="Siguiente"
-                                    >
-                                        <ChevronRight size={24} className="text-[#0D4F4F]" />
-                                    </button>
-                                </>
-                            )}
-
-                            {/* Carousel Container */}
-                            <div className="overflow-hidden" ref={carouselRef}>
-                                <div
-                                    className="flex transition-transform duration-500 ease-in-out"
-                                    style={{ transform: `translateX(-${currentSlide * (itemsPerView === 1.5 ? 66.66 : (100 / itemsPerView))}%)` }}
-                                >
-                                    {products.map((product) => {
-                                        const productId = product.id || product._id;
-                                        return (
-                                            <div key={productId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
-                                                <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow h-full">
-                                                    {/* Image */}
-                                                    <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
-                                                        {product.image_url ? (
-                                                            <img
-                                                                src={product.image_url}
-                                                                alt={product.name}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-6xl">
-                                                                🍺
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Content */}
-                                                    <div className="p-4">
-                                                        <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{product.name}</h3>
-                                                        <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description || 'Producto de calidad'}</p>
-
-                                                        <div className="flex flex-col gap-3 mt-4">
-                                                            <div className="text-2xl font-bold text-[#0D4F4F]">
-                                                                ${product.price?.toLocaleString('es-AR')}
-                                                            </div>
-                                                            {product.stock > 0 ? (
-                                                                <button
-                                                                    onClick={() => handleAddProductToCart(productId, product.name)}
-                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-2.5 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
-                                                                >
-                                                                    Agregar
-                                                                </button>
+                                        {products.map((product) => {
+                                            const productId = product.id || product._id;
+                                            return (
+                                                <div key={productId} className="w-[66.66%] md:w-1/2 lg:w-1/3 flex-shrink-0 px-2 md:px-4">
+                                                    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow h-full">
+                                                        {/* Image */}
+                                                        <div className="relative h-48 bg-gradient-to-br from-teal-50 to-teal-100">
+                                                            {product.image_url ? (
+                                                                <img
+                                                                    src={product.image_url}
+                                                                    alt={product.name}
+                                                                    className="w-full h-full object-cover"
+                                                                />
                                                             ) : (
-                                                                <span className="text-red-600 text-sm font-bold bg-red-50 text-center py-2 rounded-lg border border-red-100 italic">
-                                                                    Agotado
-                                                                </span>
+                                                                <div className="w-full h-full flex items-center justify-center text-6xl">
+                                                                    🍺
+                                                                </div>
                                                             )}
                                                         </div>
+
+                                                        {/* Content */}
+                                                        <div className="p-4">
+                                                            <h3 className="text-lg font-bold text-gray-800 mb-2 line-clamp-1">{product.name}</h3>
+                                                            <p className="text-sm text-gray-600 mb-3 line-clamp-2">{product.description || 'Producto de calidad'}</p>
+
+                                                            <div className="flex flex-col gap-3 mt-4">
+                                                                <div className="text-2xl font-bold text-[#0D4F4F]">
+                                                                    ${product.price?.toLocaleString('es-AR')}
+                                                                </div>
+                                                                {product.stock > 0 ? (
+                                                                    <button
+                                                                        onClick={() => handleAddProductToCart(productId, product.name)}
+                                                                        className="w-full bg-[#0D4F4F] text-white px-4 py-2.5 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
+                                                                    >
+                                                                        Agregar
+                                                                    </button>
+                                                                ) : (
+                                                                    <span className="text-red-600 text-sm font-bold bg-red-50 text-center py-2 rounded-lg border border-red-100 italic">
+                                                                        Agotado
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })}
+                                            );
+                                        })}
+                                    </div>
                                 </div>
+
+                                {/* Dots Indicator */}
+                                {products.length > itemsPerView && (
+                                    <div className="flex justify-center gap-2 mt-6">
+                                        {Array.from({ length: Math.max(1, products.length - Math.floor(itemsPerView) + 1) }).map((_, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => setCurrentSlide(index)}
+                                                className={`w-3 h-3 rounded-full transition-colors ${currentSlide === index ? 'bg-[#C29F4C]' : 'bg-gray-300'
+                                                    }`}
+                                                aria-label={`Ir a slide ${index + 1}`}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Features */}
+                <section className="py-16 bg-gray-50">
+                    <div className="container mx-auto px-4">
+                        <h2 className="text-3xl font-bold text-center mb-12">¿Por qué elegirnos?</h2>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            <div className="text-center">
+                                <div className="bg-teal-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Beer className="text-[#0D4F4F]" size={32} />
+                                </div>
+                                <h3 className="font-bold text-xl mb-2">Gran Variedad</h3>
+                                <p className="text-gray-600">
+                                    Cervezas, vinos, licores y más
+                                </p>
                             </div>
 
-                            {/* Dots Indicator */}
-                            {products.length > itemsPerView && (
-                                <div className="flex justify-center gap-2 mt-6">
-                                    {Array.from({ length: Math.max(1, products.length - Math.floor(itemsPerView) + 1) }).map((_, index) => (
-                                        <button
-                                            key={index}
-                                            onClick={() => setCurrentSlide(index)}
-                                            className={`w-3 h-3 rounded-full transition-colors ${currentSlide === index ? 'bg-[#C29F4C]' : 'bg-gray-300'
-                                                }`}
-                                            aria-label={`Ir a slide ${index + 1}`}
-                                        />
-                                    ))}
+                            <div className="text-center">
+                                <div className="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <ShoppingCart className="text-[#C29F4C]" size={32} />
                                 </div>
-                            )}
+                                <h3 className="font-bold text-xl mb-2">Fácil de Comprar</h3>
+                                <p className="text-gray-600">
+                                    Proceso simple y rápido
+                                </p>
+                            </div>
+
+                            <div className="text-center">
+                                <div className="bg-teal-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Shield className="text-[#1E7E7A]" size={32} />
+                                </div>
+                                <h3 className="font-bold text-xl mb-2">Compra Segura</h3>
+                                <p className="text-gray-600">
+                                    Pagos protegidos con Mercado Pago
+                                </p>
+                            </div>
+
+                            <div className="text-center">
+                                <div className="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Zap className="text-[#C29F4C]" size={32} />
+                                </div>
+                                <h3 className="font-bold text-xl mb-2">Envío Rápido</h3>
+                                <p className="text-gray-600">
+                                    Recibí tu pedido en poco tiempo
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </section>
-            )}
 
-            {/* Features */}
-            <section className="py-16 bg-gray-50">
-                <div className="container mx-auto px-4">
-                    <h2 className="text-3xl font-bold text-center mb-12">¿Por qué elegirnos?</h2>
-
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div className="text-center">
-                            <div className="bg-teal-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Beer className="text-[#0D4F4F]" size={32} />
-                            </div>
-                            <h3 className="font-bold text-xl mb-2">Gran Variedad</h3>
-                            <p className="text-gray-600">
-                                Cervezas, vinos, licores y más
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <ShoppingCart className="text-[#C29F4C]" size={32} />
-                            </div>
-                            <h3 className="font-bold text-xl mb-2">Fácil de Comprar</h3>
-                            <p className="text-gray-600">
-                                Proceso simple y rápido
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="bg-teal-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Shield className="text-[#1E7E7A]" size={32} />
-                            </div>
-                            <h3 className="font-bold text-xl mb-2">Compra Segura</h3>
-                            <p className="text-gray-600">
-                                Pagos protegidos con Mercado Pago
-                            </p>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="bg-amber-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Zap className="text-[#C29F4C]" size={32} />
-                            </div>
-                            <h3 className="font-bold text-xl mb-2">Envío Rápido</h3>
-                            <p className="text-gray-600">
-                                Recibí tu pedido en poco tiempo
-                            </p>
-                        </div>
+                {/* CTA Section */}
+                <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-16">
+                    <div className="container mx-auto px-4 text-center">
+                        <h2 className="text-3xl font-bold mb-4">
+                            ¿Listo para tu primera compra?
+                        </h2>
+                        <p className="text-xl mb-8 text-teal-50">
+                            Explora nuestro catálogo y encuentra tus bebidas favoritas
+                        </p>
+                        <Link to="/products">
+                            <Button size="lg">
+                                Explorar Productos
+                            </Button>
+                        </Link>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
 
-            {/* CTA Section */}
-            <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-16">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl font-bold mb-4">
-                        ¿Listo para tu primera compra?
-                    </h2>
-                    <p className="text-xl mb-8 text-teal-50">
-                        Explora nuestro catálogo y encuentra tus bebidas favoritas
-                    </p>
-                    <Link to="/products">
-                        <Button size="lg">
-                            Explorar Productos
-                        </Button>
-                    </Link>
-                </div>
-            </section>
-        </div>
+            {/* Auth Modal */}
+            {showAuthModal && (
+                <AuthModal
+                    onClose={handleAuthClose}
+                    onSuccess={handleAuthSuccess}
+                />
+            )}
+        </>
     );
 }

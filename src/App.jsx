@@ -59,7 +59,7 @@ function AppRoutes() {
 
   return (
     <>
-      <div className={`min-h-screen flex flex-col bg-gray-50 transition-all duration-700 ${showBlur ? 'blur-2xl grayscale-[0.3] pointer-events-none scale-[1.02]' : ''}`}>
+      <div id="app-content" className={`relative z-0 min-h-screen flex flex-col bg-gray-50 transition-all duration-700 ${showBlur ? 'blur-2xl grayscale-[0.3] pointer-events-none scale-[1.02]' : ''}`}>
         <Header />
         <main className="container mx-auto px-4 py-8 flex-grow">
           <Routes>
@@ -167,25 +167,55 @@ function AppRoutes() {
         <Footer />
       </div>
       <Toaster
-        position="top-right"
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{
+          top: 80,
+        }}
         toastOptions={{
           duration: 3000,
           style: {
-            background: '#363636',
-            color: '#fff',
+            background: '#fff',
+            color: '#1f2937',
+            padding: '16px',
+            borderRadius: '12px',
+            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+            border: '1px solid #e5e7eb',
+            fontSize: '14px',
+            fontWeight: '500',
+            maxWidth: '500px',
           },
           success: {
             duration: 3000,
+            style: {
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              color: '#fff',
+              border: 'none',
+            },
             iconTheme: {
-              primary: '#10b981',
-              secondary: '#fff',
+              primary: '#fff',
+              secondary: '#10b981',
             },
           },
           error: {
             duration: 4000,
+            style: {
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+              color: '#fff',
+              border: 'none',
+            },
             iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff',
+              primary: '#fff',
+              secondary: '#ef4444',
+            },
+          },
+          loading: {
+            style: {
+              background: 'linear-gradient(135deg, #0D4F4F 0%, #1E7E7A 100%)',
+              color: '#fff',
+              border: 'none',
             },
           },
         }}
