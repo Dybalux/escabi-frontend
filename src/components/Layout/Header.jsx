@@ -24,9 +24,11 @@ export default function Header() {
                                 <Link to="/" className="text-gray-700 hover:text-[#0D4F4F] transition-colors">
                                     Inicio
                                 </Link>
-                                <Link to="/products" className="text-gray-700 hover:text-[#0D4F4F] transition-colors">
-                                    Productos
-                                </Link>
+                                {isAuthenticated && (
+                                    <Link to="/products" className="text-gray-700 hover:text-[#0D4F4F] transition-colors">
+                                        Productos
+                                    </Link>
+                                )}
                             </>
                         )}
                         {isAuthenticated && (

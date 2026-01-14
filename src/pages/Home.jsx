@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { Beer, ShoppingCart, Shield, Zap, Package, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import Button from '../components/UI/Button';
 import { useAuth } from '../context/AuthContext';
 import { getCombos, addComboToCart, getProducts, addToCart } from '../services/api';
@@ -52,9 +53,7 @@ export default function Home() {
 
     const handleAddToCart = async (comboId, comboName) => {
         if (!isAuthenticated) {
-            // Store pending action and show auth modal
             setPendingAction({ type: 'combo', id: comboId, name: comboName });
-            console.log('Setting showAuthModal to true');
             setShowAuthModal(true);
 
             // Lock scroll and add blur to page
@@ -216,6 +215,65 @@ export default function Home() {
 
     return (
         <>
+            <Helmet>
+                <title>Alto Trago | Tu Tienda Online de Bebidas</title>
+                <meta name="description" content="Descubrí la mejor selección de bebidas alcohólicas, promociones exclusivas y combos especiales en Alto Trago. Envíos rápidos y seguros." />
+                <meta name="keywords" content="bebidas, alcohol, fernet, cerveza, combos, ofertas, delivery bebidas, alto trago" />
+                <link rel="canonical" href="https://altotrago.com/" />
+
+                {/* Open Graph / Facebook */}
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="https://altotrago.com/" />
+                <meta property="og:title" content="Alto Trago | Tu Tienda Online de Bebidas" />
+                <meta property="og:description" content="Descubrí la mejor selección de bebidas alcohólicas, promociones exclusivas y combos especiales en Alto Trago." />
+                <meta property="og:image" content="https://altotrago.com/og-image.jpg" />
+
+                {/* Twitter */}
+                <meta property="twitter:card" content="summary_large_image" />
+                <meta property="twitter:url" content="https://altotrago.com/" />
+                <meta property="twitter:title" content="Alto Trago | Tu Tienda Online de Bebidas" />
+                <meta property="twitter:description" content="Descubrí la mejor selección de bebidas alcohólicas, promociones exclusivas y combos especiales en Alto Trago." />
+                <meta property="twitter:image" content="https://altotrago.com/og-image.jpg" />
+
+                <script type="application/ld+json">
+                    {`
+                        {
+                            "@context": "https://schema.org",
+                            "@type": "LiquorStore",
+                            "name": "Alto Trago",
+                            "image": "https://altotrago.com/logo.png",
+                            "@id": "https://altotrago.com",
+                            "url": "https://altotrago.com",
+                            "telephone": "+541112345678",
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": "Av. Corrientes 1234",
+                                "addressLocality": "Buenos Aires",
+                                "postalCode": "C1043",
+                                "addressCountry": "AR"
+                            },
+                            "priceRange": "$$",
+                            "openingHoursSpecification": {
+                                "@type": "OpeningHoursSpecification",
+                                "dayOfWeek": [
+                                    "Monday",
+                                    "Tuesday",
+                                    "Wednesday",
+                                    "Thursday",
+                                    "Friday",
+                                    "Saturday"
+                                ],
+                                "opens": "10:00",
+                                "closes": "22:00"
+                            },
+                            "sameAs": [
+                                "https://www.facebook.com/altotrago",
+                                "https://www.instagram.com/altotrago"
+                            ]
+                        }
+                    `}
+                </script>
+            </Helmet>
             <div>
                 {/* Hero Section */}
                 <section className="bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] text-white py-20">
@@ -293,6 +351,7 @@ export default function Home() {
                                                                     src={combo.image_url}
                                                                     alt={combo.name}
                                                                     className="w-full h-full object-cover"
+                                                                    loading="lazy"
                                                                 />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center text-6xl">
@@ -422,6 +481,7 @@ export default function Home() {
                                                                     src={product.image_url}
                                                                     alt={product.name}
                                                                     className="w-full h-full object-cover"
+                                                                    loading="lazy"
                                                                 />
                                                             ) : (
                                                                 <div className="w-full h-full flex items-center justify-center text-6xl">

@@ -103,14 +103,16 @@ export default function MobileMenu() {
                                         <span className="font-medium">Inicio</span>
                                     </Link>
 
-                                    <Link
-                                        to="/products"
-                                        onClick={handleLinkClick}
-                                        className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-[#0D4F4F] transition-colors"
-                                    >
-                                        <Package size={20} />
-                                        <span className="font-medium">Productos</span>
-                                    </Link>
+                                    {isAuthenticated && (
+                                        <Link
+                                            to="/products"
+                                            onClick={handleLinkClick}
+                                            className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-teal-50 hover:text-[#0D4F4F] transition-colors"
+                                        >
+                                            <Package size={20} />
+                                            <span className="font-medium">Productos</span>
+                                        </Link>
+                                    )}
 
                                     {isAuthenticated && (
                                         <>

@@ -17,8 +17,6 @@ export default function AuthModal({ onClose, onSuccess }) {
     const [loading, setLoading] = useState(false);
     const { login, register } = useAuth();
 
-    console.log('AuthModal rendered, mode:', mode);
-
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
@@ -54,29 +52,29 @@ export default function AuthModal({ onClose, onSuccess }) {
     };
 
     const renderChoice = () => (
-        <div className="bg-white shadow-2xl rounded-none sm:rounded-3xl overflow-hidden border-t-8 border-[#0D4F4F] p-6 sm:p-8">
-            <div className="flex flex-col items-center text-center gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="bg-teal-50 p-3 sm:p-4 rounded-full">
-                    <ShoppingCart className="text-[#0D4F4F]" size={32} />
+        <div className="bg-white shadow-2xl rounded-none sm:rounded-3xl overflow-hidden border-t-8 border-[#0D4F4F] p-6 sm:p-10">
+            <div className="flex flex-col items-center text-center gap-4 sm:gap-6 mb-6 sm:mb-10">
+                <div className="bg-teal-50 p-4 sm:p-6 rounded-full shadow-inner">
+                    <ShoppingCart className="text-[#0D4F4F]" size={40} />
                 </div>
                 <div>
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">Necesitas una cuenta</h3>
-                    <p className="text-gray-600 text-xs sm:text-sm">
-                        Para agregar productos al carrito y realizar compras
+                    <h3 className="text-xl sm:text-3xl font-bold text-gray-900 mb-3">Necesitas una cuenta</h3>
+                    <p className="text-gray-600 text-xs sm:text-base max-w-lg mx-auto">
+                        Para agregar productos al carrito y realizar compras. Registrate gratis en segundos.
                     </p>
                 </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-4">
                 <button
                     onClick={() => setMode('register')}
-                    className="flex-1 bg-[#0D4F4F] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg hover:shadow-teal-900/20 transform hover:-translate-y-1 text-center text-sm sm:text-base"
+                    className="flex-1 bg-[#0D4F4F] text-white py-4 sm:py-5 px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg hover:shadow-teal-900/20 transform hover:-translate-y-1 text-center text-sm sm:text-lg"
                 >
                     Registrarse
                 </button>
                 <button
                     onClick={() => setMode('login')}
-                    className="flex-1 bg-gray-100 text-gray-700 py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-bold hover:bg-gray-200 transition-colors text-center text-sm sm:text-base"
+                    className="flex-1 bg-gray-100 text-gray-700 py-4 sm:py-5 px-6 rounded-2xl font-bold hover:bg-gray-200 transition-colors text-center text-sm sm:text-lg"
                 >
                     Iniciar Sesión
                 </button>
@@ -85,47 +83,47 @@ export default function AuthModal({ onClose, onSuccess }) {
     );
 
     const renderLogin = () => (
-        <div className="bg-white shadow-2xl rounded-none sm:rounded-3xl overflow-hidden border-t-8 border-[#0D4F4F] p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Iniciar Sesión</h3>
+        <div className="bg-white shadow-2xl rounded-none sm:rounded-3xl overflow-hidden border-t-8 border-[#0D4F4F] p-6 sm:p-12 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-10">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">Iniciar Sesión</h3>
                 <button
                     onClick={() => setMode('choice')}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-colors sm:text-lg"
                 >
                     Volver
                 </button>
             </div>
 
             {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6 text-base shadow-sm">
                     {error}
                 </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={handleLogin} className="space-y-6">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-bold text-gray-700 mb-3">
                         Email o Usuario
                     </label>
                     <input
                         type="text"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
+                        className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
                         placeholder="tu@email.com"
                         required
                     />
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm sm:text-base font-bold text-gray-700 mb-3">
                         Contraseña
                     </label>
                     <input
                         type="password"
                         value={formData.password}
                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
+                        className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
                         placeholder="••••••••"
                         required
                     />
@@ -134,17 +132,17 @@ export default function AuthModal({ onClose, onSuccess }) {
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#0D4F4F] text-white py-4 px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg disabled:opacity-50"
+                    className="w-full bg-[#0D4F4F] text-white py-5 px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg disabled:opacity-50 text-xl mt-4"
                 >
                     {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                 </button>
 
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-base sm:text-lg text-gray-600 mt-6">
                     ¿No tienes cuenta?{' '}
                     <button
                         type="button"
                         onClick={() => setMode('register')}
-                        className="text-[#0D4F4F] font-semibold hover:underline"
+                        className="text-[#0D4F4F] font-bold hover:underline"
                     >
                         Regístrate
                     </button>
@@ -154,108 +152,110 @@ export default function AuthModal({ onClose, onSuccess }) {
     );
 
     const renderRegister = () => (
-        <div className="bg-white shadow-2xl rounded-none sm:rounded-3xl overflow-hidden border-t-8 border-[#0D4F4F] p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-2xl font-bold text-gray-900">Crear Cuenta</h3>
+        <div className="bg-white shadow-2xl rounded-none sm:rounded-3xl overflow-hidden border-t-8 border-[#0D4F4F] p-6 sm:p-12 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-10">
+                <h3 className="text-2xl sm:text-3xl font-bold text-gray-900">Crear Cuenta</h3>
                 <button
                     onClick={() => setMode('choice')}
-                    className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-bold hover:bg-gray-200 transition-colors sm:text-lg"
                 >
                     Volver
                 </button>
             </div>
 
             {error && (
-                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-xl mb-6 text-base shadow-sm">
                     {error}
                 </div>
             )}
 
-            <form onSubmit={handleRegister} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nombre Completo
-                    </label>
-                    <input
-                        type="text"
-                        value={formData.full_name}
-                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
-                        placeholder="Juan Pérez"
-                        required
-                    />
-                </div>
+            <form onSubmit={handleRegister} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label className="block text-sm sm:text-base font-bold text-gray-700 mb-2">
+                            Nombre Completo
+                        </label>
+                        <input
+                            type="text"
+                            value={formData.full_name}
+                            onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                            className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
+                            placeholder="Juan Pérez"
+                            required
+                        />
+                    </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Usuario
-                    </label>
-                    <input
-                        type="text"
-                        value={formData.username}
-                        onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
-                        placeholder="juanperez"
-                        required
-                    />
-                </div>
+                    <div>
+                        <label className="block text-sm sm:text-base font-bold text-gray-700 mb-2">
+                            Usuario
+                        </label>
+                        <input
+                            type="text"
+                            value={formData.username}
+                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+                            className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
+                            placeholder="juanperez"
+                            required
+                        />
+                    </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email
-                    </label>
-                    <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
-                        placeholder="tu@email.com"
-                        required
-                    />
-                </div>
+                    <div>
+                        <label className="block text-sm sm:text-base font-bold text-gray-700 mb-2">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
+                            placeholder="tu@email.com"
+                            required
+                        />
+                    </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Fecha de Nacimiento
-                    </label>
-                    <input
-                        type="date"
-                        value={formData.date_of_birth}
-                        onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
-                        required
-                    />
-                </div>
+                    <div>
+                        <label className="block text-sm sm:text-base font-bold text-gray-700 mb-2">
+                            Fecha de Nacimiento
+                        </label>
+                        <input
+                            type="date"
+                            value={formData.date_of_birth}
+                            onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                            className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
+                            required
+                        />
+                    </div>
 
-                <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Contraseña
-                    </label>
-                    <input
-                        type="password"
-                        value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent"
-                        placeholder="••••••••"
-                        required
-                        minLength={6}
-                    />
+                    <div className="sm:col-span-2">
+                        <label className="block text-sm sm:text-base font-bold text-gray-700 mb-2">
+                            Contraseña
+                        </label>
+                        <input
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:ring-4 focus:ring-[#0D4F4F]/20 focus:border-[#0D4F4F] transition-all text-lg"
+                            placeholder="••••••••"
+                            required
+                            minLength={6}
+                        />
+                    </div>
                 </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-[#0D4F4F] text-white py-4 px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg disabled:opacity-50"
+                    className="w-full bg-[#0D4F4F] text-white py-5 px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg disabled:opacity-50 text-xl mt-4"
                 >
                     {loading ? 'Creando cuenta...' : 'Crear Cuenta'}
                 </button>
 
-                <p className="text-center text-sm text-gray-600">
+                <p className="text-center text-base sm:text-lg text-gray-600 mt-6">
                     ¿Ya tienes cuenta?{' '}
                     <button
                         type="button"
                         onClick={() => setMode('login')}
-                        className="text-[#0D4F4F] font-semibold hover:underline"
+                        className="text-[#0D4F4F] font-bold hover:underline"
                     >
                         Inicia sesión
                     </button>
@@ -294,7 +294,7 @@ export default function AuthModal({ onClose, onSuccess }) {
 
             {/* Modal content */}
             <div
-                className="w-full sm:w-auto sm:max-w-2xl pointer-events-auto relative z-10 mx-0 sm:mx-4"
+                className="w-full sm:w-auto sm:max-w-3xl pointer-events-auto relative z-10 mx-0 sm:mx-4"
                 style={{
                     position: 'relative',
                     zIndex: 10,

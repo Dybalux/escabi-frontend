@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { useAuth } from '../../context/AuthContext';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
@@ -74,6 +75,11 @@ export default function Register() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0D4F4F] to-[#0A3636] px-4 py-8">
+            <Helmet>
+                <title>Crear Cuenta | Alto Trago</title>
+                <meta name="description" content="Registrate en Alto Trago para acceder a las mejores promociones en bebidas y realizar tus pedidos online." />
+                <link rel="canonical" href="https://altotrago.com/register" />
+            </Helmet>
             <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
                 <div className="text-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-2">Crear Cuenta</h1>

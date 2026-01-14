@@ -99,7 +99,7 @@ export default function ProductCard({ product }) {
                     )}
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex items-center justify-between pt-4 border-t gap-4">
                     <span className="text-3xl font-bold text-[#0D4F4F]">
                         ${product.price.toFixed(2)}
                     </span>
