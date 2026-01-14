@@ -237,20 +237,13 @@ export default function Home() {
 
                                                         {/* Productos del combo */}
                                                         {combo.items && combo.items.length > 0 && (
-                                                            <div className="mb-4 p-3 bg-gradient-to-br from-teal-50/50 to-emerald-50/30 rounded-lg border border-teal-100">
+                                                            <div className="mb-4 p-3 bg-teal-50/50 rounded-lg border border-teal-100">
                                                                 <p className="text-xs font-semibold text-[#0D4F4F] mb-2">Incluye:</p>
-                                                                <ul className="space-y-1.5">
+                                                                <ul className="space-y-1">
                                                                     {combo.items.map((item, idx) => (
-                                                                        <li key={idx} className="text-xs text-gray-700 flex items-center justify-between gap-2">
-                                                                            <div className="flex items-center gap-1">
-                                                                                <span className="text-[#C29F4C] font-bold">{item.quantity}x</span>
-                                                                                <span className="font-medium">{item.name || 'Producto'}</span>
-                                                                            </div>
-                                                                            {item.price && (
-                                                                                <span className="text-gray-500 text-[10px]">
-                                                                                    ${item.price.toLocaleString('es-AR')}
-                                                                                </span>
-                                                                            )}
+                                                                        <li key={idx} className="text-xs text-gray-700 flex items-center gap-1">
+                                                                            <span className="text-[#C29F4C] font-bold">{item.quantity}x</span>
+                                                                            <span>{item.name || 'Producto'}</span>
                                                                         </li>
                                                                     ))}
                                                                 </ul>
@@ -258,31 +251,9 @@ export default function Home() {
                                                         )}
 
                                                         <div className="flex flex-col gap-3 mt-auto">
-                                                            {/* Savings Badge */}
-                                                            {combo.savings && combo.savings > 0 && (
-                                                                <div className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white px-3 py-2 rounded-lg text-center shadow-md">
-                                                                    <div className="text-[10px] font-medium uppercase tracking-wide">¡Ahorrás!</div>
-                                                                    <div className="text-lg font-bold">
-                                                                        ${combo.savings.toLocaleString('es-AR')}
-                                                                    </div>
-                                                                </div>
-                                                            )}
-
-                                                            {/* Price Comparison */}
-                                                            <div className="space-y-1">
-                                                                {combo.total_items_cost && (
-                                                                    <div className="flex justify-between items-center text-xs">
-                                                                        <span className="text-gray-500">Precio individual:</span>
-                                                                        <span className="text-gray-500 line-through">
-                                                                            ${combo.total_items_cost.toLocaleString('es-AR')}
-                                                                        </span>
-                                                                    </div>
-                                                                )}
-                                                                <div className="text-3xl font-bold text-[#0D4F4F]">
-                                                                    ${combo.price?.toLocaleString('es-AR')}
-                                                                </div>
+                                                            <div className="text-3xl font-bold text-[#0D4F4F]">
+                                                                ${combo.price?.toLocaleString('es-AR')}
                                                             </div>
-
                                                             {isAuthenticated && (
                                                                 <button
                                                                     onClick={() => handleAddToCart(comboId, combo.name)}

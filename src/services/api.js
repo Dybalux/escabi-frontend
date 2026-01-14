@@ -221,10 +221,13 @@ export const updateShippingSettings = (settings) =>
         params: {
             central_zone_price: settings.central_zone_price,
             central_zone_description: settings.central_zone_description,
+            central_zone_enabled: settings.central_zone_enabled,
             remote_zone_price: settings.remote_zone_price,
             remote_zone_description: settings.remote_zone_description,
+            remote_zone_enabled: settings.remote_zone_enabled,
             pickup_address: settings.pickup_address,
-            pickup_description: settings.pickup_description
+            pickup_description: settings.pickup_description,
+            pickup_enabled: settings.pickup_enabled
         }
     });
 
