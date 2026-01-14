@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, AlertCircle, Package } from 'lucide-react';
-import { getAdminCombos, deleteCombo, getProducts } from '../../services/api';
+import { getAdminCombos, deleteCombo } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ComboForm from '../../components/Admin/ComboForm';
 import AdminNav from '../../components/Admin/AdminNav';
@@ -22,60 +22,8 @@ export default function ComboManagement() {
     const loadCombos = async () => {
         try {
             setLoading(true);
-
-            // 1. Cargar combos y productos en paralelo
-            const [combosResponse, productsResponse] = await Promise.all([
-                getAdminCombos(includeInactive),
-                getProducts({ include_out_of_stock: true, include_inactive: true })
-            ]);
-
-            const combosData = combosResponse.data;
-            const productsData = productsResponse.data.items || productsResponse.data; // Manejar paginación si existe
-
-            // 2. Crear mapa de productos para búsqueda rápida
-            const productsMap = {};
-            if (Array.isArray(productsData)) {
-                productsData.forEach(p => {
-                    productsMap[p.id || p._id] = p;
-                });
-            }
-
-            // 3. Enriquecer combos con datos de productos
-            const enrichedCombos = combosData.map(combo => {
-                let totalCost = 0;
-
-                const enrichedItems = combo.items?.map(item => {
-                    const productId = item.product_id || item.id;
-                    const product = productsMap[productId];
-
-                    if (product) {
-                        const quantity = item.quantity || 1;
-                        totalCost += (product.price || 0) * quantity;
-
-                        return {
-                            ...item,
-                            name: product.name,
-                            image_url: product.image_url,
-                            price: product.price,
-                            product_name: product.name
-                        };
-                    }
-                    return item;
-                }) || [];
-
-                // Calcular ahorros si no viene del backend
-                const price = combo.price || 0;
-                const savings = totalCost > price ? totalCost - price : 0;
-
-                return {
-                    ...combo,
-                    items: enrichedItems,
-                    total_items_cost: combo.total_items_cost || totalCost,
-                    savings: combo.savings || savings
-                };
-            });
-
-            setCombos(enrichedCombos);
+            const response = await getAdminCombos(includeInactive);
+            setCombos(response.data);
         } catch (error) {
             console.error('Error loading combos:', error);
             setError('Error al cargar los combos');

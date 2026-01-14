@@ -26,58 +26,8 @@ export default function Home() {
 
     const loadCombos = async () => {
         try {
-            // Cargar combos y productos en paralelo
-            const [combosResponse, productsResponse] = await Promise.all([
-                getCombos(),
-                getProducts({ include_out_of_stock: true, include_inactive: true })
-            ]);
-
-            const combosData = combosResponse.data;
-            const productsData = productsResponse.data.items || productsResponse.data;
-
-            // Crear mapa de productos
-            const productsMap = {};
-            if (Array.isArray(productsData)) {
-                productsData.forEach(p => {
-                    productsMap[p.id || p._id] = p;
-                });
-            }
-
-            // Enriquecer combos con datos de productos
-            const enrichedCombos = combosData.map(combo => {
-                let totalCost = 0;
-
-                const enrichedItems = combo.items?.map(item => {
-                    const productId = item.product_id || item.id;
-                    const product = productsMap[productId];
-
-                    if (product) {
-                        const quantity = item.quantity || 1;
-                        totalCost += (product.price || 0) * quantity;
-
-                        return {
-                            ...item,
-                            name: product.name,
-                            image_url: product.image_url,
-                            price: product.price,
-                            product_name: product.name
-                        };
-                    }
-                    return item;
-                }) || [];
-
-                const price = combo.price || 0;
-                const savings = totalCost > price ? totalCost - price : 0;
-
-                return {
-                    ...combo,
-                    items: enrichedItems,
-                    total_items_cost: combo.total_items_cost || totalCost,
-                    savings: combo.savings || savings
-                };
-            });
-
-            setCombos(enrichedCombos);
+            const response = await getCombos();
+            setCombos(response.data);
         } catch (error) {
             console.error('Error loading combos:', error);
         } finally {
@@ -99,7 +49,20 @@ export default function Home() {
 
     const handleAddToCart = async (comboId, comboName) => {
         if (!isAuthenticated) {
-            toast.error('Debes iniciar sesión para agregar al carrito');
+            toast((t) => (
+                <div className="flex flex-col gap-2">
+                    <p className="font-bold">Debes tener una cuenta para comprar</p>
+                    <div className="flex gap-2">
+                        <Link to="/register" className="text-emerald-600 font-semibold hover:underline">
+                            Registrarse
+                        </Link>
+                        <span>o</span>
+                        <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+                            Iniciar Sesión
+                        </Link>
+                    </div>
+                </div>
+            ), { duration: 4000 });
             return;
         }
 
@@ -115,7 +78,20 @@ export default function Home() {
 
     const handleAddProductToCart = async (productId, productName) => {
         if (!isAuthenticated) {
-            toast.error('Debes iniciar sesión para agregar al carrito');
+            toast((t) => (
+                <div className="flex flex-col gap-2">
+                    <p className="font-bold">Debes tener una cuenta para comprar</p>
+                    <div className="flex gap-2">
+                        <Link to="/register" className="text-emerald-600 font-semibold hover:underline">
+                            Registrarse
+                        </Link>
+                        <span>o</span>
+                        <Link to="/login" className="text-blue-600 font-semibold hover:underline">
+                            Iniciar Sesión
+                        </Link>
+                    </div>
+                </div>
+            ), { duration: 4000 });
             return;
         }
 
@@ -316,14 +292,12 @@ export default function Home() {
                                                             <div className="text-3xl font-bold text-[#0D4F4F]">
                                                                 ${combo.price?.toLocaleString('es-AR')}
                                                             </div>
-                                                            {isAuthenticated && (
-                                                                <button
-                                                                    onClick={() => handleAddToCart(comboId, combo.name)}
-                                                                    className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
-                                                                >
-                                                                    Agregar al Carrito
-                                                                </button>
-                                                            )}
+                                                            <button
+                                                                onClick={() => handleAddToCart(comboId, combo.name)}
+                                                                className="w-full bg-[#0D4F4F] text-white px-4 py-3 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-bold shadow-md active:scale-95"
+                                                            >
+                                                                Agregar al Carrito
+                                                            </button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -417,15 +391,14 @@ export default function Home() {
                                                             <div className="text-2xl font-bold text-[#0D4F4F]">
                                                                 ${product.price?.toLocaleString('es-AR')}
                                                             </div>
-                                                            {isAuthenticated && product.stock > 0 && (
+                                                            {product.stock > 0 ? (
                                                                 <button
                                                                     onClick={() => handleAddProductToCart(productId, product.name)}
                                                                     className="w-full bg-[#0D4F4F] text-white px-4 py-2.5 rounded-xl hover:bg-[#1E7E7A] transition-colors flex items-center justify-center gap-2 font-semibold shadow-sm active:scale-95"
                                                                 >
                                                                     Agregar
                                                                 </button>
-                                                            )}
-                                                            {product.stock === 0 && (
+                                                            ) : (
                                                                 <span className="text-red-600 text-sm font-bold bg-red-50 text-center py-2 rounded-lg border border-red-100 italic">
                                                                     Agotado
                                                                 </span>
