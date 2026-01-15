@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Percent, TrendingUp, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import api from '../../services/api';
+import { showConfirmToast } from '../UI/ConfirmToast';
 
 export default function BulkPriceUpdate() {
     const [updateData, setUpdateData] = useState({
@@ -26,27 +27,38 @@ export default function BulkPriceUpdate() {
         'Otro'
     ];
 
-    const handleBulkUpdate = async () => {
-        if (!window.confirm(`¿Estás seguro de aplicar un ${updateData.percentage}% de aumento a ${updateData.target === 'all' ? 'TODOS los productos' : `productos de categoría ${updateData.target}`}?`)) {
-            return;
-        }
+    const handleBulkUpdate = () => {
+        showConfirmToast({
+            title: '¿Confirmar actualización masiva?',
+            message: `Vas a aplicar un ${updateData.percentage}% de ajuste a ${updateData.target === 'all' ? 'TODOS los productos' : `productos de la categoría "${updateData.target}"`}. Esta acción es permanente.`,
+            confirmText: 'Sí, aplicar cambios',
+            type: updateData.percentage < 0 ? 'danger' : 'success',
+            icon: TrendingUp,
+            onConfirm: async () => {
+                setLoading(true);
+                try {
+                    const response = await api.post('/admin/bulk-price-update', {
+                        percentage: parseFloat(updateData.percentage) / 100, // Convertir a decimal
+                        based_on: updateData.based_on,
+                        target: updateData.target
+                    });
 
-        setLoading(true);
-        try {
-            const response = await api.post('/admin/bulk-price-update', {
-                percentage: parseFloat(updateData.percentage) / 100, // Convertir a decimal
-                based_on: updateData.based_on,
-                target: updateData.target
-            });
-
-            toast.success(response.data.message || 'Precios actualizados exitosamente');
-        } catch (error) {
-            console.error('Error al actualizar precios:', error);
-            const errorMsg = error.response?.data?.detail || 'Error al actualizar precios';
-            toast.error(errorMsg);
-        } finally {
-            setLoading(false);
-        }
+                    toast.success(response.data.message || 'Precios actualizados exitosamente', {
+                        icon: '📈',
+                        duration: 3000
+                    });
+                    if (window.location.reload) {
+                        // Opcional: recargar para ver cambios
+                    }
+                } catch (error) {
+                    console.error('Error al actualizar precios:', error);
+                    const errorMsg = error.response?.data?.detail || 'Error al actualizar precios';
+                    toast.error(errorMsg);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        });
     };
 
     return (

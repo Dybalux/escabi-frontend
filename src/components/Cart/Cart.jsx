@@ -10,6 +10,7 @@ import BankTransferConfirmation from '../Payment/BankTransferConfirmation';
 import ShippingAddressModal from './ShippingAddressModal';
 import { ShoppingBag } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { showConfirmToast } from '../UI/ConfirmToast';
 
 export default function Cart() {
     const { cart, loadCart, clearCart } = useCart();
@@ -56,13 +57,21 @@ export default function Cart() {
         }, 0);
     };
 
-    const handleClearCart = async () => {
-        if (!confirm('¿Seguro que quieres vaciar el carrito?')) return;
-
-        const result = await clearCart();
-        if (result.success) {
-            setAlert({ type: 'info', message: 'Carrito vaciado' });
-        }
+    const handleClearCart = () => {
+        showConfirmToast({
+            title: '¿Vaciar carrito?',
+            message: 'Se eliminarán todos los productos seleccionados.',
+            confirmText: 'Sí, vaciar',
+            onConfirm: async () => {
+                const result = await clearCart();
+                if (result.success) {
+                    toast.success('Carrito vaciado correctamente', {
+                        icon: '🗑️',
+                        duration: 2000
+                    });
+                }
+            }
+        });
     };
 
     const handleProceedToPayment = () => {
@@ -220,14 +229,14 @@ export default function Cart() {
                 </div>
 
                 <div className="border-t-2 mt-6 pt-6">
-                    {/* Subtotal y Envío */}
-                    <div className="space-y-2 mb-4">
-                        <div className="flex justify-between items-center text-lg">
+                    {/* Order Summary */}
+                    <div className="order-summary space-y-3 mb-4">
+                        <div className="line-item flex justify-between items-center text-lg">
                             <span className="text-gray-600">Subtotal:</span>
                             <span className="text-gray-800 font-semibold">${getTotal().toFixed(2)}</span>
                         </div>
                         {shippingZone && (
-                            <div className="flex justify-between items-center text-lg">
+                            <div className={`line-item shipping flex justify-between items-center text-lg ${shippingCost === 0 ? 'free' : ''}`}>
                                 <span className="text-gray-600">
                                     Envío (
                                     {shippingZone === 'central' && '🏙️ Zona Céntrica'}
@@ -235,19 +244,15 @@ export default function Cart() {
                                     {shippingZone === 'pickup' && '📦 Retiro en Persona'}
                                     ):
                                 </span>
-                                <span className="text-gray-800 font-semibold">
-                                    {shippingZone === 'pickup' ? (
-                                        <span className="text-emerald-700 font-bold">GRATIS</span>
-                                    ) : (
-                                        `$${shippingCost.toFixed(2)}`
-                                    )}
+                                <span className={shippingCost === 0 ? 'text-green-600 font-bold text-xl' : 'text-gray-800 font-semibold'}>
+                                    {shippingCost === 0 ? 'GRATIS 🎁' : `$${shippingCost.toFixed(2)}`}
                                 </span>
                             </div>
                         )}
                     </div>
-                    <div className="flex justify-between items-center text-2xl font-bold mb-6 pt-4 border-t border-teal-50">
-                        <span>Total:</span>
-                        <span className="text-[#0D4F4F]">${(getTotal() + shippingCost).toFixed(2)}</span>
+                    <div className="line-item total flex justify-between items-center text-2xl font-bold mb-6 pt-4 border-t-2 border-gray-200">
+                        <strong>Total:</strong>
+                        <strong className="text-[#0D4F4F]">${(getTotal() + shippingCost).toFixed(2)}</strong>
                     </div>
 
                     {/* Mostrar selector de método de pago si estamos en ese paso */}

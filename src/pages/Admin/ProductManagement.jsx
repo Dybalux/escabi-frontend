@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Search, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Trash2, Search, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { getProducts, deleteProduct, toggleProductActive } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
 import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
+import { showConfirmToast } from '../../components/UI/ConfirmToast';
 
 export default function ProductManagement() {
     const [products, setProducts] = useState([]);
@@ -44,22 +45,25 @@ export default function ProductManagement() {
         }
     };
 
-    const handleDelete = async (productId, productName) => {
-        if (!window.confirm(`¿Estás seguro de eliminar "${productName}"?`)) {
-            return;
-        }
-
-        try {
-            await deleteProduct(productId);
-            setProducts(products.filter(p => p.id !== productId));
-            toast.success('Producto eliminado exitosamente');
-        } catch (error) {
-            console.error('Error deleting product:', error);
-            const errorMessage = error.response?.data?.detail ||
-                error.response?.data?.message ||
-                'Error al eliminar el producto. Puede que tenga pedidos asociados.';
-            toast.error(errorMessage);
-        }
+    const handleDelete = (productId, productName) => {
+        showConfirmToast({
+            title: '¿Eliminar producto?',
+            message: `Estás por eliminar "${productName}". Esta acción no se puede deshacer.`,
+            confirmText: 'Sí, eliminar',
+            onConfirm: async () => {
+                try {
+                    await deleteProduct(productId);
+                    setProducts(products.filter(p => p.id !== productId));
+                    toast.success('Producto eliminado exitosamente');
+                } catch (error) {
+                    console.error('Error deleting product:', error);
+                    const errorMessage = error.response?.data?.detail ||
+                        error.response?.data?.message ||
+                        'Error al eliminar el producto. Puede que tenga pedidos asociados.';
+                    toast.error(errorMessage);
+                }
+            }
+        });
     };
 
     const handleEdit = (product) => {

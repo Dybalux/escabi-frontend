@@ -4,6 +4,7 @@ import { getAdminUsers, updateUserRole } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
+import { showConfirmToast } from '../../components/UI/ConfirmToast';
 
 export default function UserManagement() {
     const [users, setUsers] = useState([]);
@@ -52,19 +53,24 @@ export default function UserManagement() {
             return;
         }
 
-        if (!confirm(`¿Estás seguro de ${action} a ${username}?`)) {
-            return;
-        }
-
-        try {
-            await updateUserRole(userId, newRole);
-            toast.success(`Usuario ${username} ${newRole === 'admin' ? 'promovido a administrador' : 'degradado a cliente'} exitosamente`);
-            loadUsers(); // Recargar lista
-        } catch (error) {
-            console.error('Error changing user role:', error);
-            const errorMessage = error.response?.data?.detail || 'Error al cambiar el rol del usuario';
-            toast.error(errorMessage);
-        }
+        showConfirmToast({
+            title: `¿${newRole === 'admin' ? 'Promover' : 'Degradar'} usuario?`,
+            message: `¿Estás seguro de ${action} a "${username}"?`,
+            confirmText: 'Confirmar',
+            type: newRole === 'admin' ? 'success' : 'danger',
+            icon: Shield,
+            onConfirm: async () => {
+                try {
+                    await updateUserRole(userId, newRole);
+                    toast.success(`Usuario ${username} ${newRole === 'admin' ? 'promovido a administrador' : 'degradado a cliente'} exitosamente`);
+                    loadUsers(); // Recargar lista
+                } catch (error) {
+                    console.error('Error changing user role:', error);
+                    const errorMessage = error.response?.data?.detail || 'Error al cambiar el rol del usuario';
+                    toast.error(errorMessage);
+                }
+            }
+        });
     };
 
     if (loading) {

@@ -5,6 +5,7 @@ import Button from '../../components/UI/Button';
 import ComboForm from '../../components/Admin/ComboForm';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
+import { showConfirmToast } from '../../components/UI/ConfirmToast';
 
 export default function ComboManagement() {
     const [combos, setCombos] = useState([]);
@@ -33,19 +34,23 @@ export default function ComboManagement() {
         }
     };
 
-    const handleDelete = async (comboId, comboName) => {
-        const action = window.confirm(`¿Desactivar "${comboName}"? (No se eliminará permanentemente)`);
-        if (!action) return;
-
-        try {
-            await deleteCombo(comboId, false); // soft delete
-            toast.success('Combo desactivado exitosamente');
-            loadCombos();
-        } catch (error) {
-            console.error('Error deleting combo:', error);
-            const errorMessage = error.response?.data?.detail || 'Error al desactivar el combo';
-            toast.error(errorMessage);
-        }
+    const handleDelete = (comboId, comboName) => {
+        showConfirmToast({
+            title: '¿Desactivar combo?',
+            message: `¿Estás seguro de desactivar "${comboName}"? Podrás activarlo nuevamente más tarde.`,
+            confirmText: 'Sí, desactivar',
+            onConfirm: async () => {
+                try {
+                    await deleteCombo(comboId, false); // soft delete
+                    toast.success('Combo desactivado exitosamente');
+                    loadCombos();
+                } catch (error) {
+                    console.error('Error deleting combo:', error);
+                    const errorMessage = error.response?.data?.detail || 'Error al desactivar el combo';
+                    toast.error(errorMessage);
+                }
+            }
+        });
     };
 
     const handleEdit = (combo) => {

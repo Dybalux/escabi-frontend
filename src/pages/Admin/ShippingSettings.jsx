@@ -47,8 +47,8 @@ export default function ShippingSettings() {
     const handleSave = async () => {
         // Validación solo para opciones habilitadas
         if (prices.central_zone_enabled) {
-            if (prices.central_zone_price <= 0) {
-                toast.error('El precio de zona céntrica debe ser mayor a 0');
+            if (prices.central_zone_price < 0) {
+                toast.error('El precio de zona céntrica no puede ser negativo');
                 return;
             }
             if (!prices.central_zone_description.trim()) {

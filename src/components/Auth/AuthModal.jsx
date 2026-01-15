@@ -25,7 +25,7 @@ export default function AuthModal({ onClose, onSuccess }) {
         const result = await login({ email: formData.email, password: formData.password });
 
         if (result.success) {
-            toast.success('¡Sesión iniciada exitosamente!');
+            toast.success('¡Sesión iniciada exitosamente!', { duration: 1500 });
             onSuccess();
         } else {
             setError(result.error);
@@ -42,7 +42,7 @@ export default function AuthModal({ onClose, onSuccess }) {
         const result = await register(formData);
 
         if (result.success) {
-            toast.success('¡Cuenta creada exitosamente!');
+            toast.success('¡Cuenta creada exitosamente!', { duration: 1500 });
             onSuccess();
         } else {
             setError(result.error);

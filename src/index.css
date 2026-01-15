@@ -18,3 +18,103 @@
         display: none;
     }
 }
+
+/* Promotional Banner */
+.promo-banner {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.promo-banner:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.promo-icon {
+    font-size: 48px;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.promo-content h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.promo-content p {
+    margin: 5px 0 0;
+    opacity: 0.9;
+    font-size: 16px;
+}
+
+/* Alert Success Message */
+.alert-success {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(40, 167, 69, 0.2);
+}
+
+.alert-success strong {
+    font-weight: 700;
+}
+
+/* Order Summary Styling */
+.order-summary {
+    background: linear-gradient(to bottom, #f9fafb, #ffffff);
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.line-item.shipping.free .shipping-cost {
+    color: #28a745;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.line-item.total {
+    background: linear-gradient(to right, #f0fdf4, #dcfce7);
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .promo-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .promo-icon {
+        font-size: 36px;
+    }
+
+    .promo-content h3 {
+        font-size: 20px;
+    }
+
+    .promo-content p {
+        font-size: 14px;
+    }
+}

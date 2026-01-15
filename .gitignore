@@ -26,3 +26,6 @@ dist-ssr
 .vercel
 .env
 .env*.local
+.gemini/SHIPPING_OPTIONS_CONTROL.md
+.gemini/SHIPPING_OPTIONS_VISUAL_GUIDE.md
+.gemini/SHIPPING_PROMOTION_IMPLEMENTATION.md

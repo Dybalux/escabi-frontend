@@ -48,7 +48,7 @@ export const showAgeVerificationToast = (onVerify) => {
                                 document.body.style.maxWidth = '';
                                 toast.success('¡Bienvenido! Que disfrutes tu visita.', {
                                     icon: '🥂',
-                                    duration: 2000
+                                    duration: 1500
                                 });
                             }}
                             className="flex-1 bg-[#0D4F4F] text-white py-3 sm:py-4 px-4 sm:px-6 rounded-2xl font-bold hover:bg-[#1E7E7A] transition-all shadow-lg hover:shadow-teal-900/20 transform hover:-translate-y-1 text-sm sm:text-base"
