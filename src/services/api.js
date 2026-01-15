@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-console.log('🔧 API URL configurada:', API_URL);
 
 if (!API_URL) {
     console.error('❌ VITE_API_URL no está definida en las variables de entorno');

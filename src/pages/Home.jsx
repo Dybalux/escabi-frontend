@@ -317,7 +317,51 @@ export default function Home() {
                     </div>
                 </section>
 
-                {/* Promo Banner - Free Shipping */}
+                {/* Marketing Banner - Free Shipping Promotion */}
+                <section className="market-banner-section py-8 bg-white">
+                    <div className="container mx-auto px-4">
+                        <motion.div
+                            className="market-banner-container"
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5 }}
+                        >
+                            <div className="market-banner-content">
+                                <div className="market-banner-text">
+                                    <motion.h2
+                                        initial={{ opacity: 0, x: -20 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: 0.2, duration: 0.5 }}
+                                    >
+                                        🚛 ¡ENVÍO GRATIS EN EL CENTRO!
+                                    </motion.h2>
+                                    <motion.p
+                                        initial={{ opacity: 0, x: -20 }}
+                                        whileInView={{ opacity: 1, x: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: 0.4, duration: 0.5 }}
+                                    >
+                                        Llevando <strong>1 Combo</strong> o <strong>2 Productos</strong>, tu envío a Zona Céntrica es <strong>BONIFICADO</strong>. 🎁
+                                    </motion.p>
+                                </div>
+                                <motion.div
+                                    className="market-banner-badge"
+                                    initial={{ opacity: 0, rotate: -15, scale: 0.5 }}
+                                    whileInView={{ opacity: 1, rotate: 3, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
+                                >
+                                    <span className="badge-main">ENVÍO</span>
+                                    <span className="badge-sub">¡GRATIS!</span>
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </section>
+
+                {/* Promo Banner - Free Shipping Information */}
                 <section className="bg-white py-6">
                     <div className="container mx-auto px-4">
                         <div className="promo-banner">

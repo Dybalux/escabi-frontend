@@ -4,8 +4,13 @@ import { getShippingPrices } from '../../services/api';
 import toast from 'react-hot-toast';
 import CoverageMap from './CoverageMap';
 import InteractiveShippingMap from './InteractiveShippingMap';
+import FreeShippingBanner from './FreeShippingBanner';
+import { checkFreeShippingEligibility } from '../../helpers/shippingRules';
+import { useCart } from '../../context/CartContext';
 
 export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
+    const { cart } = useCart();
+    const { isEligible: isFreeShippingEligible } = checkFreeShippingEligibility(cart?.items || []);
     const [formData, setFormData] = useState({
         street: '',
         phone: '',
@@ -226,70 +231,80 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                                             </div>
                                         ) : (
                                             <>
-                                                <select
-                                                    name="shipping_zone"
-                                                    value={selectedZone}
-                                                    onChange={(e) => setSelectedZone(e.target.value)}
-                                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all text-gray-700 font-medium"
-                                                >
-                                                    <option value="">Selecciona tu zona de envío</option>
+                                                <div className="mb-4">
+                                                    <FreeShippingBanner cartItems={cart?.items || []} />
+                                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                                        Zona de Envío
+                                                    </label>
+                                                    <select
+                                                        name="shipping_zone"
+                                                        value={selectedZone}
+                                                        onChange={(e) => setSelectedZone(e.target.value)}
+                                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0D4F4F] focus:border-transparent transition-all text-gray-700 font-medium"
+                                                    >
+                                                        <option value="">Selecciona tu zona de envío</option>
 
-                                                    {/* Solo mostrar opciones habilitadas */}
-                                                    {shippingPrices.central && (
-                                                        <option value="central">
-                                                            🎁 Zona Céntrica - {shippingPrices.central?.price === 0 ? 'GRATIS' : `$${shippingPrices.central?.price?.toFixed(0)}`}
-                                                        </option>
-                                                    )}
+                                                        {/* Solo mostrar opciones habilitadas */}
+                                                        {shippingPrices.central && (
+                                                            <option value="central">
+                                                                🎁 Zona Céntrica - {(shippingPrices.central?.price === 0 || isFreeShippingEligible) ? 'GRATIS' : `$${shippingPrices.central?.price?.toFixed(0)}`}
+                                                            </option>
+                                                        )}
 
-                                                    {shippingPrices.remote && (
-                                                        <option value="remote">
-                                                            🚛 Zona Alejada - {shippingPrices.remote?.price === 0 ? 'GRATIS' : `$${shippingPrices.remote?.price?.toFixed(0)}`}
-                                                        </option>
-                                                    )}
+                                                        {shippingPrices.remote && (
+                                                            <option value="remote">
+                                                                🚛 Zona Alejada - {shippingPrices.remote?.price === 0 ? 'GRATIS' : `$${shippingPrices.remote?.price?.toFixed(0)}`}
+                                                            </option>
+                                                        )}
 
-                                                    {shippingPrices.pickup && (
-                                                        <option value="pickup">
-                                                            🏪 Retiro en Local - GRATIS
-                                                        </option>
-                                                    )}
-                                                </select>
+                                                        {shippingPrices.pickup && (
+                                                            <option value="pickup">
+                                                                🏪 Retiro en Local - GRATIS
+                                                            </option>
+                                                        )}
+                                                    </select>
+                                                </div>
 
                                                 {/* Mapa Interactivo de Zonas */}
                                                 <div className="mt-4">
                                                     <InteractiveShippingMap
                                                         onZoneSelect={(zone) => setSelectedZone(zone)}
                                                         selectedZone={selectedZone}
-                                                        shippingPrices={shippingPrices}
+                                                        shippingPrices={
+                                                            isFreeShippingEligible && shippingPrices.central
+                                                                ? { ...shippingPrices, central: { ...shippingPrices.central, price: 0 } }
+                                                                : shippingPrices
+                                                        }
                                                     />
                                                 </div>
-
-
-
-
-                                                {/* Mensaje para retiro en persona */}
-                                                {selectedZone === 'pickup' && shippingPrices.pickup && (
-                                                    <motion.div
-                                                        initial={{ opacity: 0, y: -10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        className="space-y-3 mt-3"
-                                                    >
-                                                        <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg">
-                                                            <strong>📍 Retiro en:</strong> {shippingPrices.pickup?.address || 'Dirección no configurada'}
-                                                        </div>
-                                                        <div className="rounded-lg overflow-hidden border border-amber-200 shadow-sm">
-                                                            <div className="bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 border-b border-amber-200">
-                                                                🗺️ Ubicación de Retiro
-                                                            </div>
-                                                            <CoverageMap center={[-26.691, -66.049]} radius={100} />
-                                                        </div>
-                                                    </motion.div>
-                                                )}
-
-                                                {/* Error de validación de zona */}
-                                                {errors.zone && (
-                                                    <p className="text-red-500 text-sm mt-2">{errors.zone}</p>
-                                                )}
                                             </>
+                                        )}
+
+
+
+
+                                        {/* Mensaje para retiro en persona */}
+                                        {selectedZone === 'pickup' && shippingPrices.pickup && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="space-y-3 mt-3"
+                                            >
+                                                <div className="bg-gradient-to-r from-amber-50 to-amber-100 border border-amber-200 text-amber-800 px-4 py-3 rounded-lg">
+                                                    <strong>📍 Retiro en:</strong> {shippingPrices.pickup?.address || 'Dirección no configurada'}
+                                                </div>
+                                                <div className="rounded-lg overflow-hidden border border-amber-200 shadow-sm">
+                                                    <div className="bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 border-b border-amber-200">
+                                                        🗺️ Ubicación de Retiro
+                                                    </div>
+                                                    <CoverageMap center={[-26.691, -66.049]} radius={100} />
+                                                </div>
+                                            </motion.div>
+                                        )}
+
+                                        {/* Error de validación de zona */}
+                                        {errors.zone && (
+                                            <p className="text-red-500 text-sm mt-2">{errors.zone}</p>
                                         )}
                                     </>
                                 ) : (
@@ -336,7 +351,8 @@ export default function ShippingAddressModal({ isOpen, onClose, onSubmit }) {
                         </form>
                     </motion.div>
                 </div>
-            )}
-        </AnimatePresence>
+            )
+            }
+        </AnimatePresence >
     );
 }

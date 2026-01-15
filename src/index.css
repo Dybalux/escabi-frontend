@@ -43,9 +43,12 @@
 }
 
 @keyframes bounce {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(0);
     }
+
     50% {
         transform: translateY(-10px);
     }
@@ -98,6 +101,115 @@
 }
 
 /* Responsive adjustments */
+@media (max-width: 768px) {
+    .promo-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .promo-icon {
+        font-size: 40px;
+    }
+}
+
+/* Marketing Banner - Free Shipping Promo */
+.market-banner-section {
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+}
+
+.market-banner-container {
+    background: linear-gradient(135deg, #0D4F4F 0%, #1E7E7A 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(13, 79, 79, 0.15);
+    border: 2px solid rgba(194, 159, 76, 0.3);
+    overflow: hidden;
+}
+
+.market-banner-container::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(194, 159, 76, 0.2) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.market-banner-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.market-banner-text h2 {
+    color: #C29F4C;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.market-banner-text p {
+    color: #fff;
+    font-size: 1.1rem;
+    opacity: 0.95;
+}
+
+.market-banner-badge {
+    background: #C29F4C;
+    color: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 15px;
+    font-weight: 900;
+    text-transform: uppercase;
+    transform: rotate(3deg);
+    box-shadow: 4px 4px 0px #0A3636;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 140px;
+    transition: transform 0.3s ease;
+}
+
+.market-banner-container:hover .market-banner-badge {
+    transform: rotate(0deg) scale(1.05);
+}
+
+.badge-main {
+    font-size: 1.2rem;
+}
+
+.badge-sub {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .market-banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .market-banner-text h2 {
+        font-size: 1.5rem;
+    }
+
+    .market-banner-badge {
+        transform: rotate(0deg);
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .promo-banner {
         flex-direction: column;

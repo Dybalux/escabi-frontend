@@ -40,7 +40,7 @@ bun install
 Crear archivo `.env` en la raíz:
 
 ```env
-VITE_API_URL=https://web-production-62840.up.railway.app
+VITE_API_URL=
 ```
 
 ## 🏃‍♂️ Desarrollo
@@ -162,7 +162,7 @@ const { cart, addToCart, removeFromCart } = useCart();
 
 2. **Configurar Variables de Entorno:**
    ```
-   VITE_API_URL=https://web-production-62840.up.railway.app
+   VITE_API_URL=
    ```
 
 3. **Deploy:**
