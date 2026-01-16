@@ -245,4 +245,14 @@ export const updateCombo = (id, comboData) => api.put(`/combos/admin/${id}`, com
 export const deleteCombo = (id, permanent = false) =>
     api.delete(`/combos/admin/${id}`, { params: { permanent } });
 
+// System Status
+export const getSystemStatus = () => api.get('/system-status');
+export const updateSystemStatus = (enabled, message) =>
+    api.put('/admin/system-settings', null, {
+        params: {
+            maintenance_mode: enabled,
+            maintenance_message: message
+        }
+    });
+
 export default api;

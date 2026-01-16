@@ -21,6 +21,7 @@ import PaymentSettings from './pages/Admin/PaymentSettings';
 import ShippingSettings from './pages/Admin/ShippingSettings';
 import PricingSettings from './pages/Admin/PricingSettings';
 import ComboManagement from './pages/Admin/ComboManagement';
+import SystemSettings from './pages/Admin/SystemSettings';
 import NotFound from './pages/NotFound';
 import { Toaster } from 'react-hot-toast';
 
@@ -41,21 +42,62 @@ function ProtectedRoute({ children }) {
 
 import { showAgeVerificationToast } from './components/UI/AgeVerificationToast';
 import { useEffect, useState } from 'react';
+import { getSystemStatus } from './services/api';
+import MaintenanceScreen from './components/MaintenanceScreen';
 
 function AppRoutes() {
   const { isAuthenticated, user, loading } = useAuth();
   const [showBlur, setShowBlur] = useState(false);
+  const [inMaintenance, setInMaintenance] = useState(false);
+  const [maintenanceMsg, setMaintenanceMsg] = useState("");
+  const [checkingStatus, setCheckingStatus] = useState(true);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await getSystemStatus();
+        if (response.data?.maintenance_mode) {
+          setInMaintenance(true);
+          setMaintenanceMsg(response.data.message);
+        }
+      } catch (error) {
+        console.error('Error checking system status:', error);
+      } finally {
+        setCheckingStatus(false);
+      }
+    };
+
+    checkStatus();
+  }, []);
 
   useEffect(() => {
     if (loading) return;
 
     // Solo mostrar si NO está verificado Y el usuario NO es admin
     const isVerified = localStorage.getItem('ageVerified');
-    if (!isVerified && user?.role !== 'admin' && !showBlur) {
+    /* Only show age toast if NOT in maintenance mode (or if admin bypasses it) */
+    if (!inMaintenance && !isVerified && user?.role !== 'admin' && !showBlur) {
       setShowBlur(true);
       showAgeVerificationToast(() => setShowBlur(false));
     }
-  }, [user, loading, showBlur]);
+  }, [user, loading, showBlur, inMaintenance]);
+
+  // Permitir bypass si es admin (basado en rol de usuario autenticado o ruta)
+  // Nota: user.role estaría disponible si AuthProvider carga al usuario antes.
+  // Si no hay usuario y estamos en mantenimiento, se muestra la pantalla.
+  const isBypassed = user?.role === 'admin' || window.location.pathname.startsWith('/admin');
+
+  if (checkingStatus && !window.location.pathname.startsWith('/admin')) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0D4F4F]"></div>
+      </div>
+    );
+  }
+
+  if (inMaintenance && !isBypassed) {
+    return <MaintenanceScreen message={maintenanceMsg} />;
+  }
 
   return (
     <>
@@ -165,6 +207,14 @@ function AppRoutes() {
               element={
                 <AdminRoute>
                   <PricingSettings />
+                </AdminRoute>
+              }
+            />
+            <Route
+              path="/admin/system-settings"
+              element={
+                <AdminRoute>
+                  <SystemSettings />
                 </AdminRoute>
               }
             />

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Package, ShoppingBag, Users, Settings, Truck, PackageOpen, Percent } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, Users, Settings, Truck, PackageOpen, Percent, Monitor } from 'lucide-react';
 
 export default function AdminNav() {
     const location = useLocation();
@@ -11,8 +11,9 @@ export default function AdminNav() {
         { path: '/admin/orders', icon: ShoppingBag, label: 'Pedidos' },
         { path: '/admin/users', icon: Users, label: 'Usuarios' },
         { path: '/admin/shipping-settings', icon: Truck, label: 'Envíos' },
-        { path: '/admin/payment-settings', icon: Settings, label: 'Pagos' },
         { path: '/admin/pricing-settings', icon: Percent, label: 'Precios' },
+        { path: '/admin/payment-settings', icon: Settings, label: 'Pagos' },
+        { path: '/admin/system-settings', icon: Monitor, label: 'Sistema' },
     ];
 
     return (
