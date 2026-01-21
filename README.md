@@ -19,7 +19,9 @@ Frontend moderno desarrollado con React, Vite y Bun para la API de gestión de b
 - **React Router** - Navegación
 - **Axios** - Cliente HTTP
 - **Tailwind CSS** - Estilos
+- **Framer Motion** - Animaciones
 - **Lucide React** - Iconos
+- **React Hot Toast** - Notificaciones
 
 ## 📦 Instalación
 
@@ -67,21 +69,38 @@ bun run preview
 ```
 src/
 ├── components/
+│   ├── Admin/         # Panel de administración
+│   │   ├── AdminNav.jsx
+│   │   ├── AdminRoute.jsx
+│   │   └── ProductForm.jsx
 │   ├── Auth/          # Login y Register
 │   ├── Products/      # Productos y filtros
 │   ├── Cart/          # Carrito de compras
 │   ├── Layout/        # Header y Footer
-│   └── UI/            # Componentes base
+│   ├── UI/            # Componentes base
+│   └── MaintenanceScreen.jsx  # Pantalla de mantenimiento
 ├── context/
 │   ├── AuthContext.jsx   # Estado de autenticación
 │   └── CartContext.jsx   # Estado del carrito
 ├── pages/
+│   ├── Admin/
+│   │   ├── AdminDashboard.jsx
+│   │   ├── ProductManagement.jsx
+│   │   ├── ComboManagement.jsx
+│   │   ├── OrderManagement.jsx
+│   │   ├── UserManagement.jsx
+│   │   ├── PaymentSettings.jsx
+│   │   ├── ShippingSettings.jsx
+│   │   ├── PricingSettings.jsx
+│   │   └── SystemSettings.jsx  # Modo mantenimiento
 │   ├── Home.jsx          # Landing page
 │   ├── Products.jsx      # Catálogo
 │   ├── MyOrders.jsx      # Historial de pedidos
-│   └── VerifyAge.jsx     # Verificación de edad
+│   ├── PaymentSuccess.jsx
+│   ├── PaymentFailure.jsx
+│   └── PaymentPending.jsx
 ├── services/
-│   └── api.js            # Cliente API
+│   └── api.js            # Cliente API con interceptores
 ├── App.jsx
 ├── main.jsx
 └── index.css
@@ -92,7 +111,8 @@ src/
 ### Autenticación
 - ✅ Registro de usuarios
 - ✅ Login con JWT
-- ✅ Verificación de edad
+- ✅ Verificación de edad automática (18+)
+- ✅ Refresh token automático
 - ✅ Logout
 
 ### Productos
@@ -100,17 +120,51 @@ src/
 - ✅ Filtrado por categoría
 - ✅ Búsqueda en tiempo real
 - ✅ Información detallada
+- ✅ Gestión de stock
+- ✅ Precios dinámicos por zona
+
+### Combos
+- ✅ Creación de combos de productos
+- ✅ Descuentos especiales
+- ✅ Gestión de stock automática
+- ✅ Carrusel de combos en home
+- ✅ Agregar combos al carrito
 
 ### Carrito
-- ✅ Agregar productos
-- ✅ Ver total
+- ✅ Agregar productos y combos
+- ✅ Animaciones de cantidad con Framer Motion
+- ✅ Input manual de cantidades
+- ✅ Ver total con envío
 - ✅ Eliminar items
 - ✅ Crear pedido
 
 ### Pedidos
 - ✅ Historial de compras
-- ✅ Estados de pedido
+- ✅ Estados de pedido en tiempo real
 - ✅ Detalles completos
+- ✅ Integración con Mercado Pago
+- ✅ Notificaciones por email
+- ✅ Números de orden únicos
+
+### Panel de Administración
+- ✅ Dashboard con estadísticas
+- ✅ Gestión de productos
+- ✅ Gestión de combos
+- ✅ Gestión de pedidos
+- ✅ Gestión de usuarios y roles
+- ✅ Configuración de pagos (Mercado Pago)
+- ✅ Configuración de envíos (zonas y precios)
+- ✅ Configuración de precios dinámicos
+- ✅ **Modo mantenimiento** 🚧
+- ✅ Configuración de redes sociales
+
+### Modo Mantenimiento 🚧
+- ✅ Activación/desactivación desde el panel admin
+- ✅ Mensaje personalizable para usuarios
+- ✅ Detección automática en tiempo real (polling cada 30s)
+- ✅ Bypass automático para administradores
+- ✅ Pantalla de mantenimiento profesional
+- ✅ Manejo de errores 503
 
 ## 🎨 Componentes Reutilizables
 
@@ -149,6 +203,50 @@ const { user, login, logout, verifyAge } = useAuth();
 ```jsx
 const { cart, addToCart, removeFromCart } = useCart();
 ```
+
+## 🚧 Modo Mantenimiento
+
+El sistema incluye un modo mantenimiento completo que permite bloquear el acceso al sitio para realizar actualizaciones.
+
+### Activar Modo Mantenimiento
+
+1. **Acceder al Panel Admin:**
+   ```
+   /admin/system-settings
+   ```
+
+2. **Activar el Toggle:**
+   - Activar "Modo Mantenimiento"
+   - Escribir un mensaje personalizado para los usuarios
+   - Guardar cambios
+
+3. **Verificar:**
+   - Los usuarios verán la pantalla de mantenimiento en máximo 30 segundos
+   - Los administradores mantienen acceso completo
+
+### Características Técnicas
+
+- **Polling automático:** Verifica el estado cada 30 segundos
+- **Detección de errores 503:** Activa automáticamente la pantalla de mantenimiento
+- **Bypass para admins:** Los administradores siempre tienen acceso
+- **Mensaje personalizable:** Configura el mensaje que verán los usuarios
+- **Pantalla profesional:** Diseño moderno con opción de recargar
+
+### Probar el Modo Mantenimiento
+
+Como administrador, no verás la pantalla de mantenimiento. Para probarla:
+
+1. Activa el modo mantenimiento
+2. Abre una **ventana de incógnito** o **cierra sesión**
+3. Intenta acceder a la página principal
+4. Deberías ver la pantalla de mantenimiento 🚧
+
+### Desactivar Modo Mantenimiento
+
+1. Ve a `/admin/system-settings`
+2. Desactiva el toggle
+3. Guarda cambios
+4. El sitio estará disponible para todos en 30 segundos
 
 ## 🚀 Deploy en Vercel
 
