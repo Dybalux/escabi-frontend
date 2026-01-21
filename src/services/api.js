@@ -45,6 +45,13 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
+        // Si es un 503 (Service Unavailable - Modo Mantenimiento)
+        // solo loguear, App.jsx se encargará de mostrar la pantalla
+        if (error.response?.status === 503) {
+            console.log('🚧 Servidor en mantenimiento (503)');
+            return Promise.reject(error);
+        }
+
         // Log del error
         console.error('❌ Error en la API:', error.message);
         if (error.response) {
@@ -247,6 +254,7 @@ export const deleteCombo = (id, permanent = false) =>
 
 // System Status
 export const getSystemStatus = () => api.get('/system-status');
+export const getAdminSystemSettings = () => api.get('/admin/system-settings');
 export const updateSystemStatus = (enabled, message) =>
     api.put('/admin/system-settings', null, {
         params: {

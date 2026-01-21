@@ -13,6 +13,7 @@ export default function ProductForm({ product, onClose }) {
         description: '',
         price: '',
         net_price: '',
+        profit_percentage: '',
         category: '',
         stock: '',
         image_url: '',
@@ -23,14 +24,46 @@ export default function ProductForm({ product, onClose }) {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [pricingSettings, setPricingSettings] = useState(null);
+
+    useEffect(() => {
+        const fetchPricing = async () => {
+            try {
+                const response = await api.get('/admin/pricing-settings');
+                if (response.data) setPricingSettings(response.data);
+            } catch (err) {
+                console.warn('No se pudo cargar la configuración de precios dinámicos');
+            }
+        };
+        fetchPricing();
+    }, []);
 
     useEffect(() => {
         if (product) {
+            console.log('📦 Producto recibido para editar:', product); // Diagnóstico
+
+            // Si el precio dinámico está activo, el precio que recibimos podría estar inflado
+            let originalPrice = product.price;
+
+            // Intentamos detectar si el precio está multiplicado (esto es aproximado, 
+            // lo ideal es que el backend devuelva el precio base)
+            const isDynamicActive = pricingSettings?.enabled;
+
+            const net = (product.net_price !== undefined && product.net_price !== null) ? parseFloat(product.net_price) : 0;
+            const price = parseFloat(originalPrice) || 0;
+
+            // Calculamos el porcentaje de ganancia inicial
+            let profit = 0;
+            if (net > 0 && price > 0) {
+                profit = ((price - net) / net) * 100;
+            }
+
             setFormData({
                 name: product.name || '',
                 description: product.description || '',
-                price: product.price || '',
-                net_price: product.net_price || '',
+                price: price || '',
+                net_price: net || '',
+                profit_percentage: profit ? profit.toFixed(1) : '',
                 category: product.category || '',
                 stock: product.stock || '',
                 image_url: product.image_url || '',
@@ -40,14 +73,37 @@ export default function ProductForm({ product, onClose }) {
                 active: product.active !== undefined ? product.active : true,
             });
         }
-    }, [product]);
+    }, [product, pricingSettings]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        const { name, value, type, checked } = e.target;
+        const newValue = type === 'checkbox' ? checked : value;
+
+        setFormData(prev => {
+            const updated = { ...prev, [name]: newValue };
+
+            // Lógica de cálculo automático de precios
+            if ((name === 'net_price' || name === 'profit_percentage') && value !== '') {
+                const net = name === 'net_price' ? parseFloat(value) : parseFloat(prev.net_price);
+                const profit = name === 'profit_percentage' ? parseFloat(value) : parseFloat(prev.profit_percentage);
+
+                if (!isNaN(net) && !isNaN(profit) && net > 0) {
+                    const calculatedPrice = net * (1 + profit / 100);
+                    updated.price = calculatedPrice.toFixed(2);
+                }
+            }
+            // Si cambia el precio final manualmente, recalculamos el porcentaje (opcional, para mantener consistencia)
+            else if (name === 'price' && value !== '') {
+                const price = parseFloat(value);
+                const net = parseFloat(prev.net_price);
+                if (!isNaN(price) && !isNaN(net) && net > 0) {
+                    const calculatedProfit = ((price - net) / net) * 100;
+                    updated.profit_percentage = calculatedProfit.toFixed(1);
+                }
+            }
+
+            return updated;
+        });
     };
 
     const handleSubmit = async (e) => {
@@ -69,14 +125,8 @@ export default function ProductForm({ product, onClose }) {
                 return;
             }
 
-            if (formData.abv && parseFloat(formData.abv) < 0) {
-                setError('El contenido alcohólico no puede ser negativo');
-                setLoading(false);
-                return;
-            }
-
-            if (formData.abv && parseFloat(formData.abv) > 100) {
-                setError('El contenido alcohólico no puede ser mayor a 100%');
+            if (formData.abv && (parseFloat(formData.abv) < 0 || parseFloat(formData.abv) > 100)) {
+                setError('El contenido alcohólico debe estar entre 0% y 100%');
                 setLoading(false);
                 return;
             }
@@ -91,11 +141,17 @@ export default function ProductForm({ product, onClose }) {
             const productData = {
                 ...formData,
                 price: parseFloat(formData.price),
+                net_price: (formData.net_price !== '' && formData.net_price !== null) ? parseFloat(formData.net_price) : 0,
                 stock: parseInt(formData.stock),
                 abv: formData.abv ? parseFloat(formData.abv) : undefined,
                 volume_ml: formData.volume_ml ? parseInt(formData.volume_ml) : undefined,
                 origin: formData.origin || undefined,
             };
+
+            // Eliminamos profit_percentage para no ensuciar el payload si el backend no lo espera
+            delete productData.profit_percentage;
+
+            console.log('📤 Enviando datos del producto:', productData); // Diagnóstico
 
             if (product) {
                 // Actualizar producto existente
@@ -192,76 +248,83 @@ export default function ProductForm({ product, onClose }) {
                             />
                         </div>
 
-                        {/* Sección de Precios */}
                         <div className="md:col-span-2 bg-gray-50 p-4 rounded-lg border border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-800 mb-4">💰 Gestión de Precios</h3>
 
+                            {/* Alerta de Precios Dinámicos */}
+                            {pricingSettings?.enabled && (
+                                <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                                    <div className="text-amber-600 mt-0.5">⚠️</div>
+                                    <div className="text-xs text-amber-800">
+                                        <p className="font-bold">Precios Dinámicos Activos ({pricingSettings.multiplier}x)</p>
+                                        <p>El precio que ves abajo podría incluir el aumento. Si es así, divídelo por el multiplicador para guardar el precio base correcto.</p>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const adjusted = (parseFloat(formData.price) / pricingSettings.multiplier).toFixed(2);
+                                                setFormData(prev => ({ ...prev, price: adjusted }));
+                                                toast.success('Precio ajustado a base (dividio por ' + pricingSettings.multiplier + ')');
+                                            }}
+                                            className="mt-2 text-amber-700 font-bold underline hover:text-amber-900"
+                                        >
+                                            Corregir: Quitar aumento ({pricingSettings.multiplier}x)
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <Input
-                                        label="Precio de Costo (Neto)"
-                                        name="net_price"
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={formData.net_price}
-                                        onChange={handleChange}
-                                        placeholder="0.00"
-                                    />
+                                    <label className="block text-sm font-medium text-gray-700">Costo (Precio Neto)</label>
+                                    <div className="mt-1 flex rounded-md shadow-sm">
+                                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500">$</span>
+                                        <input
+                                            type="number"
+                                            name="net_price"
+                                            step="0.01"
+                                            min="0"
+                                            value={formData.net_price}
+                                            onChange={handleChange}
+                                            className="flex-1 block w-full border-gray-300 rounded-none rounded-r-md focus:ring-[#0D4F4F] focus:border-[#0D4F4F] sm:text-sm h-10 px-3"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
                                     <p className="text-xs text-gray-500 mt-1">Precio que te cobra el proveedor</p>
                                 </div>
 
                                 <div>
-                                    <Input
-                                        label="Precio de Venta"
-                                        name="price"
+                                    <label className="block text-sm font-medium text-gray-700">% de Ganancia</label>
+                                    <input
                                         type="number"
-                                        step="0.01"
-                                        min="0"
-                                        value={formData.price}
+                                        name="profit_percentage"
+                                        step="0.1"
+                                        value={formData.profit_percentage}
                                         onChange={handleChange}
-                                        required
-                                        placeholder="0.00"
+                                        placeholder="Ej: 30"
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-[#0D4F4F] focus:border-[#0D4F4F] text-[#0D4F4F] font-bold h-10 px-3"
                                     />
-                                    <p className="text-xs text-gray-500 mt-1">Precio al que vendes al cliente</p>
+                                    <p className="text-xs text-gray-500 mt-1">Margen deseado</p>
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-medium text-gray-700">Precio de Venta (Final)</label>
+                                    <div className="mt-1 flex rounded-md shadow-sm">
+                                        <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-green-50 text-green-600">$</span>
+                                        <input
+                                            type="number"
+                                            name="price"
+                                            step="0.01"
+                                            min="0"
+                                            value={formData.price}
+                                            onChange={handleChange}
+                                            required
+                                            className="flex-1 block w-full border-gray-300 rounded-none rounded-r-md bg-green-50 font-bold text-green-700 h-10 px-3"
+                                            placeholder="0.00"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 mt-1 md:text-right">Precio visible para el cliente</p>
                                 </div>
                             </div>
-
-                            {/* Calculadora de Margen */}
-                            {formData.net_price && formData.price && (
-                                <div className="mt-4 p-3 bg-white rounded border border-gray-200">
-                                    <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium text-gray-700">Margen:</span>
-                                        <span className={`text-lg font-bold ${((formData.price - formData.net_price) / formData.net_price * 100) >= 30
-                                            ? 'text-green-600'
-                                            : 'text-orange-600'
-                                            }`}>
-                                            {((formData.price - formData.net_price) / formData.net_price * 100).toFixed(1)}%
-                                        </span>
-                                    </div>
-                                    <div className="flex items-center justify-between mt-1">
-                                        <span className="text-xs text-gray-500">Ganancia:</span>
-                                        <span className="text-sm font-semibold text-gray-700">
-                                            ${(formData.price - formData.net_price).toFixed(2)}
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* Botón de Precio Sugerido */}
-                            {formData.net_price && (
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        const suggestedPrice = (parseFloat(formData.net_price) * 1.3).toFixed(2);
-                                        setFormData(prev => ({ ...prev, price: suggestedPrice }));
-                                        toast.success(`Precio sugerido aplicado: $${suggestedPrice} (30% margen)`);
-                                    }}
-                                    className="mt-3 w-full bg-blue-100 hover:bg-blue-200 text-blue-700 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
-                                >
-                                    💡 Calcular Precio Sugerido (30% margen)
-                                </button>
-                            )}
                         </div>
 
                         <div>

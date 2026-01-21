@@ -55,19 +55,51 @@ function AppRoutes() {
   useEffect(() => {
     const checkStatus = async () => {
       try {
+        console.log('🔍 Verificando estado del sistema...');
         const response = await getSystemStatus();
+        console.log('📊 Respuesta del sistema:', response.data);
+
         if (response.data?.maintenance_mode) {
+          console.log('🚧 Modo mantenimiento ACTIVADO');
           setInMaintenance(true);
-          setMaintenanceMsg(response.data.message);
+          setMaintenanceMsg(response.data.message || 'Estamos realizando mejoras. Volvemos pronto.');
+        } else {
+          console.log('✅ Sistema operando normalmente');
+          setInMaintenance(false);
         }
       } catch (error) {
-        console.error('Error checking system status:', error);
+        console.error('❌ Error checking system status:', error);
+        console.error('Error details:', error.response?.data || error.message);
+
+        // Si recibimos un 503, significa que el servidor está en mantenimiento
+        if (error.response?.status === 503) {
+          console.log('🚧 Detectado modo mantenimiento por error 503');
+          setInMaintenance(true);
+          setMaintenanceMsg(
+            error.response?.data?.message ||
+            'Estamos realizando mejoras. Volvemos pronto.'
+          );
+        } else {
+          // En caso de otro error, permitir acceso normal
+          setInMaintenance(false);
+        }
       } finally {
         setCheckingStatus(false);
       }
     };
 
     checkStatus();
+
+    // Verificar cada 30 segundos (solo si NO es admin)
+    const interval = setInterval(() => {
+      // No verificar si estamos en rutas de admin
+      if (!window.location.pathname.startsWith('/admin')) {
+        checkStatus();
+      }
+    }, 30000); // 30 segundos
+
+    // Limpiar el intervalo cuando el componente se desmonte
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -87,6 +119,14 @@ function AppRoutes() {
   // Si no hay usuario y estamos en mantenimiento, se muestra la pantalla.
   const isBypassed = user?.role === 'admin' || window.location.pathname.startsWith('/admin');
 
+  console.log('🔐 Estado de bypass:', {
+    isAdmin: user?.role === 'admin',
+    isAdminPath: window.location.pathname.startsWith('/admin'),
+    isBypassed,
+    inMaintenance,
+    checkingStatus
+  });
+
   if (checkingStatus && !window.location.pathname.startsWith('/admin')) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -96,6 +136,7 @@ function AppRoutes() {
   }
 
   if (inMaintenance && !isBypassed) {
+    console.log('🚧 Mostrando pantalla de mantenimiento');
     return <MaintenanceScreen message={maintenanceMsg} />;
   }
 

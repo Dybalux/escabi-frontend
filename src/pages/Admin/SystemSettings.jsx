@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, AlertTriangle } from 'lucide-react';
 import AdminNav from '../../components/Admin/AdminNav';
-import { getSystemStatus, updateSystemStatus } from '../../services/api';
+import { getAdminSystemSettings, updateSystemStatus } from '../../services/api';
 import toast from 'react-hot-toast';
 
 export default function SystemSettings() {
@@ -18,10 +18,10 @@ export default function SystemSettings() {
 
     const loadSettings = async () => {
         try {
-            const response = await getSystemStatus();
+            const response = await getAdminSystemSettings();
             setSettings({
                 maintenance_mode: response.data.maintenance_mode || false,
-                maintenance_message: response.data.message || ''
+                maintenance_message: response.data.maintenance_message || ''
             });
         } catch (error) {
             console.error('Error loading settings:', error);
@@ -36,7 +36,15 @@ export default function SystemSettings() {
         setSaving(true);
         try {
             await updateSystemStatus(settings.maintenance_mode, settings.maintenance_message);
-            toast.success('Configuración del sistema actualizada');
+
+            if (settings.maintenance_mode) {
+                toast.success(
+                    '🚧 Modo mantenimiento activado. Los usuarios verán la pantalla de mantenimiento en 30 segundos máximo.',
+                    { duration: 5000 }
+                );
+            } else {
+                toast.success('✅ Modo mantenimiento desactivado. El sitio está disponible para todos.');
+            }
         } catch (error) {
             console.error('Error saving settings:', error);
             toast.error('Error al guardar la configuración');
@@ -98,6 +106,9 @@ export default function SystemSettings() {
                                             rows="3"
                                             placeholder="Estamos realizando tareas de mantenimiento..."
                                         />
+                                        <p className="text-xs text-amber-700 mt-2">
+                                            💡 <strong>Nota:</strong> Como administrador, siempre tendrás acceso. Para ver la pantalla de mantenimiento, abre una ventana de incógnito o cierra sesión.
+                                        </p>
                                     </div>
                                 )}
                             </div>

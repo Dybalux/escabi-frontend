@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Search, AlertCircle, Eye, EyeOff, Edit } from 'lucide-react';
-import { getProducts, deleteProduct, toggleProductActive } from '../../services/api';
+import { getProducts, getProduct, deleteProduct, toggleProductActive } from '../../services/api';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
 import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
@@ -66,9 +66,18 @@ export default function ProductManagement() {
         });
     };
 
-    const handleEdit = (product) => {
-        setEditingProduct(product);
-        setShowForm(true);
+    const handleEdit = async (product) => {
+        try {
+            // Buscamos los detalles completos del producto para asegurar que tenemos el precio neto
+            const response = await getProduct(product.id);
+            setEditingProduct(response.data);
+            setShowForm(true);
+        } catch (error) {
+            console.error('Error fetching full product details:', error);
+            // Fallback a los datos que ya tenemos
+            setEditingProduct(product);
+            setShowForm(true);
+        }
     };
 
     const handleToggleActive = async (productId) => {
