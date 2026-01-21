@@ -46,9 +46,8 @@ api.interceptors.response.use(
         const originalRequest = error.config;
 
         // Si es un 503 (Service Unavailable - Modo Mantenimiento)
-        // solo loguear, App.jsx se encargará de mostrar la pantalla
+        // App.jsx se encargará de mostrar la pantalla
         if (error.response?.status === 503) {
-            console.log('🚧 Servidor en mantenimiento (503)');
             return Promise.reject(error);
         }
 
