@@ -63,13 +63,19 @@ export default function Cart() {
             message: 'Se eliminarán todos los productos seleccionados.',
             confirmText: 'Sí, vaciar',
             onConfirm: async () => {
-                const result = await clearCart();
-                if (result.success) {
-                    toast.success('Carrito vaciado correctamente', {
-                        icon: '🗑️',
-                        duration: 2000
-                    });
-                }
+                await toast.promise(
+                    clearCart(),
+                    {
+                        loading: 'Vaciando carrito...',
+                        success: '🗑️ Carrito vaciado correctamente',
+                        error: 'Error al vaciar el carrito'
+                    },
+                    {
+                        success: {
+                            duration: 2000
+                        }
+                    }
+                );
             }
         });
     };

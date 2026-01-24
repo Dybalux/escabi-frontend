@@ -4,7 +4,8 @@ import { Beer, ShoppingCart, Shield, Zap, Package, Plus, ChevronLeft, ChevronRig
 import { Helmet } from 'react-helmet-async';
 import Button from '../components/UI/Button';
 import { useAuth } from '../context/AuthContext';
-import { getCombos, addComboToCart, getProducts, addToCart, getShippingPrices } from '../services/api';
+import { useCart } from '../context/CartContext';
+import { getCombos, addComboToCart, getProducts, getShippingPrices } from '../services/api';
 import toast from 'react-hot-toast';
 import AuthModal from '../components/Auth/AuthModal';
 import { motion } from 'framer-motion';
@@ -12,6 +13,7 @@ import InteractiveShippingMap from '../components/Cart/InteractiveShippingMap';
 
 export default function Home() {
     const { isAuthenticated, user } = useAuth();
+    const { addToCart } = useCart();
     const [combos, setCombos] = useState([]);
     const [loadingCombos, setLoadingCombos] = useState(true);
     const [products, setProducts] = useState([]);
@@ -111,12 +113,15 @@ export default function Home() {
         }
 
         try {
-            await addToCart(productId, 1);
-            toast.success(`${productName} agregado al carrito`);
+            const result = await addToCart(productId, 1);
+            if (result.success) {
+                toast.success(`${productName} agregado al carrito`);
+            } else {
+                toast.error(result.error || 'Error al agregar al carrito');
+            }
         } catch (error) {
             console.error('Error adding to cart:', error);
-            const errorMsg = error.response?.data?.detail?.[0]?.msg || error.response?.data?.detail || 'Error al agregar al carrito';
-            toast.error(errorMsg);
+            toast.error('Error al agregar al carrito');
         }
     };
 
@@ -139,8 +144,12 @@ export default function Home() {
                     await addComboToCart(pendingAction.id, 1);
                     toast.success(`${pendingAction.name} agregado al carrito`);
                 } else if (pendingAction.type === 'product') {
-                    await addToCart(pendingAction.id, 1);
-                    toast.success(`${pendingAction.name} agregado al carrito`);
+                    const result = await addToCart(pendingAction.id, 1);
+                    if (result.success) {
+                        toast.success(`${pendingAction.name} agregado al carrito`);
+                    } else {
+                        toast.error(result.error || 'Error al agregar al carrito');
+                    }
                 }
             } catch (error) {
                 console.error('Error adding to cart:', error);

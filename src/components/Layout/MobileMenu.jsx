@@ -37,10 +37,16 @@ export default function MobileMenu() {
             {/* Hamburger Button */}
             <button
                 onClick={toggleMenu}
-                className="md:hidden p-2 text-gray-700 hover:text-[#0D4F4F] transition-colors"
+                className="md:hidden p-2 text-gray-700 hover:text-[#0D4F4F] transition-colors relative"
                 aria-label="Toggle menu"
             >
                 {isOpen ? <X size={28} /> : <Menu size={28} />}
+                {/* Cart Counter Badge */}
+                {!isOpen && getCartTotal() > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-[#C29F4C] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
+                        {getCartTotal()}
+                    </span>
+                )}
             </button>
 
             {/* Overlay */}

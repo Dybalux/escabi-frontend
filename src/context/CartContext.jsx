@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { getCart, addToCart as apiAddToCart, removeFromCart as apiRemoveFromCart, clearCart as apiClearCart } from '../services/api';
 import { useAuth } from './AuthContext';
 
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
         }
     }, [isAuthenticated, user?.age_verified]);
 
-    const loadCart = async () => {
+    const loadCart = useCallback(async () => {
         try {
             setLoading(true);
             const response = await getCart();
@@ -35,9 +35,9 @@ export const CartProvider = ({ children }) => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
-    const addToCart = async (productId, quantity = 1) => {
+    const addToCart = useCallback(async (productId, quantity = 1) => {
         try {
             await apiAddToCart(productId, quantity);
             // Recargar el carrito para obtener datos enriquecidos
@@ -49,9 +49,9 @@ export const CartProvider = ({ children }) => {
                 error: error.response?.data?.detail || 'Error al agregar al carrito'
             };
         }
-    };
+    }, [loadCart]);
 
-    const removeFromCart = async (productId) => {
+    const removeFromCart = useCallback(async (productId) => {
         try {
             await apiRemoveFromCart(productId);
             // Recargar el carrito para obtener datos enriquecidos
@@ -63,10 +63,10 @@ export const CartProvider = ({ children }) => {
                 error: error.response?.data?.detail || 'Error al eliminar del carrito'
             };
         }
-    };
+    }, [loadCart]);
 
 
-    const updateQuantity = async (productId, newQuantity) => {
+    const updateQuantity = useCallback(async (productId, newQuantity) => {
         try {
             // Si la cantidad es 0 o negativa, eliminar del carrito
             if (newQuantity <= 0) {
@@ -105,9 +105,9 @@ export const CartProvider = ({ children }) => {
                 error: error.response?.data?.detail || 'Error al actualizar cantidad'
             };
         }
-    };
+    }, [cart, loadCart, removeFromCart]);
 
-    const clearCart = async () => {
+    const clearCart = useCallback(async () => {
         try {
             await apiClearCart();
             // Recargar el carrito para obtener datos enriquecidos
@@ -119,14 +119,14 @@ export const CartProvider = ({ children }) => {
                 error: error.response?.data?.detail || 'Error al vaciar carrito'
             };
         }
-    };
+    }, [loadCart]);
 
-    const getCartTotal = () => {
+    const getCartTotal = useCallback(() => {
         if (!cart || !cart.items) return 0;
         return cart.items.length;
-    };
+    }, [cart]);
 
-    const value = {
+    const value = useMemo(() => ({
         cart,
         loading,
         addToCart,
@@ -135,7 +135,7 @@ export const CartProvider = ({ children }) => {
         clearCart,
         loadCart,
         getCartTotal,
-    };
+    }), [cart, loading, addToCart, removeFromCart, updateQuantity, clearCart, loadCart, getCartTotal]);
 
     return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
