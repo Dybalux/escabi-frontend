@@ -1,27 +1,27 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
-import Header from './components/Layout/Header';
-import Footer from './components/Layout/Footer';
-import Login from './components/Auth/Login';
-import Register from './components/Auth/Register';
-import Home from './pages/Home';
-import Products from './pages/Products';
-import MyOrders from './pages/MyOrders';
-import Cart from './components/Cart/Cart';
-import PaymentSuccess from './pages/PaymentSuccess';
-import PaymentFailure from './pages/PaymentFailure';
-import PaymentPending from './pages/PaymentPending';
-import AdminRoute from './components/Admin/AdminRoute';
-import AdminDashboard from './pages/Admin/AdminDashboard';
-import ProductManagement from './pages/Admin/ProductManagement';
-import OrderManagement from './pages/Admin/OrderManagement';
-import UserManagement from './pages/Admin/UserManagement';
-import PaymentSettings from './pages/Admin/PaymentSettings';
-import ShippingSettings from './pages/Admin/ShippingSettings';
-import PricingSettings from './pages/Admin/PricingSettings';
-import ComboManagement from './pages/Admin/ComboManagement';
-import SystemSettings from './pages/Admin/SystemSettings';
-import NotFound from './pages/NotFound';
+import { useAuth } from '../context/AuthContext';
+import Header from './Layout/Header';
+import Footer from './Layout/Footer';
+import Login from './Auth/Login';
+import Register from './Auth/Register';
+import Home from '../pages/Home';
+import Products from '../pages/Products';
+import MyOrders from '../pages/MyOrders';
+import Cart from './Cart/Cart';
+import PaymentSuccess from '../pages/PaymentSuccess';
+import PaymentFailure from '../pages/PaymentFailure';
+import PaymentPending from '../pages/PaymentPending';
+import AdminRoute from './Admin/AdminRoute';
+import AdminDashboard from '../pages/Admin/AdminDashboard';
+import ProductManagement from '../pages/Admin/ProductManagement';
+import OrderManagement from '../pages/Admin/OrderManagement';
+import UserManagement from '../pages/Admin/UserManagement';
+import PaymentSettings from '../pages/Admin/PaymentSettings';
+import ShippingSettings from '../pages/Admin/ShippingSettings';
+import PricingSettings from '../pages/Admin/PricingSettings';
+import ComboManagement from '../pages/Admin/ComboManagement';
+import SystemSettings from '../pages/Admin/SystemSettings';
+import NotFound from '../pages/NotFound';
 import { Toaster } from 'react-hot-toast';
 
 // Componente para rutas protegidas
@@ -39,7 +39,7 @@ function ProtectedRoute({ children }) {
   return isAuthenticated ? children : <Navigate to="/login" />;
 }
 
-import MaintenanceScreen from './components/MaintenanceScreen';
+import MaintenanceScreen from './MaintenanceScreen';
 import useMaintenanceMode from '../hooks/useMaintenanceMode';
 import useAgeVerification from '../hooks/useAgeVerification';
 
