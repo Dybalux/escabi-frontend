@@ -48,8 +48,7 @@ export const updateShippingSettings = (settings) =>
         }
     });
 
-// Public - Shipping Prices
-export const getShippingPrices = () => api.get('/orders/shipping-prices');
+export { getShippingPrices } from './shipping';
 export { getCombos, getCombo, getAdminCombos, createCombo, updateCombo, deleteCombo } from './combos';
 
 // System Status
