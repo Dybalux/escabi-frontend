@@ -42,7 +42,7 @@ function ProtectedRoute({ children }) {
 
 import { showAgeVerificationToast } from './components/UI/AgeVerificationToast';
 import { useEffect, useState } from 'react';
-import { getSystemStatus } from './services/api';
+import { getSystemStatus } from './services/system';
 import MaintenanceScreen from './components/MaintenanceScreen';
 
 function AppRoutes() {
