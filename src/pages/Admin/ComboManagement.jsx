@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Search, AlertCircle, Package } from 'lucide-react';
-import { getAdminCombos, deleteCombo } from '../../services/api';
+import { getAdminCombos, deleteCombo } from '../../services/combos';
 import Button from '../../components/UI/Button';
 import ComboForm from '../../components/Admin/ComboForm';
 import AdminNav from '../../components/Admin/AdminNav';
