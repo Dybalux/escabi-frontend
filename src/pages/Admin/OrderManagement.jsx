@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Package, Search, Filter, Calendar, CreditCard, Building2 } from 'lucide-react';
-import { getAdminOrders, updateOrderStatus } from '../../services/api';
+import { getAdminOrders, updateOrderStatus } from '../../services/admin/adminOrders';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 

@@ -13,10 +13,7 @@ export const getAdminStats = () => api.get('/admin/stats');
 
 export { getAdminUsers, updateUserRole } from './admin/adminUsers';
 
-// Admin - Orders
-export const getAdminOrders = (params = {}) => api.get('/admin/orders', { params });
-export const updateOrderStatus = (orderId, newStatus) =>
-    api.put(`/orders/admin/${orderId}/status`, null, { params: { new_status: newStatus } });
+export { getAdminOrders, updateOrderStatus } from './admin/adminOrders';
 
 // Admin - Products
 export const createProduct = (productData) => api.post('/products/', productData);
