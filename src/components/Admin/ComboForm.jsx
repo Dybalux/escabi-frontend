@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Plus, Trash2 } from 'lucide-react';
-import { createCombo, updateCombo, getProducts } from '../../services/api';
+import { getProducts } from '../../services/products';
+import { createCombo, updateCombo } from '../../services/combos';
 import Button from '../UI/Button';
 import Input from '../UI/Input';
 import toast from 'react-hot-toast';
