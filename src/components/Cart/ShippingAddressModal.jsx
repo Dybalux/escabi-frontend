@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getShippingPrices } from '../../services/api';
+import { getShippingPrices } from '../../services/shipping';
 import toast from 'react-hot-toast';
 import CoverageMap from './CoverageMap';
 import InteractiveShippingMap from './InteractiveShippingMap';

@@ -48,19 +48,8 @@ export const updateShippingSettings = (settings) =>
         }
     });
 
-// Public - Shipping Prices
-export const getShippingPrices = () => api.get('/orders/shipping-prices');
+export { getShippingPrices } from './shipping';
 export { getCombos, getCombo, getAdminCombos, createCombo, updateCombo, deleteCombo } from './combos';
-
-// System Status
-export const getSystemStatus = () => api.get('/system-status');
-export const getAdminSystemSettings = () => api.get('/admin/system-settings');
-export const updateSystemStatus = (enabled, message) =>
-    api.put('/admin/system-settings', null, {
-        params: {
-            maintenance_mode: enabled,
-            maintenance_message: message
-        }
-    });
+export { getSystemStatus, getAdminSystemSettings, updateSystemStatus } from './system';
 
 export default api;

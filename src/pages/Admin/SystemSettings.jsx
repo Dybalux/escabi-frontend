@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, AlertTriangle } from 'lucide-react';
 import AdminNav from '../../components/Admin/AdminNav';
-import { getAdminSystemSettings, updateSystemStatus } from '../../services/api';
+import { getAdminSystemSettings, updateSystemStatus } from '../../services/system';
 import toast from 'react-hot-toast';
 
 export default function SystemSettings() {
