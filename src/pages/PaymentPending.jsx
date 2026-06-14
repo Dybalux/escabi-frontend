@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Clock, AlertCircle } from 'lucide-react';
-import { validateOrder } from '../services/api';
+import { validateOrder } from '../services/orders';
 
 export default function PaymentPending() {
     const [searchParams] = useSearchParams();

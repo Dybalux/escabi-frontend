@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getMyOrders } from '../services/api';
+import { getMyOrders } from '../services/orders';
 import { Package, CreditCard, Building2 } from 'lucide-react';
 
 export default function MyOrders() {
