@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
-import { createOrder, createPaymentPreference, getPaymentSettings } from '../../services/api';
+import { createOrder } from '../../services/orders';
+import { createPaymentPreference, getPaymentSettings } from '../../services/payments';
 import CartItem from './CartItem';
 import Button from '../UI/Button';
 import Alert from '../UI/Alert';

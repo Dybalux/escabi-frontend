@@ -4,44 +4,9 @@ export { register, login, getCurrentUser, verifyAge } from './auth';
 export { getProducts, getProduct } from './products';
 export { getCart, addToCart, addComboToCart, removeFromCart, clearCart } from './cart';
 
-// Orders
-export const createOrder = (orderData, paymentMethod = 'Mercado Pago') =>
-    api.post('/orders/', orderData, {
-        params: { payment_method: paymentMethod }
-    });
-export const getMyOrders = () => api.get('/orders/me');
-export const getOrder = (id) => api.get(`/orders/${id}`);
+export { createOrder, getMyOrders, getOrder, selectPaymentMethod, validateOrder } from './orders';
 
-// Payments
-export const createPaymentPreference = (orderId) =>
-    api.post(`/payments/create-preference/${orderId}`, {}, {
-        timeout: 30000 // 30 segundos para crear preferencia
-    });
-
-// Payment Settings
-export const getPaymentSettings = () => api.get('/payment-settings');
-
-// Orders - Select Payment Method
-export const selectPaymentMethod = (orderId, paymentMethod) =>
-    api.post(`/orders/${orderId}/select-payment-method`, null, {
-        params: { payment_method: paymentMethod }
-    });
-
-// Validate Order Ownership
-export const validateOrder = async (orderId) => {
-    try {
-        const response = await getOrder(orderId);
-        return { valid: true, order: response.data };
-    } catch (error) {
-        if (error.response?.status === 404) {
-            return { valid: false, error: 'Orden no encontrada' };
-        }
-        if (error.response?.status === 403) {
-            return { valid: false, error: 'No tienes permiso para ver esta orden' };
-        }
-        return { valid: false, error: 'Error al validar la orden' };
-    }
-};
+export { createPaymentPreference, getPaymentSettings } from './payments';
 
 // Admin - Statistics
 export const getAdminStats = () => api.get('/admin/stats');

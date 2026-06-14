@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Building2, Instagram, MessageCircle, Mail } from 'lucide-react';
-import { getPaymentSettings } from '../../services/api';
+import { getPaymentSettings } from '../../services/payments';
 
 export default function Footer() {
     const [settings, setSettings] = useState(null);
