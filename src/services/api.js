@@ -1,5 +1,3 @@
-import api from './client';
-
 export { register, login, getCurrentUser, verifyAge } from './auth';
 export { getProducts, getProduct } from './products';
 export { getCart, addToCart, addComboToCart, removeFromCart, clearCart } from './cart';
@@ -28,5 +26,3 @@ export {
 export { getShippingPrices } from './shipping';
 export { getCombos, getCombo, getAdminCombos, createCombo, updateCombo, deleteCombo } from './combos';
 export { getSystemStatus, getAdminSystemSettings, updateSystemStatus } from './system';
-
-export default api;
