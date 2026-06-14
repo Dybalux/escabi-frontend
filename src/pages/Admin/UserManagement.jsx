@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users as UsersIcon, Search, Mail, Calendar, Shield, CheckCircle, XCircle, UserPlus, UserMinus } from 'lucide-react';
-import { getAdminUsers, updateUserRole } from '../../services/api';
+import { getAdminUsers, updateUserRole } from '../../services/admin/adminUsers';
 import { useAuth } from '../../context/AuthContext';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';

@@ -11,15 +11,9 @@ export { createPaymentPreference, getPaymentSettings } from './payments';
 // Admin - Statistics
 export const getAdminStats = () => api.get('/admin/stats');
 
-// Admin - Users
-export const getAdminUsers = (params = {}) => api.get('/admin/users', { params });
-export const updateUserRole = (userId, newRole) =>
-    api.put(`/admin/users/${userId}/role`, null, { params: { new_role: newRole } });
+export { getAdminUsers, updateUserRole } from './admin/adminUsers';
 
-// Admin - Orders
-export const getAdminOrders = (params = {}) => api.get('/admin/orders', { params });
-export const updateOrderStatus = (orderId, newStatus) =>
-    api.put(`/orders/admin/${orderId}/status`, null, { params: { new_status: newStatus } });
+export { getAdminOrders, updateOrderStatus } from './admin/adminOrders';
 
 // Admin - Products
 export const createProduct = (productData) => api.post('/products/', productData);
