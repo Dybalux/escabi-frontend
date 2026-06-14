@@ -1,10 +1,7 @@
 import api from './client';
 
 export { register, login, getCurrentUser, verifyAge } from './auth';
-
-// Products
-export const getProducts = (params = {}) => api.get('/products/', { params });
-export const getProduct = (id) => api.get(`/products/${id}`);
+export { getProducts, getProduct } from './products';
 
 // Cart
 export const getCart = () => api.get('/cart/');
