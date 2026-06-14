@@ -6,15 +6,7 @@ export { getCart, addToCart, addComboToCart, removeFromCart, clearCart } from '.
 
 export { createOrder, getMyOrders, getOrder, selectPaymentMethod, validateOrder } from './orders';
 
-// Payments
-export const createPaymentPreference = (orderId) =>
-    api.post(`/payments/create-preference/${orderId}`, {}, {
-        timeout: 30000 // 30 segundos para crear preferencia
-    });
-
-// Payment Settings
-export const getPaymentSettings = () => api.get('/payment-settings');
-
+export { createPaymentPreference, getPaymentSettings } from './payments';
 
 // Admin - Statistics
 export const getAdminStats = () => api.get('/admin/stats');
