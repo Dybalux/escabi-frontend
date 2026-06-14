@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Percent, TrendingUp, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '../../services/api';
+import { bulkUpdatePrices } from '../../services/admin/adminSettings';
 import { showConfirmToast } from '../UI/ConfirmToast';
 
 export default function BulkPriceUpdate() {
@@ -37,7 +37,7 @@ export default function BulkPriceUpdate() {
             onConfirm: async () => {
                 setLoading(true);
                 try {
-                    const response = await api.post('/admin/bulk-price-update', {
+                    const response = await bulkUpdatePrices({
                         percentage: parseFloat(updateData.percentage) / 100, // Convertir a decimal
                         based_on: updateData.based_on,
                         target: updateData.target

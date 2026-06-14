@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Percent, Clock, Calendar, Save, Info } from 'lucide-react';
 import toast from 'react-hot-toast';
-import api from '../../services/api';
+import { getPricingSettings, updatePricingSettings } from '../../services/admin/adminSettings';
 import AdminNav from '../../components/Admin/AdminNav';
 
 export default function PricingSettings() {
@@ -31,7 +31,7 @@ export default function PricingSettings() {
 
     const fetchSettings = async () => {
         try {
-            const response = await api.get('/admin/pricing-settings');
+            const response = await getPricingSettings();
             if (response.data) {
                 setSettings(response.data);
             }
@@ -60,7 +60,7 @@ export default function PricingSettings() {
 
         setLoading(true);
         try {
-            await api.put('/admin/pricing-settings', settings);
+            await updatePricingSettings(settings);
             toast.success('Configuración guardada exitosamente');
             fetchSettings();
         } catch (error) {
