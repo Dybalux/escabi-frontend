@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { getShippingSettings, updateShippingSettings } from '../../services/api';
+import { getShippingSettings, updateShippingSettings } from '../../services/admin/adminSettings';
 import AdminNav from '../../components/Admin/AdminNav';
 
 export default function ShippingSettings() {

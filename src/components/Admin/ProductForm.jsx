@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
 import { createProduct, updateProduct } from '../../services/admin/adminProducts';
+import { getPricingSettings } from '../../services/admin/adminSettings';
 
 import Button from '../UI/Button';
 import Input from '../UI/Input';
@@ -29,7 +30,7 @@ export default function ProductForm({ product, onClose }) {
     useEffect(() => {
         const fetchPricing = async () => {
             try {
-                const response = await api.get('/admin/pricing-settings');
+                const response = await getPricingSettings();
                 if (response.data) setPricingSettings(response.data);
             } catch (err) {
                 console.warn('No se pudo cargar la configuración de precios dinámicos');

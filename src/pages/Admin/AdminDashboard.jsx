@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Users, Package, ShoppingBag, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
-import { getAdminStats } from '../../services/api';
+import { getAdminStats } from '../../services/admin/adminSettings';
 import StatsCard from '../../components/Admin/StatsCard';
 import AdminNav from '../../components/Admin/AdminNav';
 
