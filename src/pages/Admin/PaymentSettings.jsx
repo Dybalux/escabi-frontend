@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Settings, Save } from 'lucide-react';
-import { getAdminPaymentSettings, updatePaymentSettings } from '../../services/api';
+import { getAdminPaymentSettings, updatePaymentSettings } from '../../services/admin/adminSettings';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 
