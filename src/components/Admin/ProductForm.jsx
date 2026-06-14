@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
-import { createProduct, updateProduct } from '../../services/api';
+import { createProduct, updateProduct } from '../../services/admin/adminProducts';
 
 import Button from '../UI/Button';
 import Input from '../UI/Input';

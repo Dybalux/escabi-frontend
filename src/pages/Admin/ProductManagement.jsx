@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Search, AlertCircle, Eye, EyeOff, Edit } from 'lucide-react';
-import { getProducts, getProduct, deleteProduct, toggleProductActive } from '../../services/api';
+import { getProducts, getProduct } from '../../services/products';
+import { deleteProduct, toggleProductActive } from '../../services/admin/adminProducts';
 import Button from '../../components/UI/Button';
 import ProductForm from '../../components/Admin/ProductForm';
 import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
