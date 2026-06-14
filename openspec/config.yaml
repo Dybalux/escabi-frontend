@@ -1,0 +1,35 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: React 19 + Vite 7 + Bun + Tailwind CSS 4
+  Architecture: SPA, page-based routing (React Router 7), context-based state
+  Testing: None configured — no test runner, no test files, no test deps
+  Style: JSX components, Tailwind CSS 4 utility classes, functional components
+  Package manager: bun (bun.lock present)
+  Build: vite build via @vitejs/plugin-react + @tailwindcss/vite
+  Deploy: Vercel (SPA rewrites), not yet in production
+  Linter: ESLint 9 flat config (js.configs.recommended + react-hooks + react-refresh)
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+  specs:
+    - Use Given/When/Then for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Include sequence diagrams for complex flows
+    - Document architecture decisions with rationale
+  tasks:
+    - Group by phase, use hierarchical numbering
+    - Keep tasks completable in one session
+  apply:
+    - Follow existing code patterns
+    tdd: false
+    test_command: ""
+  verify:
+    test_command: ""
+    build_command: "bun run build"
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
