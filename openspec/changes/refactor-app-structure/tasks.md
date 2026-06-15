@@ -49,9 +49,9 @@ Chain strategy: stacked-to-main
 
 ## Phase 4: Integration — Slim `App.jsx` (PR 4)
 
-- [ ] 4.1 Rewrite `src/App.jsx` to 18-line provider wrapper (BrowserRouter → AuthProvider → CartProvider → AppRoutes).
-- [ ] 4.2 Remove all old imports, inline ProtectedRoute, maintenance logic, age logic, routes, layout, Toaster from App.jsx.
-- [ ] 4.3 Verify: `bun run build` passes, ESLint clean.
+- [x] 4.1 Rewrite `src/App.jsx` to 18-line provider wrapper (BrowserRouter → AuthProvider → CartProvider → AppRoutes).
+- [x] 4.2 Remove all old imports, inline ProtectedRoute, maintenance logic, age logic, routes, layout, Toaster from App.jsx.
+- [x] 4.3 Verify: `bun run build` passes, ESLint clean.
 
 ## Phase 5: Final Verification (after all PRs merged)
 
