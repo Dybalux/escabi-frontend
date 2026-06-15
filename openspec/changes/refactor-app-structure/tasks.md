@@ -41,11 +41,11 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Core — `ProtectedRoute` + `AppRoutes` (PR 3)
 
-- [ ] 3.1 Create `src/components/ProtectedRoute.jsx` extracted from inline guard in AppRoutes (spec RG-3).
-- [ ] 3.2 Create `src/components/AppRoutes.jsx` salvaged from `feature/refactor-app-structure-phase2-routes`.
-- [ ] 3.3 Convert all 19 page imports to `React.lazy()` + wrap route elements in `<Suspense fallback={Spinner}>` (spec AR-1).
-- [ ] 3.4 Replace inline `isAdmin` with `shouldBypass` using `useMaintenanceMode({ shouldBypass })` and `useAgeVerification({ ..., shouldBypass })`.
-- [ ] 3.5 Verify: `bun run build` passes, ESLint clean.
+- [x] 3.1 Create `src/components/ProtectedRoute.jsx` extracted from inline guard in AppRoutes (spec RG-3).
+- [x] 3.2 Create `src/components/AppRoutes.jsx` salvaged from `feature/refactor-app-structure-phase2-routes`.
+- [x] 3.3 Convert all 19 page imports to `React.lazy()` + wrap route elements in `<Suspense fallback={Spinner}>` (spec AR-1).
+- [x] 3.4 Replace inline `isAdmin` with `shouldBypass` using `useMaintenanceMode({ shouldBypass })` and `useAgeVerification({ ..., shouldBypass })`.
+- [x] 3.5 Verify: `bun run build` passes, ESLint clean.
 
 ## Phase 4: Integration — Slim `App.jsx` (PR 4)
 
