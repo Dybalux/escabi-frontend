@@ -35,9 +35,9 @@ Chain strategy: stacked-to-main
 
 ## Phase 2: Foundation — `useAgeVerification` Hook (PR 2)
 
-- [ ] 2.1 Create `src/hooks/useAgeVerification.js` salvaged from `feature/refactor-app-structure-phase1-hooks`.
-- [ ] 2.2 Rename `isAdmin` param to `shouldBypass` (boolean); skip toast when `true`.
-- [ ] 2.3 Verify: `bun run build` passes, ESLint clean.
+- [x] 2.1 Create `src/hooks/useAgeVerification.js` salvaged from `feature/refactor-app-structure-phase1-hooks`.
+- [x] 2.2 Rename `isAdmin` param to `shouldBypass` (boolean); skip toast when `true`.
+- [x] 2.3 Verify: `bun run build` passes, ESLint clean.
 
 ## Phase 3: Core — `ProtectedRoute` + `AppRoutes` (PR 3)
 
