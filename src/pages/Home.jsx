@@ -10,6 +10,7 @@ import { addComboToCart } from '../services/cart';
 import { getProducts } from '../services/products';
 import { getShippingPrices } from '../services/shipping';
 import toast from 'react-hot-toast';
+import { parseApiError } from '../utils/errors';
 import AuthModal from '../components/Auth/AuthModal';
 import { motion } from 'framer-motion';
 import InteractiveShippingMap from '../components/Cart/InteractiveShippingMap';
@@ -92,7 +93,7 @@ export default function Home() {
             toast.success(`${comboName} agregado al carrito`);
         } catch (error) {
             console.error('Error adding to cart:', error);
-            const errorMsg = error.response?.data?.detail?.[0]?.msg || error.response?.data?.detail || 'Error al agregar al carrito';
+            const errorMsg = parseApiError(error).detail || 'Error al agregar al carrito';
             toast.error(errorMsg);
         }
     };

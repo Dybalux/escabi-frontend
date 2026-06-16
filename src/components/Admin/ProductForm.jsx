@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { X, Plus } from 'lucide-react';
 import { createProduct, updateProduct } from '../../services/admin/adminProducts';
 import { getPricingSettings } from '../../services/admin/adminSettings';
+import { parseApiError, parseValidationErrors } from '../../utils/errors';
 
 import Button from '../UI/Button';
 import Input from '../UI/Input';
@@ -167,33 +168,10 @@ export default function ProductForm({ product, onClose }) {
             onClose();
         } catch (error) {
             console.error('Error saving product:', error);
-
-            // Manejar diferentes tipos de errores del backend
-            let errorMessage = 'Error al guardar el producto';
-
-            if (error.response?.data) {
-                const errorData = error.response.data;
-
-                // Si es un error de validación de Pydantic (array de errores)
-                if (Array.isArray(errorData.detail)) {
-                    errorMessage = errorData.detail
-                        .map(err => {
-                            const field = err.loc?.[err.loc.length - 1] || 'campo';
-                            return `${field}: ${err.msg}`;
-                        })
-                        .join(', ');
-                }
-                // Si es un string simple
-                else if (typeof errorData.detail === 'string') {
-                    errorMessage = errorData.detail;
-                }
-                // Si es un objeto con mensaje
-                else if (errorData.message) {
-                    errorMessage = errorData.message;
-                }
-            }
-
-            setError(errorMessage);
+            const parsed = parseApiError(error);
+            // eslint-disable-next-line no-unused-vars
+            const fieldErrors = parseValidationErrors(parsed.errors);
+            setError(parsed.detail || 'Error al guardar el producto');
         } finally {
             setLoading(false);
         }
