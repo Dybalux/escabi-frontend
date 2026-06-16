@@ -6,6 +6,7 @@ import Button from '../UI/Button';
 import Input from '../UI/Input';
 import toast from 'react-hot-toast';
 import { openCloudinaryWidget } from '../../utils/cloudinary';
+import { parseApiError } from '../../utils/errors';
 
 export default function ComboForm({ combo, onClose }) {
     const [formData, setFormData] = useState({
@@ -144,7 +145,7 @@ export default function ComboForm({ combo, onClose }) {
             onClose();
         } catch (error) {
             console.error('Error saving combo:', error);
-            setError(error.response?.data?.detail || 'Error al guardar el combo');
+            setError(parseApiError(error).detail || 'Error al guardar el combo');
         } finally {
             setLoading(false);
         }

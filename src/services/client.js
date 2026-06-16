@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { parseApiError } from '../utils/errors';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -55,7 +56,7 @@ api.interceptors.response.use(
         // Log del error
         console.error('❌ Error en la API:', error.message);
         if (error.response) {
-            console.error('Respuesta del servidor:', error.response.status, error.response.data);
+            console.error('❌ API error:', parseApiError(error));
         } else if (error.request) {
             console.error('No se recibió respuesta del servidor');
         }

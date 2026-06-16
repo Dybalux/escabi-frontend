@@ -6,6 +6,7 @@ import ComboForm from '../../components/Admin/ComboForm';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 import { showConfirmToast } from '../../components/UI/ConfirmToast';
+import { parseApiError } from '../../utils/errors';
 
 export default function ComboManagement() {
     const [combos, setCombos] = useState([]);
@@ -46,7 +47,7 @@ export default function ComboManagement() {
                     loadCombos();
                 } catch (error) {
                     console.error('Error deleting combo:', error);
-                    const errorMessage = error.response?.data?.detail || 'Error al desactivar el combo';
+                    const errorMessage = parseApiError(error).detail || 'Error al desactivar el combo';
                     toast.error(errorMessage);
                 }
             }

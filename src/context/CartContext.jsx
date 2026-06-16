@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { getCart, addToCart as apiAddToCart, removeFromCart as apiRemoveFromCart, clearCart as apiClearCart } from '../services/cart';
 import { useAuth } from './AuthContext';
+import { parseApiError } from '../utils/errors';
 
 const CartContext = createContext();
 
@@ -46,7 +47,7 @@ export const CartProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error al agregar al carrito'
+                error: parseApiError(error).detail || 'Error al agregar al carrito'
             };
         }
     }, [loadCart]);
@@ -60,7 +61,7 @@ export const CartProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error al eliminar del carrito'
+                error: parseApiError(error).detail || 'Error al eliminar del carrito'
             };
         }
     }, [loadCart]);
@@ -102,7 +103,7 @@ export const CartProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error al actualizar cantidad'
+                error: parseApiError(error).detail || 'Error al actualizar cantidad'
             };
         }
     }, [cart, loadCart, removeFromCart]);
@@ -116,7 +117,7 @@ export const CartProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error al vaciar carrito'
+                error: parseApiError(error).detail || 'Error al vaciar carrito'
             };
         }
     }, [loadCart]);

@@ -3,6 +3,7 @@ import { Settings, Save } from 'lucide-react';
 import { getAdminPaymentSettings, updatePaymentSettings } from '../../services/admin/adminSettings';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
+import { parseApiError } from '../../utils/errors';
 
 export default function PaymentSettings() {
     const [settings, setSettings] = useState(null);
@@ -85,7 +86,7 @@ export default function PaymentSettings() {
             fetchSettings(); // Recargar para obtener updated_at y updated_by
         } catch (error) {
             console.error('Error updating payment settings:', error);
-            const errorMessage = error.response?.data?.detail || 'Error al guardar la configuración';
+            const errorMessage = parseApiError(error).detail || 'Error al guardar la configuración';
             toast.error(errorMessage);
         } finally {
             setSaving(false);

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { createOrder } from '../../services/orders';
 import { createPaymentPreference, getPaymentSettings } from '../../services/payments';
+import { parseApiError } from '../../utils/errors';
 import CartItem from './CartItem';
 import Button from '../UI/Button';
 import Alert from '../UI/Alert';
@@ -165,7 +166,7 @@ export default function Cart() {
 
             localStorage.removeItem('pending_payment');
 
-            let errorMessage = 'Hubo un error al procesar tu pago. Intenta nuevamente.';
+            let errorMessage = parseApiError(error).detail || 'Hubo un error al procesar tu pago. Intenta nuevamente.';
 
             if (error.message === 'Timeout al crear preferencia de pago') {
                 errorMessage = 'El servidor tardó demasiado en responder. Por favor, intenta nuevamente.';
@@ -175,8 +176,6 @@ export default function Cart() {
                 errorMessage = 'No se pudo encontrar la orden. Intenta nuevamente.';
             } else if (error.response?.status === 500) {
                 errorMessage = 'Error del servidor. Por favor, intenta más tarde.';
-            } else if (error.response?.data?.detail) {
-                errorMessage = error.response.data.detail;
             } else if (!navigator.onLine) {
                 errorMessage = 'Sin conexión a internet. Verifica tu conexión.';
             }

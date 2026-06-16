@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getSystemStatus } from '../services/system';
+import { parseApiError } from '../utils/errors';
 
 export default function useMaintenanceMode({ shouldBypass = false } = {}) {
   const [inMaintenance, setInMaintenance] = useState(false);
@@ -28,10 +29,10 @@ export default function useMaintenanceMode({ shouldBypass = false } = {}) {
         // Si recibimos un 503, significa que el servidor está en mantenimiento
         if (error.response?.status === 503) {
           setInMaintenance(true);
-          setMaintenanceMsg(
-            error.response?.data?.message ||
-            'Estamos realizando mejoras. Volvemos pronto.'
-          );
+            setMaintenanceMsg(
+              parseApiError(error).detail ||
+              'Estamos realizando mejoras. Volvemos pronto.'
+            );
         } else {
           // En caso de otro error, permitir acceso normal
           setInMaintenance(false);
