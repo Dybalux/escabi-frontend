@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { login as apiLogin, register as apiRegister, getCurrentUser, verifyAge as apiVerifyAge } from '../services/auth';
+import { parseApiError } from '../utils/errors';
 
 const AuthContext = createContext();
 
@@ -70,7 +71,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error al iniciar sesión'
+                error: parseApiError(error).detail || 'Error al iniciar sesión'
             };
         }
     };
@@ -121,7 +122,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error en el registro'
+                error: parseApiError(error).detail || 'Error en el registro'
             };
         }
     };
@@ -159,7 +160,7 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             return {
                 success: false,
-                error: error.response?.data?.detail || 'Error al verificar edad'
+                error: parseApiError(error).detail || 'Error al verificar edad'
             };
         }
     };

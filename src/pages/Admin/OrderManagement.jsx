@@ -3,6 +3,7 @@ import { Package, Search, Filter, Calendar, CreditCard, Building2 } from 'lucide
 import { getAdminOrders, updateOrderStatus } from '../../services/admin/adminOrders';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
+import { parseApiError } from '../../utils/errors';
 
 export default function OrderManagement() {
     const [orders, setOrders] = useState([]);
@@ -25,8 +26,9 @@ export default function OrderManagement() {
             setOrders(response.data.orders || []);
         } catch (error) {
             console.error('Error loading orders:', error);
-            setError('Error al cargar los pedidos');
-            toast.error('Error al cargar los pedidos');
+            const errorMsg = parseApiError(error).detail || 'Error al cargar los pedidos';
+            setError(errorMsg);
+            toast.error(errorMsg);
         } finally {
             setLoading(false);
         }
@@ -39,7 +41,7 @@ export default function OrderManagement() {
             loadOrders();
         } catch (error) {
             console.error('Error updating status:', error);
-            toast.error('Error al actualizar el estado');
+            toast.error(parseApiError(error).detail || 'Error al actualizar el estado');
         }
     };
 

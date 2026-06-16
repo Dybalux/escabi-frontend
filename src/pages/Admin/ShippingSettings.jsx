@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { getShippingSettings, updateShippingSettings } from '../../services/admin/adminSettings';
 import AdminNav from '../../components/Admin/AdminNav';
+import { parseApiError } from '../../utils/errors';
 
 export default function ShippingSettings() {
     const [loading, setLoading] = useState(true);
@@ -38,7 +39,7 @@ export default function ShippingSettings() {
             });
         } catch (error) {
             console.error('Error al cargar configuración:', error);
-            toast.error('Error al cargar configuración de envíos');
+            toast.error(parseApiError(error).detail || 'Error al cargar configuración de envíos');
         } finally {
             setLoading(false);
         }
@@ -91,7 +92,7 @@ export default function ShippingSettings() {
             toast.success('Configuración actualizada correctamente');
         } catch (error) {
             console.error('Error al actualizar configuración:', error);
-            toast.error('Error al actualizar configuración de envíos');
+            toast.error(parseApiError(error).detail || 'Error al actualizar configuración de envíos');
         } finally {
             setSaving(false);
         }

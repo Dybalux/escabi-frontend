@@ -3,6 +3,7 @@ import { Percent, TrendingUp, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { bulkUpdatePrices } from '../../services/admin/adminSettings';
 import { showConfirmToast } from '../UI/ConfirmToast';
+import { parseApiError } from '../../utils/errors';
 
 export default function BulkPriceUpdate() {
     const [updateData, setUpdateData] = useState({
@@ -52,7 +53,7 @@ export default function BulkPriceUpdate() {
                     }
                 } catch (error) {
                     console.error('Error al actualizar precios:', error);
-                    const errorMsg = error.response?.data?.detail || 'Error al actualizar precios';
+                    const errorMsg = parseApiError(error).detail || 'Error al actualizar precios';
                     toast.error(errorMsg);
                 } finally {
                     setLoading(false);

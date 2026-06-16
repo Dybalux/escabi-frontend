@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 import { showConfirmToast } from '../../components/UI/ConfirmToast';
+import { parseApiError } from '../../utils/errors';
 
 export default function UserManagement() {
     const [users, setUsers] = useState([]);
@@ -66,7 +67,7 @@ export default function UserManagement() {
                     loadUsers(); // Recargar lista
                 } catch (error) {
                     console.error('Error changing user role:', error);
-                    const errorMessage = error.response?.data?.detail || 'Error al cambiar el rol del usuario';
+                    const errorMessage = parseApiError(error).detail || 'Error al cambiar el rol del usuario';
                     toast.error(errorMessage);
                 }
             }

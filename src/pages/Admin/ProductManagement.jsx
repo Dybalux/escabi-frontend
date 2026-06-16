@@ -8,6 +8,7 @@ import BulkPriceUpdate from '../../components/Admin/BulkPriceUpdate';
 import AdminNav from '../../components/Admin/AdminNav';
 import toast from 'react-hot-toast';
 import { showConfirmToast } from '../../components/UI/ConfirmToast';
+import { parseApiError } from '../../utils/errors';
 
 export default function ProductManagement() {
     const [products, setProducts] = useState([]);
@@ -58,8 +59,7 @@ export default function ProductManagement() {
                     toast.success('Producto eliminado exitosamente');
                 } catch (error) {
                     console.error('Error deleting product:', error);
-                    const errorMessage = error.response?.data?.detail ||
-                        error.response?.data?.message ||
+                    const errorMessage = parseApiError(error).detail ||
                         'Error al eliminar el producto. Puede que tenga pedidos asociados.';
                     toast.error(errorMessage);
                 }

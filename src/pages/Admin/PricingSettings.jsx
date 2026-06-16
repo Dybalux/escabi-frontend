@@ -3,6 +3,7 @@ import { Percent, Clock, Calendar, Save, Info } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { getPricingSettings, updatePricingSettings } from '../../services/admin/adminSettings';
 import AdminNav from '../../components/Admin/AdminNav';
+import { parseApiError } from '../../utils/errors';
 
 export default function PricingSettings() {
     const [loading, setLoading] = useState(false);
@@ -65,7 +66,7 @@ export default function PricingSettings() {
             fetchSettings();
         } catch (error) {
             console.error('Error al guardar configuración:', error);
-            toast.error(error.response?.data?.detail || 'Error al guardar la configuración');
+            toast.error(parseApiError(error).detail || 'Error al guardar la configuración');
         } finally {
             setLoading(false);
         }
